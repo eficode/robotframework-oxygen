@@ -1,0 +1,11 @@
+junit:
+  keyword: run_junit
+  tags:
+    - JUNIT
+    - EXTRA_JUNIT_CASE
+gatling:
+  keyword: run_gatling
+  tags: GATLING
+#zap:
+#  keyword: run_zap
+#  tags: ZAP

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="suite1">
+    <testsuite name="suite2">
+      <properties>
+        <property name="build" value="55"/>
+      </properties>
+      <testcase name="casea">
+        <skipped/>
+      </testcase>
+      <testcase name="caseb">
+      </testcase>
+    </testsuite>
+    <properties>
+      <property name="build" value="55"/>
+    </properties>
+    <testcase name="case1">
+      <skipped/>
+    </testcase>
+    <testcase name="case2">
+      <error message="Example error message" type="the_error_type"/>
+    </testcase>
+    <testcase name="case3">
+      <failure message="Example failure message" type="the_failure_type"/>
+    </testcase>
+  </testsuite>
+</testsuites>
