@@ -1,0 +1,3 @@
+robotframework>=3.0.4
+junitparser>=1.2.2
+PyYAML>=3.13
