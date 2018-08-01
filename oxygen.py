@@ -38,13 +38,12 @@ class OxygenLibrary(OxygenCore):
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     """
     def get_keyword_names(self):
-        return [handler.get_keyword() for name, handler in self._handlers.items()]
+        return [handler.get_keyword() for handler in self._handlers.values()]
 
     def run_keyword(self, name, args):
         """
         If Robot tests feature one of the mock Oxygen keywords, make sure
         running it can mock-succeed
         """
-        keywords = [handler.get_keyword()
-                    for handler_type, handler in self._handlers.items()]
+        keywords = [handler.get_keyword() for handler in self._handlers.values()]
         assert(name in keywords)

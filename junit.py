@@ -14,7 +14,7 @@ class JUnitHandler(BaseHandler):
         args: Keyword arguments (first argument is the location of the test output)
         """
         if len(args) > 1:
-            subprocess.run(args[1:])
+            subprocess.call(args[1:])
         xml = JUnitXml.fromfile(args[0])
         return self._transform_tests(xml)
 

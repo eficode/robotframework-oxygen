@@ -90,7 +90,7 @@ class BaseHandler(object):
         test = keyword.parent
         test_results = self._parse_results(keyword.args)
         result_suite = self._build_suite(test_results)
-        self._set_suite_tags(result_suite, *self._tags, *test.tags)
+        self._set_suite_tags(result_suite, *(self._tags + list(test.tags)))
         result_suite.keywords.append(setup_keyword)
         result_suite.keywords.append(teardown_keyword)
         self._inject_suite_report(test, result_suite)
@@ -198,7 +198,7 @@ class BaseHandler(object):
         for keyword in keywords:
             return_keywords.append(self._robot_keyword(
                 existing=keyword,
-                **kwargs,
+                **kwargs
             ))
         return return_keywords
 

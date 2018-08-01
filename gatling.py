@@ -11,7 +11,7 @@ class GatlingHandler(BaseHandler):
               output)
         """
         if len(args) > 1:
-            subprocess.run(args[1:])
+            subprocess.call(args[1:])
         result_file = args[0]
         return self._transform_tests(result_file)
 

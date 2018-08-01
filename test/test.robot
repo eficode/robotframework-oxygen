@@ -29,7 +29,7 @@ My Second Test
   Log   Gatling Setup Here 1
   Log   Gatling Setup Here 2
   run_gatling
-    ...   /home/waz/Downloads/gatling/gatling-charts-highcharts-bundle-2.3.0/results/lolgoogle-1516788566302/simulation.log
+    ...   gatling-example-simulation.log
     ...   echo
     ...   GATLING TEST STRING
   Log   Gatling Teardown Here 2
