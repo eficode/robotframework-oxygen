@@ -4,34 +4,25 @@ import subprocess
 
 
 class GatlingHandler(BaseHandler):
-    #####################
-    # _parse_results
-    #
-    # Execute the Gatling tests given the arguments
-    #
-    # args: Keyword arguments (first argument is the location of the test output)
-    #
-    # Return: None
-    #####################
     def _parse_results(self, args):
+        """Execute the Gatling tests given the arguments
+
+        args: Keyword arguments (first argument is the location of the test
+              output)
+        """
         if len(args) > 1:
             subprocess.run(args[1:])
         result_file = args[0]
         return self._transform_tests(result_file)
 
-    #####################
-    # _transform_tests
-    #
-    # Given the result_file path, open the test results and get a suite dict
-    #
-    # result_file: The path to the Gatling results
-    #
-    # Return: A test suite dict
-    #####################
-
     def _transform_tests(self, result_file):
-        # The whole Gatling format is jank 3000
-        # Here be dragons
+        """Given the result_file path, open the test results and get a suite dict
+
+        The whole Gatling format is jank 3000.
+        Here be dragons.
+
+        result_file: The path to the Gatling results
+        """
         test_cases = []
         with open(result_file) as results:
             for line in results:

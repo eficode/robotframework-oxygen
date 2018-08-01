@@ -8,32 +8,23 @@ import subprocess
 
 
 class JUnitHandler(BaseHandler):
-    #####################
-    # _parse_results
-    #
-    # Execute the JUnit tests given the arguments
-    #
-    # args: Keyword arguments (first argument is the location of the test output)
-    #
-    # Return: None
-    #####################
     def _parse_results(self, args):
+        """Execute the JUnit tests given the arguments
+
+        args: Keyword arguments (first argument is the location of the test output)
+        """
         if len(args) > 1:
             subprocess.run(args[1:])
         xml = JUnitXml.fromfile(args[0])
         return self._transform_tests(xml)
 
-    #####################
-    # _transform_tests
-    #
-    # Convert the given xml object into a test suite dict
-    #
-    # node: An xml object from JUnitXml.fromfile()
-    #
-    # Return: The test suite dict
-    #####################
-
     def _transform_tests(self, node):
+        """Convert the given xml object into a test suite dict
+
+        node: An xml object from JUnitXml.fromfile()
+
+        Return: The test suite dict
+        """
         suite_dict = {
             'name': 'JUnit Execution',
             'tags': self._tags,
@@ -49,17 +40,13 @@ class JUnitHandler(BaseHandler):
 
         return suite_dict
 
-    #####################
-    # _transform_test_suite
-    #
-    # Convert the given suite xml object into a suite dict
-    #
-    # test_suite: A JUnit suite xml object
-    #
-    # Return: A suite dict
-    #####################
-
     def _transform_test_suite(self, test_suite):
+        """Convert the given suite xml object into a suite dict
+
+        test_suite: A JUnit suite xml object
+
+        Return: A suite dict
+        """
         suite_dict = {
             'name': test_suite.name,
             'tags': [],
@@ -81,17 +68,13 @@ class JUnitHandler(BaseHandler):
 
         return suite_dict
 
-    #####################
-    # _transform_test_case
-    #
-    # Convert the given test case xml object into a test case dict
-    #
-    # test_case: A JUnit case xml object
-    #
-    # Return: A test case dict
-    #####################
-
     def _transform_test_case(self, test_case):
+        """Convert the given test case xml object into a test case dict
+
+        test_case: A JUnit case xml object
+
+        Return: A test case dict
+        """
         test_dict = {
             'name': '{} (Execution)'.format(test_case.name),
             'pass': True,
