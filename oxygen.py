@@ -11,17 +11,22 @@ class OxygenCore(object):
     def __init__(self):
         with open('config.yml', 'r') as infile:
             self._config = load(infile)
+        self._handlers = {}
         self._register_handlers()
 
     def _register_handlers(self):
-        self._handlers = {
-            'gatling': GatlingHandler(),
-            'junit': JUnitHandler(),
-            # 'zap': ZAProxyHandler(),
-        }
-
-        for config_type, config in self._config.items():
-            self._handlers[config_type].build(config)
+        #self._handlers = {
+        #    'gatling': GatlingHandler(),
+        #    'junit': JUnitHandler(),
+        #    # 'zap': ZAProxyHandler(),
+        #}
+        for tool_name, config in self._config.items():
+            handler_class = getattr(__import__(tool_name,
+                                               fromlist=[config['handler']]),
+                                    config['handler'])
+            handler = handler_class()
+            handler.build(config)
+            self._handlers[tool_name] = handler
 
 
 class Oxygen(OxygenCore, SuiteVisitor):

@@ -1,9 +1,11 @@
 junit:
+  handler: JUnitHandler
   keyword: run_junit
   tags:
     - JUNIT
     - EXTRA_JUNIT_CASE
 gatling:
+  handler: GatlingHandler
   keyword: run_gatling
   tags: GATLING
 #zap:
