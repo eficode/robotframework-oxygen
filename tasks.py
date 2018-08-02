@@ -15,3 +15,7 @@ def utest(context):
     cmd = ('python -m unittest discover --start-directory tests/ '
            '--top-level-directory {}'.format(CURDIR))
     run(cmd, env={'PYTHONPATH': SRCPATH})
+
+@task
+def atest(context):
+    run('robot --pythonpath {} test/', pty=True)  # pty for colored output
