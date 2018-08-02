@@ -2,3 +2,4 @@ robotframework>=3.0.4
 junitparser>=1.2.2
 PyYAML>=3.13
 mock>=2.0.0
+invoke>=1.1.1
