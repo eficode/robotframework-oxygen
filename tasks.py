@@ -12,7 +12,7 @@ def install(context):
 
 @task
 def utest(context):
-    cmd = ('python -m unittest discover --start-directory tests/ '
+    cmd = ('python -m unittest discover --start-directory tests/utest '
            '--top-level-directory {}'.format(CURDIR))
     run(cmd, env={'PYTHONPATH': SRCPATH})
 
