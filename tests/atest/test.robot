@@ -7,7 +7,7 @@ My First Test
   Log   Junit Setup Here 1
   Log   Junit Setup Here 2
   run_junit
-    ...   junit.xml
+    ...   ${CURDIR}/junit.xml
     ...   echo
     ...   JUNIT_TEST_STRING
   Log   Junit Teardown Here 1
@@ -18,7 +18,7 @@ My First Test Director's Cut
   Log   Junit Setup Here 1
   Log   Junit Setup Here 2
   run_junit
-    ...   big.xml
+    ...   ${CURDIR}/big.xml
     ...   echo
     ...   JUNIT_TEST_STRING_BIG
   Log   Junit Teardown Here 1
@@ -29,7 +29,7 @@ My Second Test
   Log   Gatling Setup Here 1
   Log   Gatling Setup Here 2
   run_gatling
-    ...   gatling-example-simulation.log
+    ...   ${CURDIR}/gatling-example-simulation.log
     ...   echo
     ...   GATLING TEST STRING
   Log   Gatling Teardown Here 2
