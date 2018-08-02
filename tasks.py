@@ -18,4 +18,5 @@ def utest(context):
 
 @task
 def atest(context):
-    run('robot --pythonpath {} test/', pty=True)  # pty for colored output
+    run('robot --pythonpath {} test/'.format(SRCPATH),
+        pty=True)  # pty for colored output
