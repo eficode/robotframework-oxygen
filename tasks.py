@@ -7,16 +7,15 @@ CURDIR = abspath(dirname(__file__))
 SRCPATH = path_join(CURDIR, 'src')
 
 @task
-def install(context):
+def install():
     run('pip install -r requirements.txt')
 
 @task
-def utest(context):
+def utest():
     cmd = ('python -m unittest discover --start-directory tests/ '
            '--top-level-directory {}'.format(CURDIR))
     run(cmd, env={'PYTHONPATH': SRCPATH})
 
 @task
-def atest(context):
-    run('robot --pythonpath {} test/'.format(SRCPATH),
+def atest():
         pty=True)  # pty for colored output
