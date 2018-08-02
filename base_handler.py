@@ -114,7 +114,7 @@ class BaseHandler(object):
         """
         keyword_name: The raw keyword name (suite.subsuite.test.My Keyword)
         """
-        short_name = str(keyword_name).split('.')[-1]
+        short_name = str(keyword_name).split('.')[-1].strip()
         underscored = re.sub(r' +', '_', short_name)
         return underscored.lower()
 
