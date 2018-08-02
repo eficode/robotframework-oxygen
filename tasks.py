@@ -17,5 +17,6 @@ def utest():
     run(cmd, env={'PYTHONPATH': SRCPATH})
 
 @task
-def atest():
+def atest(rf=''):
+    run('robot --pythonpath {} --dotted {} test/'.format(SRCPATH, rf),
         pty=True)  # pty for colored output
