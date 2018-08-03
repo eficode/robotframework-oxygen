@@ -5,12 +5,8 @@ TestSuite:
   'tags': [
     <string>,
   ],
-  'setup': [
-    <keyword>,
-  ],
-  'teardown': [
-    <keyword>,
-  ],
+  'setup': <keyword>,
+  'teardown': <keyword>,
   'suites': [
     <testsuite>,
   ],
@@ -27,12 +23,8 @@ TestCase:
   'tags': [
     <string>,
   ],
-  'setup': [
-    <keyword>,
-  ],
-  'teardown': [
-    <keyword>,
-  ],
+  'setup': <keyword>,
+  'teardown': <keyword>,
   'keywords': [
     <keyword>,
   ],
@@ -44,16 +36,14 @@ Keyword:
 {
   'name': <string>,
   'pass': <bool>,
-  'duration': <float>,
+  'elapsed': <float>, // milliseconds
   'tags': [
     <string>,
   ],
   'messages': [
     <string>,
   ],
-  'teardown': [
-    <keyword>,
-  ],
+  'teardown': <keyword>,
   'keywords': [
     <keyword>,
   ],
