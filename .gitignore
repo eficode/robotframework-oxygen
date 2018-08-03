@@ -3,3 +3,6 @@ __pycache__/
 *.html
 output.xml
 *.pyc
+.python-version
+.tox
+*.egg-info
