@@ -7,8 +7,10 @@ CURDIR = abspath(dirname(__file__))
 SRCPATH = path_join(CURDIR, 'src')
 
 @task
-def install(context):
+def install(context, package=None):
     run('pip install -r requirements.txt')
+    if package:
+        run('pip install {}'.format(package))
 
 @task
 def utest(context):
