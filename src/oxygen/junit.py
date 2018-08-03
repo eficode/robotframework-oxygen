@@ -1,4 +1,4 @@
-from base_handler import BaseHandler
+from .base_handler import BaseHandler
 from junitparser import Error
 from junitparser import Failure
 from junitparser import JUnitXml

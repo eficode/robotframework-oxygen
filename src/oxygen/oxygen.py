@@ -1,5 +1,3 @@
-from gatling import GatlingHandler
-from junit import JUnitHandler
 #from zaproxy import ZAProxyHandler
 
 from robot.api import SuiteVisitor

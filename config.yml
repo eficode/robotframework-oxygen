@@ -1,10 +1,10 @@
-junit:
+oxygen.junit:
   handler: JUnitHandler
   keyword: run_junit
   tags:
     - JUNIT
     - EXTRA_JUNIT_CASE
-gatling:
+oxygen.gatling:
   handler: GatlingHandler
   keyword: run_gatling
   tags: GATLING

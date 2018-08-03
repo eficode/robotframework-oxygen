@@ -1,4 +1,4 @@
-from base_handler import BaseHandler
+from .base_handler import BaseHandler
 from robot.result.model import TestSuite
 import subprocess
 
