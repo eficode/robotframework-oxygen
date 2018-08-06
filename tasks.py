@@ -7,8 +7,14 @@ CURDIR = abspath(dirname(__file__))
 SRCPATH = path_join(CURDIR, 'src')
 
 @task
+def clean(context):
+    run('rm -rf {}'.format(path_join(SRCPATH,
+                                     'robotframework_oxygen.egg-info')))
+    run('python {} clean'.format(path_join(CURDIR, 'setup.py')))
+
+@task(pre=[clean])
 def install(context, package=None):
-    run('pip install -r requirements.txt')
+    run('pip install -r {}'.format(path_join(CURDIR, 'requirements.txt')))
     if package:
         run('pip install {}'.format(package))
 
