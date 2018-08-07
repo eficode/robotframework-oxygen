@@ -141,7 +141,7 @@ class RobotInterface(object):
                          keywords):
         start_timestamp = self.ms_to_timestamp(start_time)
         end_timestamp = self.ms_to_timestamp(end_time)
-        status = self.get_keywords_status(setup_keyword, teardown_keyword, keywords)
+        status = self.get_keywords_status(setup_keyword, teardown_keyword, *(keywords or []))
 
         robot_test = RobotTest(name,
                                tags=tags,
@@ -298,9 +298,7 @@ class RobotInterface(object):
 
         Return: 'PASS' or 'FAIL'
         """
-        if None in keywords:
-            return 'FAIL'
-        if sum(not kw.passed for kw in keywords):
+        if sum(not kw.passed for kw in filter(None, keywords)):
             return 'FAIL'
         else:
             return 'PASS'
