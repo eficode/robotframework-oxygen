@@ -3,32 +3,27 @@ import re
 from .robot_interface import RobotInterface
 
 class BaseHandler(object):
-    def __init__(self):
-        self._keyword = None
-        self._tags = []
-        self._config = {}
-        self._interface = RobotInterface()
-
-    def build(self, config):
+    def __init__(self, config):
         """
         Set up the handler with the given configuration
 
         config: A dict including the 'keyword' node
-
-        Return: None
         """
-        keyword = config['keyword']
+        self._interface = RobotInterface()
+        self._config = config
 
-        tags = config.get('tags', [])
+        tags = self._config.get('tags', [])
         if not isinstance(tags, list):
             tags = [tags]
-
-        self._keyword = self._normalize_keyword_name(keyword)
         self._tags = tags
-        self._config = config
+
+        keyword = self._config['keyword']
+        self._keyword = self._normalize_keyword_name(keyword)
+
 
     def get_keyword(self):
         return self._keyword
+
 
     def check(self, test):
         """Check if any of the keywords directly under this test trigger test
@@ -48,6 +43,7 @@ class BaseHandler(object):
             teardown_keywords = test.keywords[(curr+1):]
 
             self._report_oxygen_run(keyword, setup_keywords, teardown_keywords)
+
 
     def _report_oxygen_run(self, keyword, setup_keywords, teardown_keywords):
         """Run the tests associated with this handler and report on them

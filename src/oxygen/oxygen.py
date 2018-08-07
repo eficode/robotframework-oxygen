@@ -22,8 +22,7 @@ class OxygenCore(object):
             handler_class = getattr(__import__(tool_name,
                                                fromlist=[config['handler']]),
                                     config['handler'])
-            handler = handler_class()
-            handler.build(config)
+            handler = handler_class(config)
             self._handlers[tool_name] = handler
 
 
