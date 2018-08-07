@@ -6,19 +6,21 @@ from robot.result.model import TestCase as RobotTest
 from robot.result.model import TestSuite as RobotSuite
 
 class RobotInterface(object):
-    def build_suites(starting_time, *suites):
+    def build_suites(self, starting_time, *suites):
         """Convert a given `suite` dict into a Robot suite"""
         finished_suites = []
         current_time = starting_time
-        
+
         for suite in suites:
-            current_time, finished_suite = build_suite(current_time, suite)
-            finished_suites.append(finished_suite)
-          
+            current_time, finished_suite = self.build_suite(current_time, suite)
+
+            if finished_suite:
+                finished_suites.append(finished_suite)
+
         return current_time, finished_suites
 
 
-    def build_suite(starting_time, suite):
+    def build_suite(self, starting_time, suite):
         """Convert a set of suite dicts into Robot suites and append them to the
         given list-like object
 
@@ -27,10 +29,10 @@ class RobotInterface(object):
 
         Return: The updated list-like object
         """
-        
+
         if not suite:
           return starting_time, None
-        
+
         updated_time = starting_time
         name = suite.get('name') or 'Unknown Suite Name'
         tags = suite.get('tags') or []
@@ -38,25 +40,26 @@ class RobotInterface(object):
         teardown_keyword = suite.get('teardown') or None
         child_suites = suite.get('suites') or []
         tests = suite.get('tests') or []
-        
-        updated_time, robot_setup = build_keyword(updated_time, setup_keyword, setup=True)
-        updated_time, robot_teardown = build_keyword(updated_time, teardown_keyword, teardown=True)
-        updated_time, robot_suites = build_suites(updated_time, *child_suites)
-        updated_time, robot_tests = build_tests(updated_time, *tests)
-        
-        robot_suite = spawn_robot_suite(name,
-                                        starting_time,
-                                        updated_time,
-                                        tags,
-                                        robot_setup,
-                                        robot_teardown,
-                                        robot_suites,
-                                        robot_tests)
-                                        
+
+        updated_time, robot_setup = self.build_keyword(updated_time, setup_keyword, setup=True)
+        updated_time, robot_teardown = self.build_keyword(updated_time, teardown_keyword, teardown=True)
+        updated_time, robot_suites = self.build_suites(updated_time, *child_suites)
+        updated_time, robot_tests = self.build_tests(updated_time, *tests)
+
+        robot_suite = self.spawn_robot_suite(name,
+                                             starting_time,
+                                             updated_time,
+                                             tags,
+                                             robot_setup,
+                                             robot_teardown,
+                                             robot_suites,
+                                             robot_tests)
+
         return updated_time, robot_suite
-        
-        
-    def spawn_robot_suite(name,
+
+
+    def spawn_robot_suite(self,
+                          name,
                           start_time,
                           end_time,
                           tags,
@@ -64,37 +67,46 @@ class RobotInterface(object):
                           teardown_keyword,
                           suites,
                           tests):
-        start_timestamp = ms_to_timestamp(start_time)
-        end_timestamp = ms_to_timestamp(end_time)
-        
+        start_timestamp = self.ms_to_timestamp(start_time)
+        end_timestamp = self.ms_to_timestamp(end_time)
+
         robot_suite = RobotSuite(name,
                                  starttime=start_timestamp,
                                  endtime=end_timestamp)
         robot_suite.set_tags(add=tags, persist=True)
-        robot_suite.keywords.append(setup_keyword)
-        robot_suite.keywords.append(teardown_keyword)
-        robot_suite.suites = suites
-        robot_suite.tests = tests
 
-        return robot_suite        
+        if setup_keyword:
+            robot_suite.keywords.append(setup_keyword)
+        if teardown_keyword:
+            robot_suite.keywords.append(teardown_keyword)
+
+        for suite in filter(None, suites):
+            robot_suite.suites.append(suite)
+
+        for test in filter(None, tests):
+            robot_suite.tests.append(test)
+
+        return robot_suite
 
 
-    def build_tests(starting_time, *tests):
+    def build_tests(self, starting_time, *tests):
         """Convert a set of `tests` dicts and add to a Robot suite `target`"""
         updated_time = starting_time
-        robot_tests = []        
+        robot_tests = []
         for test in tests:
-            updated_time, robot_test = build_test(updated_time, test)
-            robot_tests.append(robot_test)
+            updated_time, robot_test = self.build_test(updated_time, test)
+
+            if robot_test:
+                robot_tests.append(robot_test)
 
         return updated_time, robot_tests
 
 
-    def build_test(starting_time, test):
+    def build_test(self, starting_time, test):
         """Convert a set of `tests` dicts and add to a Robot suite `target`"""
         if not test:
             return starting_time, None
-        
+
         updated_time = starting_time
         test_name = test.get('name') or 'Unknown Test Name'
         tags = test.get('tags') or []
@@ -102,56 +114,67 @@ class RobotInterface(object):
         keywords = test.get('keywords') or []
         teardown_keyword = test.get('teardown') or None
 
-        updated_time, robot_setup = build_keyword(updated_time, setup_keyword, setup=True)
-        updated_time, robot_keywords = build_keywords(updated_time, *keywords)
-        updated_time, robot_teardown = build_keyword(updated_time, teardown_keyword, teardown=True)
+        updated_time, robot_setup = self.build_keyword(updated_time, setup_keyword, setup=True)
+        updated_time, robot_keywords = self.build_keywords(updated_time, *keywords)
+        updated_time, robot_teardown = self.build_keyword(updated_time, teardown_keyword, teardown=True)
 
-        robot_test = spawn_robot_test(name,
-                                      starting_time,
-                                      updated_time,
-                                      tags,
-                                      robot_setup,
-                                      robot_teardown,
-                                      robot_keywords)
+        robot_test = self.spawn_robot_test(test_name,
+                                           starting_time,
+                                           updated_time,
+                                           tags,
+                                           robot_setup,
+                                           robot_teardown,
+                                           robot_keywords)
 
         return updated_time, robot_test
-        
-        
-    def spawn_robot_test(name,
+
+
+    def spawn_robot_test(self,
+                         name,
                          start_time,
                          end_time,
                          tags,
                          setup_keyword,
                          teardown_keyword,
                          keywords):
-        start_timestamp = ms_to_timestamp(start_time)
-        end_timestamp = ms_to_timestamp(end_time)
-        status = get_keywords_status(setup_keyword, teardown_keyword, keywords)
-        
+        start_timestamp = self.ms_to_timestamp(start_time)
+        end_timestamp = self.ms_to_timestamp(end_time)
+        status = self.get_keywords_status(setup_keyword, teardown_keyword, keywords)
+
         robot_test = RobotTest(name,
                                tags=tags,
                                status=status,
                                starttime=start_timestamp,
                                endtime=end_timestamp)
-        robot_test.keywords.append(setup_keyword)
-        robot_test.keywords.append(keywords)
-        robot_test.keywords.append(teardown_keyword)
+
+        if setup_keyword:
+            robot_test.keywords.append(setup_keyword)
+        for keyword in keywords:
+            if keyword:
+                robot_test.keywords.append(keyword)
+        if teardown_keyword:
+            robot_test.keywords.append(teardown_keyword)
 
         return robot_test
-          
 
-    def build_keywords(starting_time, *keywords):
+
+    def build_keywords(self, starting_time, *keywords):
         """Convert `keywords` dicts, add them as sub-keywords to a `target`"""
         updated_time = starting_time
-        robot_keywords = []        
+        robot_keywords = []
         for keyword in keywords:
-            updated_time, robot_keyword = build_keyword(updated_time, keyword)
-            robot_keywords.append(robot_keyword)
+            updated_time, robot_keyword = self.build_keyword(updated_time, keyword)
+
+            if robot_keyword:
+                robot_keywords.append(robot_keyword)
 
         return updated_time, robot_keywords
-        
-        
-    def build_keyword(starting_time, keyword, setup=False, teardown=False):
+
+
+    def build_keyword(self, starting_time, keyword, setup=False, teardown=False):
+        if not keyword:
+            return starting_time, None
+
         updated_time = starting_time
         name = keyword.get('name') or 'Unknown Keyword Name'
         status = keyword.get('pass') or None
@@ -160,27 +183,28 @@ class RobotInterface(object):
         messages = keyword.get('messages') or []
         teardown = keyword.get('teardown') or None
         keywords = keyword.get('keywords') or []
-        
-        updated_time, robot_teardown = build_keyword(updated_time, teardown)
-        updated_time, robot_keywords = build_keywords(updated_time, keywords)
-        
+
+        updated_time, robot_teardown = self.build_keyword(updated_time, teardown)
+        updated_time, robot_keywords = self.build_keywords(updated_time, keywords)
+
         final_time = updated_time + elapsed
-        
-        robot_keyword = spawn_robot_keyword(name,
-                                            tags,
-                                            status,
-                                            updated_time,
-                                            final_time,
-                                            teardown,
-                                            keywords,
-                                            messages,
-                                            setup,
-                                            teardown)
-                                            
+
+        robot_keyword = self.spawn_robot_keyword(name,
+                                                 tags,
+                                                 status,
+                                                 updated_time,
+                                                 final_time,
+                                                 teardown,
+                                                 keywords,
+                                                 messages,
+                                                 setup,
+                                                 teardown)
+
         return final_time, robot_keyword
-        
-        
-    def spawn_robot_keyword(name,
+
+
+    def spawn_robot_keyword(self,
+                            name,
                             tags,
                             status,
                             start_time,
@@ -190,51 +214,52 @@ class RobotInterface(object):
                             messages,
                             setup=False,
                             teardown=False):
-        start_timestamp = ms_to_timestamp(start_time)
-        end_timestamp = ms_to_timestamp(end_time)
-        
+        start_timestamp = self.ms_to_timestamp(start_time)
+        end_timestamp = self.ms_to_timestamp(end_time)
+
         if setup:
           keyword_type = RobotKeyword.SETUP_TYPE
         elif teardown:
           keyword_type = RobotKeyword.TEARDOWN_TYPE
         else:
           keyword_type = RobotKeyword.KEYWORD_TYPE
-          
+
         if status is None:
           keyword_status = 'NOT_RUN'
         elif status:
           keyword_status = 'PASS'
         else:
           keyword_status = 'FAIL'
-        
+
         robot_keyword = RobotKeyword(name,
                                      tags=tags,
                                      status=keyword_status,
-                                     starttime=start_time,
-                                     endtime=end_time)
-                                     
+                                     starttime=start_timestamp,
+                                     endtime=end_timestamp)
+
         robot_keyword.type = keyword_type
-        robot_keyword.keywords.append(keywords)
-        robot_keyword.keywords.append(teardown_keyword)
-        robot_keywords.messages.append(messages)
-                                     
-        return robot_keyword
-        
 
-    def build_messages(target, *messages):
+        for keyword in keywords:
+            if keyword:
+                robot_keyword.keywords.append(keyword)
+
+        if teardown_keyword:
+            robot_keyword.keywords.append(teardown_keyword)
+
         for message in messages:
-            target.append(RobotMessage(message))
+            if message:
+                robot_keyword.messages.append(RobotMessage(message))
 
-        return target
-        
+        return robot_keyword
 
-    def get_time_format():
+
+    def get_time_format(self):
         """Convenience to return the general Robot timestamp format."""
         return '%Y%m%d %H:%M:%S.%f'
 
 
-    def timestamp_to_ms(timestamp):
-        time_format = get_time_format()
+    def timestamp_to_ms(self, timestamp):
+        time_format = self.get_time_format()
         time_object = datetime.strptime(
             timestamp,
             time_format,
@@ -245,20 +270,24 @@ class RobotInterface(object):
         return time_object.timestamp()
 
 
-    def ms_to_timestamp(milliseconds):
+    def ms_to_timestamp(self, milliseconds):
         time_object = datetime.fromtimestamp(int(milliseconds / 1000))
-        time_object.microsecond = int((milliseconds % 1000) * 1000)
-        time_format = get_time_format()
+        milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
+        time_object = (time_object + milliseconds_delta)
+
+        time_format = self.get_time_format()
 
         return time_object.strftime(time_format)
 
 
-    def get_keywords_status(*keywords):
+    def get_keywords_status(self, *keywords):
         """
         keywords: List of Robot keywords
 
         Return: 'PASS' or 'FAIL'
         """
+        if None in keywords:
+            return 'FAIL'
         if sum(not kw.passed for kw in keywords):
             return 'FAIL'
         else:

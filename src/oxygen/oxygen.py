@@ -7,7 +7,7 @@ from yaml import load
 class OxygenCore(object):
 
     def __init__(self):
-        with open('config.yml', 'r') as infile:
+        with open('../config.yml', 'r') as infile:
             self._config = load(infile)
         self._handlers = {}
         self._register_handlers()

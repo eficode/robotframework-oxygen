@@ -37,6 +37,8 @@ class JUnitHandler(BaseHandler):
         for xunit_suite in node:
             suite = self._transform_test_suite(xunit_suite)
             suite_dict['suites'].append(suite)
+            
+        print(suite_dict)
 
         return suite_dict
 
@@ -108,7 +110,7 @@ class JUnitHandler(BaseHandler):
             test_dict['pass'] = False
 
         execution_time = (test_case.time or 0.0) * 1000
-        test_dict['duration'] = execution_time
+        test_dict['elapsed'] = execution_time
 
         test_case_dict = {
             'name': test_case.name,
