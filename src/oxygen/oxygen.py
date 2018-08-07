@@ -1,5 +1,3 @@
-#from zaproxy import ZAProxyHandler
-
 from robot.api import SuiteVisitor
 from yaml import load
 
@@ -13,11 +11,6 @@ class OxygenCore(object):
         self._register_handlers()
 
     def _register_handlers(self):
-        #self._handlers = {
-        #    'gatling': GatlingHandler(),
-        #    'junit': JUnitHandler(),
-        #    # 'zap': ZAProxyHandler(),
-        #}
         for tool_name, config in self._config.items():
             handler_class = getattr(__import__(tool_name,
                                                fromlist=[config['handler']]),
