@@ -25,7 +25,7 @@ class Oxygen(OxygenCore, SuiteVisitor):
     """
     def visit_test(self, test):
         for handler_type, handler in self._handlers.items():
-            handler.check(test)
+            handler.check_for_keyword(test)
 
 
 class OxygenLibrary(OxygenCore):

@@ -25,7 +25,7 @@ class BaseHandler(object):
         return self._keyword
 
 
-    def check(self, test):
+    def check_for_keyword(self, test):
         """Check if any of the keywords directly under this test trigger test
         execution
 
