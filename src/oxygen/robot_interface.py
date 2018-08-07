@@ -33,7 +33,7 @@ class RobotInterface(object):
         """
 
         if not suite:
-          return starting_time, None
+            return starting_time, None
 
         updated_time = starting_time
         name = suite.get('name') or 'Unknown Suite Name'
@@ -220,18 +220,18 @@ class RobotInterface(object):
         end_timestamp = self.ms_to_timestamp(end_time)
 
         if setup:
-          keyword_type = RobotKeyword.SETUP_TYPE
+            keyword_type = RobotKeyword.SETUP_TYPE
         elif teardown:
-          keyword_type = RobotKeyword.TEARDOWN_TYPE
+            keyword_type = RobotKeyword.TEARDOWN_TYPE
         else:
-          keyword_type = RobotKeyword.KEYWORD_TYPE
+            keyword_type = RobotKeyword.KEYWORD_TYPE
 
         if status is None:
-          keyword_status = 'NOT_RUN'
+            keyword_status = 'NOT_RUN'
         elif status:
-          keyword_status = 'PASS'
+            keyword_status = 'PASS'
         else:
-          keyword_status = 'FAIL'
+            keyword_status = 'FAIL'
 
         robot_keyword = RobotKeyword(name,
                                      tags=tags,
@@ -272,7 +272,6 @@ class RobotInterface(object):
         milliseconds = ((time_object + tz_delta).timestamp() * 1000)
 
         return milliseconds
-
 
 
     def ms_to_timestamp(self, milliseconds):
