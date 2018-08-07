@@ -1,5 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
+from datetime import tzinfo
 from robot.result.model import Keyword as RobotKeyword
 from robot.result.model import Message as RobotMessage
 from robot.result.model import TestCase as RobotTest
@@ -265,19 +267,29 @@ class RobotInterface(object):
             time_format,
         )
 
-        milliseconds = (time_object.timestamp() * 1000) + (time_object.microsecond / 1000)
+        tz_delta = self.get_timezone_delta()
 
-        return time_object.timestamp()
+        milliseconds = ((time_object + tz_delta).timestamp() * 1000)
+
+        return milliseconds
+
 
 
     def ms_to_timestamp(self, milliseconds):
-        time_object = datetime.fromtimestamp(int(milliseconds / 1000))
+        tz_delta = self.get_timezone_delta()
+
+        time_object = datetime.fromtimestamp(int(milliseconds / 1000)) - tz_delta
         milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
         time_object = (time_object + milliseconds_delta)
 
         time_format = self.get_time_format()
 
         return time_object.strftime(time_format)
+
+
+    def get_timezone_delta(self):
+        local_zone = datetime.now(timezone.utc).astimezone().tzinfo
+        return local_zone.utcoffset(None)
 
 
     def get_keywords_status(self, *keywords):
@@ -292,3 +304,27 @@ class RobotInterface(object):
             return 'FAIL'
         else:
             return 'PASS'
+
+
+    def create_wrapper_keyword(self,
+                               name,
+                               start_timestamp,
+                               end_timestamp,
+                               setup,
+                               *keywords):
+        status = self.get_keywords_status(*keywords)
+        start_time = self.timestamp_to_ms(start_timestamp + '000')
+        end_time = self.timestamp_to_ms(end_timestamp + '000')
+
+        robot_keyword = self.spawn_robot_keyword(name,
+                                                 [],
+                                                 status,
+                                                 start_time,
+                                                 end_time,
+                                                 None,
+                                                 keywords,
+                                                 [],
+                                                 setup,
+                                                 (not setup))
+
+        return robot_keyword

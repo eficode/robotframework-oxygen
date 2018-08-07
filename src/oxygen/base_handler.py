@@ -53,28 +53,28 @@ class BaseHandler(object):
         teardown_keywords: The keywords succeeding the trigger
         """
         # Wrap setup- and teardown keywords as a single keyword
-        setup_keyword = self._interface.spawn_robot_keyword(
-            'Oxygen Setup',
-            [],
-            'PASS',
-            0,
-            5000000,
-            None,
-            setup_keywords,
-            [],
-            setup=True
-        )
-        teardown_keyword = self._interface.spawn_robot_keyword(
-            'Oxygen Teardown',
-            [],
-            'PASS',
-            6000000,
-            15000000,
-            None,
-            teardown_keywords,
-            [],
-            teardown=True
-        )
+        setup_keyword = None
+        teardown_keyword = None
+
+        if setup_keywords:
+            setup_start = setup_keywords[0].starttime
+            setup_end = setup_keywords[-1].endtime
+            setup_keyword = self._interface.create_wrapper_keyword(
+                'Oxygen Setup',
+                setup_start,
+                setup_end,
+                True,
+                *setup_keywords)
+
+        if teardown_keywords:
+            teardown_start = teardown_keywords[0].starttime
+            teardown_end = teardown_keywords[-1].endtime
+            teardown_keyword = self._interface.create_wrapper_keyword(
+                'Oxygen Teardown',
+                teardown_start,
+                teardown_end,
+                False,
+                *teardown_keywords)
 
         result_suite = self._build_results(
             keyword, setup_keyword, teardown_keyword)
