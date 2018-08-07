@@ -313,8 +313,8 @@ class RobotInterface(object):
                                setup,
                                *keywords):
         status = self.get_keywords_status(*keywords)
-        start_time = self.timestamp_to_ms(start_timestamp + '000')
-        end_time = self.timestamp_to_ms(end_timestamp + '000')
+        start_time = self.timestamp_to_ms(start_timestamp)
+        end_time = self.timestamp_to_ms(end_timestamp)
 
         robot_keyword = self.spawn_robot_keyword(name,
                                                  [],
