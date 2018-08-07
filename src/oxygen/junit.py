@@ -37,8 +37,6 @@ class JUnitHandler(BaseHandler):
         for xunit_suite in node:
             suite = self._transform_test_suite(xunit_suite)
             suite_dict['suites'].append(suite)
-            
-        print(suite_dict)
 
         return suite_dict
 
