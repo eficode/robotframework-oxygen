@@ -5,13 +5,15 @@ from setuptools import find_packages, setup
 CURDIR = abspath(dirname(__file__))
 SRC = path_join(CURDIR, 'src')
 
-# get VERSION number
 with open(path_join(SRC, 'oxygen', 'version.py')) as f:
     exec(f.read())
 
-KEYWORDS = ('')
+KEYWORDS = ('robotframework testing testautomation acceptancetesting atdd bdd'
+            'reporting testreporting')
 
-SHORT_DESC = ('')
+SHORT_DESC = ('Oxygen is an extensible library for Robot Framework that '
+              'enables you to integrate running other testing tools and their '
+              'reports as part of Robot Framework\'s reporting.')
 
 with open(path_join(CURDIR, 'README'), 'r') as readme:
     LONG_DESCRIPTION = readme.read()

@@ -6,3 +6,5 @@ output.xml
 .python-version
 .tox
 *.egg-info
+build
+dist
