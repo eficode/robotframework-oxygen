@@ -34,13 +34,27 @@ My Second Test
     ...   GATLING TEST STRING
   Log   Gatling Teardown Here 2
 
-#My Third Test
-#  [Tags]    ZAP_ROBOT_TAG
-#  Log   ZAP Setup Here 1
-#  Log   ZAP Setup Here 2
-#  run_zap
-#  Log   ZAP Teardown Here 1
-#  Log   ZAP Teardown Here 2
+My Third Test
+  [Tags]    ZAP_ROBOT_TAG
+  Log   ZAP Setup Here 1
+  Log   ZAP Setup Here 2
+  run_zap
+    ...   ${CURDIR}/zap/zap.xml.lol
+    ...   echo
+    ...   ZAP TEST STRING 2
+  Log   ZAP Teardown Here 1
+  Log   ZAP Teardown Here 2
+
+My Three Point Fifth Test
+  [Tags]    ZAP_ROBOT_TAG
+  Log   ZAP Setup Here 1
+  Log   ZAP Setup Here 2
+  run_zap
+    ...   ${CURDIR}/zap/zap_pp.json
+    ...   echo
+    ...   ZAP TEST STRING 3
+  Log   ZAP Teardown Here 1
+  Log   ZAP Teardown Here 2
 
 My Fourth Test
   [Tags]    NO_OXYGEN_HERE
