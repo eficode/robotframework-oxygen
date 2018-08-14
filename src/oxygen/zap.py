@@ -139,7 +139,7 @@ class ZAProxyHandler(BaseHandler):
             tags.append('OXYGEN_ZAP_UNKNOWN_RISK_LEVEL')
             risk_level = 3
 
-        acceptable_risk = self._get_accepted_risk_level()
+        acceptable_risk = self._get_treshold_risk_level()
         considered_risk = (risk_level >= acceptable_risk)
 
         return considered_risk
@@ -185,7 +185,7 @@ class ZAProxyHandler(BaseHandler):
         return return_value
 
 
-    def _get_accepted_risk_level(self):
+    def _get_treshold_risk_level(self):
         risk_level = self._config.get('accepted_risk_level', None)
 
         if risk_level is None:
