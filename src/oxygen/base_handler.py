@@ -89,9 +89,18 @@ class BaseHandler(object):
         test = keyword.parent
         test_results = self._parse_results(keyword.args)
         end_time, result_suite = self._interface.build_suite(100000, test_results)
+
+        if not result_suite:
+            return
+
         self._set_suite_tags(result_suite, *(self._tags + list(test.tags)))
-        result_suite.keywords.append(setup_keyword)
-        result_suite.keywords.append(teardown_keyword)
+
+        if setup_keyword:
+            result_suite.keywords.append(setup_keyword)
+
+        if teardown_keyword:
+            result_suite.keywords.append(teardown_keyword)
+
         self._inject_suite_report(test, result_suite)
 
     def _inject_suite_report(self, test, result_suite):
