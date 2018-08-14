@@ -8,6 +8,9 @@ oxygen.gatling:
   handler: GatlingHandler
   keyword: run_gatling
   tags: GATLING
-#zap:
-#  keyword: run_zap
-#  tags: ZAP
+oxygen.zap:
+  handler: ZAProxyHandler
+  keyword: run_zap
+  tags: ZAP
+  accepted_risk_level: 2
+  required_confidence_level: 1
