@@ -1,10 +1,14 @@
 import unittest
 from oxygen.base_handler import BaseHandler
 from unittest.mock import MagicMock
+from yaml import load
 
 class TestSetSuiteTags(unittest.TestCase):
   def setUp(self):
-    self._object = BaseHandler()
+    with open('../config.yml', 'r') as infile:
+      self._config = load(infile)
+      self._object = BaseHandler(self._config['oxygen.zap'])
+
     self._suite = MagicMock()
     self._suite.set_tags = MagicMock()
     self._tags = (MagicMock(), MagicMock())
