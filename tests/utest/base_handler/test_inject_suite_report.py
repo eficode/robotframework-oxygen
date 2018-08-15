@@ -1,37 +1,30 @@
-import unittest
-from oxygen.base_handler import BaseHandler
+from unittest import TestCase
 from unittest.mock import MagicMock
-from yaml import load
 
-class TestInjectSuiteReport(unittest.TestCase):
+from oxygen.base_handler import BaseHandler
+from ..helpers import get_config
+
+class TestInjectSuiteReport(TestCase):
   def setUp(self):
-    with open('../config.yml', 'r') as infile:
-      self._config = load(infile)
-      self._object = BaseHandler(self._config['oxygen.zap'])
+    self.object = BaseHandler(get_config()['oxygen.junit'])
 
-    self._test = MagicMock()
-    self._parent = MagicMock()
-    self._traveller = MagicMock()
-    self._suites = MagicMock()
-    self._suites.append = MagicMock()
-    self._suite = MagicMock()
+    self.test = MagicMock()
+    self.parent = MagicMock()
+    self.traveller = MagicMock()
+    self.suites = MagicMock()
+    self.suites.append = MagicMock()
+    self.suite = MagicMock()
 
-    self._test.parent = self._parent
-    self._parent.tests = [1, 2, self._test, 3]
-    self._parent.parent = self._traveller
-    self._traveller.parent = None
-    self._traveller.suites = self._suites
-
-  def tearDown(self):
-    pass
+    self.test.parent = self.parent
+    self.parent.tests = [1, 2, self.test, 3]
+    self.parent.parent = self.traveller
+    self.traveller.parent = None
+    self.traveller.suites = self.suites
 
   def test_finds_and_appends(self):
-    self._object._inject_suite_report(self._test, self._suite)
-    self._suites.append.assert_called_once_with(self._suite)
+    self.object._inject_suite_report(self.test, self.suite)
+    self.suites.append.assert_called_once_with(self.suite)
 
   def test_finds_and_filters(self):
-    self._object._inject_suite_report(self._test, self._suite)
-    assert(self._parent.tests == [1, 2, 3])
-
-if __name__ == '__main__':
-  unittest.main()
+    self.object._inject_suite_report(self.test, self.suite)
+    assert(self.parent.tests == [1, 2, 3])
