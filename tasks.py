@@ -19,9 +19,10 @@ def install(context, package=None):
         run('pip install {}'.format(package))
 
 @task
-def utest(context):
+def utest(context, k=''):
     cmd = ('python -m unittest discover --start-directory tests/utest '
-           '--top-level-directory {}'.format(CURDIR))
+           '--top-level-directory {} {}'.format(CURDIR,
+                                                ('-k ' + k) if k else ''))
     run(cmd, env={'PYTHONPATH': SRCPATH})
 
 @task(help={'rf': 'Command-line arguments for Robot Framework as single '
