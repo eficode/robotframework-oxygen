@@ -1,8 +1,6 @@
-import xml.etree.ElementTree as ET
 from unittest import TestCase
 from unittest.mock import MagicMock
-
-from yaml import load
+from xml.etree import ElementTree as ET
 
 from oxygen.zap import ZAProxyHandler
 from ..helpers import get_config
