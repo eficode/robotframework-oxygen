@@ -1,65 +1,48 @@
-import unittest
-from oxygen.zap import ZAProxyHandler
+from unittest import TestCase
 from unittest.mock import MagicMock
-from yaml import load
 
-class TestParseZapInstance(unittest.TestCase):
+from oxygen.zap import ZAProxyHandler
+from ..helpers import get_config
+
+class TestParseZapInstance(TestCase):
     def setUp(self):
-        with open('../config.yml', 'r') as infile:
-            self._config = load(infile)
-            self._object = ZAProxyHandler(self._config['oxygen.zap'])
-
-        self._params = {}
-
-        self._parser = MagicMock(return_value=None)
-        self._object._parse_zap_site_dict = self._parser
-
-
-    def tearDown(self):
-        pass
-
+        self.object = ZAProxyHandler(get_config()['oxygen.zap'])
+        self.object._parse_zap_site_dict = MagicMock(return_value=None)
+        self.params = {}
 
     def test_has_defaults(self):
-        return_dict = self._object._parse_zap_instance(self._params, True, True)
+        return_dict = self.object._parse_zap_instance(self.params, True, True)
+        expected_name = ('[Unknown HTTP Method] [Unknown Target URI]: '
+                         '[Unknown Target Parameter]')
         assert('name' in return_dict)
-        assert(return_dict['name'] == '[Unknown HTTP Method] [Unknown Target URI]: [Unknown Target Parameter]')
+        assert(return_dict['name'] == expected_name)
 
-
-    def test_keeps_params(self):
-        self._params = {
+    def test_keepsparams(self):
+        self.params = {
             'uri': 'foo',
             'method': 'bar',
             'param': 'baz',
         }
-
-        return_dict = self._object._parse_zap_instance(self._params, True, True)
+        return_dict = self.object._parse_zap_instance(self.params, True, True)
         assert('name' in return_dict)
         assert(return_dict['name'] == 'bar foo: baz')
 
-
     def test_is_fail_if_risk_and_confident(self):
-        return_dict = self._object._parse_zap_instance(self._params, True, True)
+        return_dict = self.object._parse_zap_instance(self.params, True, True)
         assert('pass' in return_dict)
         assert(return_dict['pass'] == False)
 
-
     def test_is_pass_if_risk_and_not_confident(self):
-        return_dict = self._object._parse_zap_instance(self._params, True, False)
+        return_dict = self.object._parse_zap_instance(self.params, True, False)
         assert('pass' in return_dict)
         assert(return_dict['pass'] == True)
-
 
     def test_is_pass_if_not_risk_and_confident(self):
-        return_dict = self._object._parse_zap_instance(self._params, False, True)
+        return_dict = self.object._parse_zap_instance(self.params, False, True)
         assert('pass' in return_dict)
         assert(return_dict['pass'] == True)
-
 
     def test_is_pass_if_not_risk_and_not_confident(self):
-        return_dict = self._object._parse_zap_instance(self._params, False, False)
+        return_dict = self.object._parse_zap_instance(self.params, False, False)
         assert('pass' in return_dict)
         assert(return_dict['pass'] == True)
-
-
-    if __name__ == '__main__':
-        unittest.main()

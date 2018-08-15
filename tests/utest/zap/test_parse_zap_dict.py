@@ -1,58 +1,45 @@
-import unittest
-from oxygen.zap import ZAProxyHandler
+from unittest import TestCase
 from unittest.mock import MagicMock
-from yaml import load
 
-class TestParseZapDict(unittest.TestCase):
+from oxygen.zap import ZAProxyHandler
+from ..helpers import get_config
+
+class TestParseZapDict(TestCase):
     def setUp(self):
-        with open('../config.yml', 'r') as infile:
-            self._config = load(infile)
-            self._object = ZAProxyHandler(self._config['oxygen.zap'])
-
-        self._params = {
+        self.object = ZAProxyHandler(get_config()['oxygen.zap'])
+        self.params = {
             'version': None,
             'generated': None,
             'site': [True, False],
         }
-
-        self._parser = MagicMock(return_value=None)
-        self._object._parse_zap_site_dict = self._parser
-
-
-    def tearDown(self):
-        pass
-
+        self.parser_mock = MagicMock(return_value=None)
+        self.object._parse_zap_site_dict = self.parser_mock
 
     def test_has_defaults(self):
-        return_dict = self._object._parse_zap_dict(self._params)
+        return_dict = self.object._parse_zap_dict(self.params)
+        expected_name = ('Oxygen ZAProxy Report (Unknown ZAProxy Version, '
+                         'Unknown ZAProxy Run Time)')
         assert('name' in return_dict)
-        assert(return_dict['name'] == 'Oxygen ZAProxy Report (Unknown ZAProxy Version, Unknown ZAProxy Run Time)')
+        assert(return_dict['name'] == expected_name)
 
-
-    def test_keeps_params(self):
-        self._params['version'] = 'my version'
-        self._params['generated'] = 'when'
-
-        return_dict = self._object._parse_zap_dict(self._params)
+    def test_keepsparams(self):
+        self.params['version'] = 'my version'
+        self.params['generated'] = 'when'
+        return_dict = self.object._parse_zap_dict(self.params)
         assert('name' in return_dict)
-        assert(return_dict['name'] == 'Oxygen ZAProxy Report (my version, when)')
+        assert(return_dict['name'] == ('Oxygen ZAProxy Report '
+                                       '(my version, when)'))
 
-
-    def test_handles_odd_params(self):
-        self._params['@version'] = 'my version'
-        self._params['@generated'] = 'when'
-
-        return_dict = self._object._parse_zap_dict(self._params)
+    def test_handles_oddparams(self):
+        self.params['@version'] = 'my version'
+        self.params['@generated'] = 'when'
+        return_dict = self.object._parse_zap_dict(self.params)
         assert('name' in return_dict)
-        assert(return_dict['name'] == 'Oxygen ZAProxy Report (my version, when)')
-
+        assert(return_dict['name'] == ('Oxygen ZAProxy Report '
+                                       '(my version, when)'))
 
     def test_calls_down(self):
-        return_dict = self._object._parse_zap_dict(self._params)
-        self._parser.assert_any_call(True)
-        self._parser.assert_any_call(False)
-        assert(self._parser.call_count == 2)
-
-
-    if __name__ == '__main__':
-        unittest.main()
+        return_dict = self.object._parse_zap_dict(self.params)
+        self.parser_mock.assert_any_call(True)
+        self.parser_mock.assert_any_call(False)
+        assert(self.parser_mock.call_count == 2)
