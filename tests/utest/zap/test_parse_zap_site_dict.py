@@ -23,7 +23,6 @@ class TestParseZapSiteDict(TestCase):
         self._parser.assert_any_call(False)
         assert(self._parser.call_count == 2)
 
-
     def test_reads_prefixed(self):
         self._params['@name'] = 'My Site Name'
         return_dict = self.object._parse_zap_site_dict(self._params)

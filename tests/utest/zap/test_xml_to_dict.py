@@ -7,6 +7,7 @@ from yaml import load
 from oxygen.zap import ZAProxyHandler
 from ..helpers import get_config
 
+
 class TestXmlToDict(TestCase):
     def _create_example_xml(self):
         xml_head = ET.Element('xml_head')
@@ -26,5 +27,5 @@ class TestXmlToDict(TestCase):
         assert('xml_container' in returned_dict['xml_head'])
         assert('second_child' in returned_dict['xml_head'])
         assert('first_contained' in returned_dict['xml_head']['xml_container'])
-        assert('second_contained' in returned_dict['xml_head']['xml_container'])
-
+        assert(
+            'second_contained' in returned_dict['xml_head']['xml_container'])

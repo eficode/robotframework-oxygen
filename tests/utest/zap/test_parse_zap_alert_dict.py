@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 from oxygen.zap import ZAProxyHandler
 from ..helpers import get_config
 
+
 class TestParseZapAlertDict(TestCase):
     def setUp(self):
         self.object = ZAProxyHandler(get_config()['oxygen.zap'])

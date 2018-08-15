@@ -19,5 +19,6 @@ oxygen.zap:
   required_confidence_level: 1
 '''
 
+
 def get_config():
     return load(TEST_CONFIG)

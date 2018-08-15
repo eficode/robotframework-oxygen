@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 from oxygen.zap import ZAProxyHandler
 from ..helpers import get_config
 
+
 class TestParseZapInstance(TestCase):
     def setUp(self):
         self.object = ZAProxyHandler(get_config()['oxygen.zap'])
@@ -43,6 +44,7 @@ class TestParseZapInstance(TestCase):
         assert(return_dict['pass'] == True)
 
     def test_is_pass_if_not_risk_and_not_confident(self):
-        return_dict = self.object._parse_zap_instance(self.params, False, False)
+        return_dict = self.object._parse_zap_instance(
+            self.params, False, False)
         assert('pass' in return_dict)
         assert(return_dict['pass'] == True)
