@@ -1,11 +1,12 @@
 from robot.api import SuiteVisitor
 from yaml import load
 
+from .config import CONFIG_FILE
 
 class OxygenCore(object):
 
     def __init__(self):
-        with open('../config.yml', 'r') as infile:
+        with open(CONFIG_FILE, 'r') as infile:
             self._config = load(infile)
         self._handlers = {}
         self._register_handlers()
