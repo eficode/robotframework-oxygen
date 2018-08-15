@@ -27,5 +27,4 @@ class TestXmlToDict(TestCase):
         assert('xml_container' in returned_dict['xml_head'])
         assert('second_child' in returned_dict['xml_head'])
         assert('first_contained' in returned_dict['xml_head']['xml_container'])
-        assert(
-            'second_contained' in returned_dict['xml_head']['xml_container'])
+        assert('second_contained' in returned_dict['xml_head']['xml_container'])
