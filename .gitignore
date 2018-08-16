@@ -8,3 +8,4 @@ output.xml
 *.egg-info
 build
 dist
+.idea
