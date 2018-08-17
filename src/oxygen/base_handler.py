@@ -16,14 +16,12 @@ class BaseHandler(object):
         if not isinstance(tags, list):
             tags = [tags]
         self._tags = tags
+        self.keyword = self._normalize_keyword_name(self._config['keyword'])
+        self.result_file = None
 
-        keyword = self._config['keyword']
-        self._keyword = self._normalize_keyword_name(keyword)
-
-
-    def get_keyword(self):
-        return self._keyword
-
+    def parse_results(self, kw_args):
+        raise NotImplemented('Actual handler implementation should override '
+                             'this with proper implementation!')
 
     def check_for_keyword(self, test):
         """Check if any of the keywords directly under this test trigger test
@@ -33,7 +31,7 @@ class BaseHandler(object):
         """
         for curr, keyword in enumerate(test.keywords):
             keyword_name = self._normalize_keyword_name(keyword.name)
-            if not (keyword_name == self._keyword):
+            if not (keyword_name == self.keyword):
                 continue
 
             # ALL keywords, setup or not, preceding the trigger will be treated
@@ -46,8 +44,7 @@ class BaseHandler(object):
 
 
     def _report_oxygen_run(self, keyword, setup_keywords, teardown_keywords):
-        """Run the tests associated with this handler and report on them
-
+        """
         keyword: The trigger keyword for this handler
         setup_keywords: The keywords preceding the trigger
         teardown_keywords: The keywords succeeding the trigger
@@ -76,19 +73,18 @@ class BaseHandler(object):
                 False,
                 *teardown_keywords)
 
-        result_suite = self._build_results(
-            keyword, setup_keyword, teardown_keyword)
+        self._build_results(keyword, setup_keyword, teardown_keyword)
 
     def _build_results(self, keyword, setup_keyword, teardown_keyword):
-        """Execute the tests for this handler and report on the results
-
+        """
         keyword: The trigger keyword
         setup_keyword: The special oxygen setup wrapper
         teardown_keyword: The special oxygen teardown wrapper
         """
         test = keyword.parent
-        test_results = self._parse_results(keyword.args)
-        end_time, result_suite = self._interface.build_suite(100000, test_results)
+        test_results = self.parse_results(keyword.args)
+        end_time, result_suite = self._interface.build_suite(100000,
+                                                             test_results)
 
         if not result_suite:
             return

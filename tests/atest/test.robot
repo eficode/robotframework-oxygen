@@ -17,7 +17,7 @@ My First Test Director's Cut
   [Tags]    JUNIT_ROBOT_TAG
   Sleep   2
   Log   Junit Setup Here 2
-  run_junit
+  run junit
     ...   ${CURDIR}/big.xml
     ...   echo
     ...   JUNIT_TEST_STRING_BIG

@@ -1,7 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
-from datetime import tzinfo
 from robot.result.model import Keyword as RobotKeyword
 from robot.result.model import Message as RobotMessage
 from robot.result.model import TestCase as RobotTest

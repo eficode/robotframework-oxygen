@@ -1,7 +1,10 @@
+from traceback import format_exception
+
 from robot.api import SuiteVisitor
 from yaml import load
 
 from .config import CONFIG_FILE
+from .errors import OxygenException
 
 class OxygenCore(object):
 
@@ -25,8 +28,21 @@ class Oxygen(OxygenCore, SuiteVisitor):
     http://robot-framework.readthedocs.io/en/latest/autodoc/robot.model.html#module-robot.model.visitor
     """
     def visit_test(self, test):
+        failures = []
         for handler_type, handler in self._handlers.items():
-            handler.check_for_keyword(test)
+            try:
+                handler.check_for_keyword(test)
+            except Exception as e:
+                failures.append(e)
+        if len(failures) == 1:
+            raise failures.pop()
+        if failures:
+            tracebacks = [''.join(format_exception(e.__class__,
+                                                   e,
+                                                   e.__traceback__))
+                          for e in failures]
+            raise OxygenException('Multiple failures:\n{}'.format(
+                '\n'.join(tracebacks)))
 
 
 class OxygenLibrary(OxygenCore):
@@ -34,12 +50,12 @@ class OxygenLibrary(OxygenCore):
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     """
     def get_keyword_names(self):
-        return [handler.get_keyword() for handler in self._handlers.values()]
+        return list(handler.keyword for handler in self._handlers.values())
 
-    def run_keyword(self, name, args):
+    def run_keyword(self, name, args, kwargs):
         """
         If Robot tests feature one of the mock Oxygen keywords, make sure
         running it can mock-succeed
         """
-        keywords = [handler.get_keyword() for handler in self._handlers.values()]
-        assert(name in keywords)
+        handler = list(filter(lambda h: h.keyword == name, self._handlers.values())).pop()
+        getattr(handler, name)(*args, **kwargs)
