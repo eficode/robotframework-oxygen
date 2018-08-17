@@ -1,41 +1,36 @@
-from .base_handler import BaseHandler
-from collections import defaultdict
 import json
 import subprocess
 import xml.etree.ElementTree as ETree
 
+from collections import defaultdict
+
+
+from .base_handler import BaseHandler
+
+
 class ZAProxyHandler(BaseHandler):
-    def _parse_results(self, args):
-        """Execute the JUnit tests given the arguments
-
-        args: Keyword arguments (first argument is the location of the test output)
-        """
+    def run_zap(self, result_file, *args):
         if len(args) > 1:
-            subprocess.call(args[1:])
+            subprocess.run(args)
+        self.result_file = result_file
 
-        file_name = args[0]
-
-        zap_dict = self._read_results(file_name)
-        zap_suite = self._parse_zap_dict(zap_dict)
-
-        return zap_suite
-
+    def parse_results(self, kw_args):
+        zap_dict = self._read_results(kw_args[0])
+        return self._parse_zap_dict(zap_dict)
 
     def _read_results(self, file_name):
         with open(file_name) as test_file:
-            json_text = test_file.read()
+            result_contents = test_file.read()
 
         try:
-            test_tree = ETree.XML(json_text)
-            json_dict = self._xml_to_dict(test_tree)
-
+            json_dict = self._xml_to_dict(ETree.XML(result_contents))
             if 'OWASPZAPReport' in json_dict.keys():
-                return json_dict['OWASPZAPReport']
-            return json_dict
+                json_dict = json_dict['OWASPZAPReport']
         except:
-            print('Oxygen: Loading {} as XML failed, falling back to JSON.'.format(file_name))
-            json_dict = json.loads(json_text)
-            return json_dict
+            print('Oxygen: Loading {} as XML failed, falling '
+                  'back to JSON.'.format(file_name))
+            json_dict = json.loads(result_contents)
+        return json_dict
 
 
     def _xml_to_dict(self, xml):

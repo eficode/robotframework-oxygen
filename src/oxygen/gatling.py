@@ -1,19 +1,16 @@
-from .base_handler import BaseHandler
-from robot.result.model import TestSuite
 import subprocess
+
+from .base_handler import BaseHandler
 
 
 class GatlingHandler(BaseHandler):
-    def _parse_results(self, args):
-        """Execute the Gatling tests given the arguments
 
-        args: Keyword arguments (first argument is the location of the test
-              output)
-        """
+    def run_gatling(self, result_file, *args):
         if len(args) > 1:
-            subprocess.call(args[1:])
-        result_file = args[0]
-        return self._transform_tests(result_file)
+            subprocess.run(args)
+
+    def parse_results(self, rf_kw_args):
+        return self._transform_tests(rf_kw_args[0])
 
     def _transform_tests(self, result_file):
         """Given the result_file path, open the test results and get a suite dict

@@ -1,3 +1,5 @@
+from tempfile import mkstemp
+
 from yaml import load
 
 TEST_CONFIG = '''
@@ -22,3 +24,10 @@ oxygen.zap:
 
 def get_config():
     return load(TEST_CONFIG)
+
+def get_config_as_file():
+    _, filepath = mkstemp()
+    with open(filepath, 'w') as f:
+        f.write(TEST_CONFIG)
+    return filepath
+

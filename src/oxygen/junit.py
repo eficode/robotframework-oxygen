@@ -1,21 +1,29 @@
-from .base_handler import BaseHandler
-from junitparser import Error
-from junitparser import Failure
-from junitparser import JUnitXml
-from junitparser import TestCase
-from junitparser import TestSuite
 import subprocess
+
+from robot.api import logger
+from junitparser import Error, Failure, JUnitXml
+
+from .errors import JUnitHandlerException
+from .base_handler import BaseHandler
 
 
 class JUnitHandler(BaseHandler):
-    def _parse_results(self, args):
-        """Execute the JUnit tests given the arguments
 
-        args: Keyword arguments (first argument is the location of the test output)
-        """
-        if len(args) > 1:
-            subprocess.call(args[1:])
-        xml = JUnitXml.fromfile(args[0])
+    def run_junit(self, result_file, *command):
+        if command:
+            proc = subprocess.run(command, capture_output=True)
+            if proc.returncode != 0:
+                raise JUnitHandlerException('Command "{}" '
+                                            'failed'.format(command))
+            logger.info(proc.stdout)
+        logger.info('Result file: {}'.format(result_file))
+
+    def parse_results(self, kw_args):
+        result_file = kw_args[0]
+        if not isinstance(result_file, str):
+            raise JUnitHandlerException('"{}" is not '
+                                        'a file path'.format(result_file))
+        xml = JUnitXml.fromfile(result_file)
         return self._transform_tests(xml)
 
     def _transform_tests(self, node):

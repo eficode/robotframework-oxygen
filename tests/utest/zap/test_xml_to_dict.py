@@ -1,5 +1,4 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
 from xml.etree import ElementTree as ET
 
 from oxygen.zap import ZAProxyHandler
