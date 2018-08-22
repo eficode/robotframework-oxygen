@@ -1,3 +1,4 @@
+from inspect import signature
 from traceback import format_exception
 
 from robot.api import SuiteVisitor
@@ -49,13 +50,28 @@ class OxygenLibrary(OxygenCore):
     """Read up on what is Robot Framework dynamic library:
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     """
+    LIBRARY_INITIALIZATION_DOC = '''Hello world'''
+
+    def _fetch_handler(self, name):
+        try:
+            return next(filter(lambda h: h.keyword == name,
+                               self._handlers.values()))
+        except StopIteration:
+            raise OxygenException('No handler for keyword "{}"'.format(name))
+
     def get_keyword_names(self):
         return list(handler.keyword for handler in self._handlers.values())
 
     def run_keyword(self, name, args, kwargs):
-        """
-        If Robot tests feature one of the mock Oxygen keywords, make sure
-        running it can mock-succeed
-        """
-        handler = list(filter(lambda h: h.keyword == name, self._handlers.values())).pop()
-        getattr(handler, name)(*args, **kwargs)
+        return getattr(self._fetch_handler(name), name)(*args, **kwargs)
+
+    def get_keyword_documentation(self, kw_name):
+        if kw_name == '__intro__':
+            return self.__class__.__doc__
+        if kw_name == '__init__':
+            return self.LIBRARY_INITIALIZATION_DOC
+        return getattr(self._fetch_handler(kw_name), kw_name).__doc__
+
+    def get_keyword_arguments(self, kw_name):
+        method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
+        return [str(param) for param in method_sig.parameters.values()]

@@ -9,10 +9,14 @@ from .base_handler import BaseHandler
 
 
 class ZAProxyHandler(BaseHandler):
-    def run_zap(self, result_file, *args):
-        if len(args) > 1:
-            subprocess.run(args)
-        self.result_file = result_file
+    def run_zap(self, result_file, *command):
+        """Run Zed Attack Proxy tool specified with ``command``.
+
+        ``result_file`` must be first argument, so Oxygen can find the result
+        file when parsing the results.
+        """
+        if len(command) > 1:
+            subprocess.run(command)
 
     def parse_results(self, kw_args):
         zap_dict = self._read_results(kw_args[0])

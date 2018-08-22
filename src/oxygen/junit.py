@@ -10,6 +10,11 @@ from .base_handler import BaseHandler
 class JUnitHandler(BaseHandler):
 
     def run_junit(self, result_file, *command):
+        """Run JUnit tool specified with ``command``.
+
+        ``result_file`` must be first argument, so Oxygen can find the result
+        file when parsing the results.
+        """
         if command:
             proc = subprocess.run(command, capture_output=True)
             if proc.returncode != 0:

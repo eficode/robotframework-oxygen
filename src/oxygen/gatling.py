@@ -5,9 +5,14 @@ from .base_handler import BaseHandler
 
 class GatlingHandler(BaseHandler):
 
-    def run_gatling(self, result_file, *args):
-        if len(args) > 1:
-            subprocess.run(args)
+    def run_gatling(self, result_file, *command):
+        """Run Gatling tool specified with ``command``.
+
+        ``result_file`` must be first argument, so Oxygen can find the result
+        file when parsing the results.
+        """
+        if len(command) > 1:
+            subprocess.run(command)
 
     def parse_results(self, rf_kw_args):
         return self._transform_tests(rf_kw_args[0])
