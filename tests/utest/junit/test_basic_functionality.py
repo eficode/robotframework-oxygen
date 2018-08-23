@@ -2,6 +2,7 @@ from unittest import skip, TestCase
 from unittest.mock import Mock, patch
 
 from oxygen.junit import JUnitHandler
+from oxygen.errors import JUnitHandlerException
 from ..helpers import get_config
 
 class JUnitBasicTests(TestCase):
@@ -22,12 +23,18 @@ class JUnitBasicTests(TestCase):
         mock_junitxml.fromfile.assert_called_once_with('some/file/path.ext')
         mock_transform.assert_called_once_with('some junit')
 
-    @patch('oxygen.junit.subprocess')
+    @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
         self.handler.run_junit('somefile', 'some', 'command')
         mock_subprocess.run.assert_called_once_with(('some', 'command'),
                                                     capture_output=True)
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_fails_correctly(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=255)
+        with self.assertRaises(JUnitHandlerException):
+            self.handler.run_junit('somefile', 'some', 'command')
 
     @skip('Reminder to add tests once CLI interface exists')
     def test_cli(self):

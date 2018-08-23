@@ -2,6 +2,7 @@ from unittest import skip, TestCase
 from unittest.mock import Mock, mock_open, patch
 
 from oxygen.zap import ZAProxyHandler
+from oxygen.errors import ZAProxyHandlerException
 from ..helpers import get_config
 
 class ZAPBasicTests(TestCase):
@@ -12,11 +13,18 @@ class ZAPBasicTests(TestCase):
         self.assertEqual(self.handler.keyword, 'run_zap')
         self.assertEqual(self.handler._tags, ['ZAP'])
 
-    @patch('oxygen.zap.subprocess')
+    @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
         self.handler.run_zap('somefile', 'some', 'command')
-        mock_subprocess.run.assert_called_once_with(('some', 'command'))
+        mock_subprocess.run.assert_called_once_with(('some', 'command'),
+                                                    capture_output=True)
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_fails_correctly(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=-1)
+        with self.assertRaises(ZAProxyHandlerException):
+            self.handler.run_zap('somefile', 'some', 'command')
 
     @patch('oxygen.zap.ZAProxyHandler._read_results')
     @patch('oxygen.zap.ZAProxyHandler._parse_zap_dict')

@@ -1,7 +1,8 @@
-import subprocess
+from robot.api import logger
 
 from .base_handler import BaseHandler
-
+from .errors import GatlingHandlerException, SubprocessException
+from .utils import run_command_line
 
 class GatlingHandler(BaseHandler):
 
@@ -11,8 +12,12 @@ class GatlingHandler(BaseHandler):
         ``result_file`` must be first argument, so Oxygen can find the result
         file when parsing the results.
         """
-        if len(command) > 1:
-            subprocess.run(command)
+        try:
+            output = run_command_line(*command)
+        except SubprocessException as e:
+            raise GatlingHandlerException(e)
+        logger.info(output)
+        logger.info('Result file: {}'.format(result_file))
 
     def parse_results(self, rf_kw_args):
         return self._transform_tests(rf_kw_args[0])

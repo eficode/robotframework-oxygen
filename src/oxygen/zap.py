@@ -1,12 +1,13 @@
 import json
-import subprocess
 import xml.etree.ElementTree as ETree
 
 from collections import defaultdict
 
+from robot.api import logger
 
 from .base_handler import BaseHandler
-
+from .errors import SubprocessException, ZAProxyHandlerException
+from .utils import run_command_line
 
 class ZAProxyHandler(BaseHandler):
     def run_zap(self, result_file, *command):
@@ -15,8 +16,13 @@ class ZAProxyHandler(BaseHandler):
         ``result_file`` must be first argument, so Oxygen can find the result
         file when parsing the results.
         """
-        if len(command) > 1:
-            subprocess.run(command)
+        try:
+            output = run_command_line(*command)
+        except SubprocessException as e:
+            raise ZAProxyHandlerException(e)
+        logger.info(output)
+        logger.info('Result file: {}'.format(result_file))
+
 
     def parse_results(self, kw_args):
         zap_dict = self._read_results(kw_args[0])

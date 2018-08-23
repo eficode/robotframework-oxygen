@@ -1,10 +1,9 @@
-import subprocess
-
 from robot.api import logger
 from junitparser import Error, Failure, JUnitXml
 
-from .errors import JUnitHandlerException
 from .base_handler import BaseHandler
+from .errors import JUnitHandlerException, SubprocessException
+from .utils import run_command_line
 
 
 class JUnitHandler(BaseHandler):
@@ -15,12 +14,11 @@ class JUnitHandler(BaseHandler):
         ``result_file`` must be first argument, so Oxygen can find the result
         file when parsing the results.
         """
-        if command:
-            proc = subprocess.run(command, capture_output=True)
-            if proc.returncode != 0:
-                raise JUnitHandlerException('Command "{}" '
-                                            'failed'.format(command))
-            logger.info(proc.stdout)
+        try:
+            output = run_command_line(*command)
+        except SubprocessException as e:
+            raise JUnitHandlerException(e)
+        logger.info(output)
         logger.info('Result file: {}'.format(result_file))
 
     def parse_results(self, kw_args):
