@@ -32,19 +32,20 @@ class GatlingHandler(BaseHandler):
         """
         test_cases = []
         with open(result_file) as results:
-            for line in results:
-                columns = line.strip().split('\t')
-                if len(columns) < 8:
-                    continue
-                step_name = columns[4]
-                status = columns[7]
-                if status not in ['OK', 'KO']:
-                    continue
-                message = ''
-                if len(columns) > 8:
-                    message = columns[8]
+            result_contents = results.readlines()
+        for line in result_contents:
+            columns = line.strip().split('\t')
+            if len(columns) < 8:
+                continue
+            step_name = columns[4]
+            status = columns[7]
+            if status not in ['OK', 'KO']:
+                continue
+            message = ''
+            if len(columns) > 8:
+                message = columns[8]
 
-                keyword = {
+            keyword = {
                     'name': ' | '.join(columns),
                     'pass': True,
                     'tags': [],
@@ -53,21 +54,19 @@ class GatlingHandler(BaseHandler):
                     'keywords': [],
                 }
 
-                if status == 'KO':
-                    keyword['pass'] = False
-                    keyword['messages'].append(message)
+            if status == 'KO':
+                keyword['pass'] = False
+                keyword['messages'].append(message)
 
-                test_case = {
-                    'name': step_name,
-                    'tags': [],
-                    'setup': [],
-                    'teardown': [],
-                    'keywords': [
-                        keyword,
-                    ],
-                }
+            test_case = {
+                'name': step_name,
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'keywords': [keyword]
+            }
 
-                test_cases.append(test_case)
+            test_cases.append(test_case)
 
         test_suite = {
             'name': 'Gatling Scenario',
