@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from inspect import signature
 from traceback import format_exception
 
@@ -84,3 +85,13 @@ class OxygenLibrary(OxygenCore):
     def get_keyword_arguments(self, kw_name):
         method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
         return [str(param) for param in method_sig.parameters.values()]
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    subcommands = parser.add_subparsers()
+    for tool_name, tool_handler in OxygenCore()._handlers.items():
+        subcommand_parser = subcommands.add_parser(tool_name)
+        for flags, params in tool_handler.cli().iteritems():
+            subcommand_parser.add_argument(*flags, **params)
+    args = parser.parse_args()
+    print(args)
