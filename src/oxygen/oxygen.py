@@ -1,7 +1,7 @@
 from inspect import signature
 from traceback import format_exception
 
-from robot.api import SuiteVisitor
+from robot.api import ExecutionResult, ResultVisitor
 from yaml import load
 
 from .config import CONFIG_FILE
@@ -24,7 +24,7 @@ class OxygenCore(object):
             self._handlers[tool_name] = handler
 
 
-class Oxygen(OxygenCore, SuiteVisitor):
+class OxygenVisitor(OxygenCore, ResultVisitor):
     """Read up on what is Robot Framework SuiteVisitor:
     http://robot-framework.readthedocs.io/en/latest/autodoc/robot.model.html#module-robot.model.visitor
     """
@@ -44,6 +44,15 @@ class Oxygen(OxygenCore, SuiteVisitor):
                           for e in failures]
             raise OxygenException('Multiple failures:\n{}'.format(
                 '\n'.join(tracebacks)))
+
+
+class Oxygen(object):
+    ROBOT_LISTENER_API_VERSION = 3
+
+    def output_file(self, path):
+        result = ExecutionResult(path)
+        result.visit(OxygenVisitor())
+        result.save()
 
 
 class OxygenLibrary(OxygenCore):
