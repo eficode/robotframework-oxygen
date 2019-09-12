@@ -2,7 +2,10 @@ import re
 
 from .robot_interface import RobotInterface
 
+
 class BaseHandler(object):
+    DEFAULT_CLI = {tuple(['resultfile']): {}}
+
     def __init__(self, config):
         """
         Set up the handler with the given configuration
@@ -18,6 +21,18 @@ class BaseHandler(object):
         self._tags = tags
         self.keyword = self._normalize_keyword_name(self._config['keyword'])
         self.result_file = None
+
+    def cli(self):
+        """
+        augment in subclasses
+
+        def cli(self):
+            cli_interface = self.DEFAULT_CLI.copy()
+            cli_interface[('-e', '--example')] = {'help': 'use this like that'}
+            cli_interface[('-f', '--flag')] = {'action': 'store_true'}
+            return cli_interface
+        """
+        return self.DEFAULT_CLI
 
     def parse_results(self, kw_args):
         raise NotImplemented('Actual handler implementation should override '
