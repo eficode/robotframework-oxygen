@@ -1,13 +1,16 @@
 from argparse import ArgumentParser
+from datetime import datetime, timedelta
 from inspect import signature
+from os.path import splitext
 from traceback import format_exception
 
-from robot.api import ExecutionResult, ResultVisitor
+from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
 from yaml import load
 
 from .config import CONFIG_FILE
 from .errors import OxygenException
 
+        
 class OxygenCore(object):
 
     def __init__(self):
@@ -91,7 +94,46 @@ if __name__ == '__main__':
     subcommands = parser.add_subparsers()
     for tool_name, tool_handler in OxygenCore()._handlers.items():
         subcommand_parser = subcommands.add_parser(tool_name)
-        for flags, params in tool_handler.cli().iteritems():
+        for flags, params in tool_handler.cli().items():
             subcommand_parser.add_argument(*flags, **params)
+            subcommand_parser.set_defaults(func=tool_handler.parse_results)
     args = parser.parse_args()
-    print(args)
+    parsed_results = args.func([args.resultfile])
+
+    robot_root_suite = TestSuite(parsed_results['name'])
+    for parsed_suite in parsed_results['suites']:
+        robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
+        for parsed_test in parsed_suite['tests']:
+            test_robot_counterpart = robot_suite.tests.create(parsed_test['name'], tags=parsed_test['tags'])
+            kw = parsed_test['keywords'][0]
+            msg = '\n'.join(kw['messages'])
+            if kw['pass']:
+                test_robot_counterpart.keywords.create('Pass execution', args=[msg if msg else 'Test passed :D'])
+            else:
+                test_robot_counterpart.keywords.create('Fail', args=[msg if msg else 'Test failed D:'])
+
+    output_filename = splitext(args.resultfile)
+    output_filename = output_filename[0] + '_robot_output' + output_filename[1]
+    result = robot_root_suite.run(output=None, report=None, log=None, quiet=True)
+
+    class FixElapsed(ResultVisitor):
+        def __init__(self, junit_suite):
+            self.junit_suite = junit_suite
+
+        def visit_test(self, test):
+            junit_test = self.find_junit(test.name)
+            now = datetime.now()
+            test.endtime = now.strftime('%Y%m%d %H:%M:%S.%f')
+            test.starttime = (now - timedelta(seconds=junit_test['keywords'][0]['elapsed'])).strftime('%Y%m%d %H:%M:%S.%f')
+
+        def find_junit(self, test_name_to_find):
+            for s in self.junit_suite['suites']:
+                for t in s['tests']:
+                    if t['name'] == test_name_to_find:
+                        return t
+
+    result.visit(FixElapsed(parsed_results))
+    result.save(output_filename)
+
+
+
