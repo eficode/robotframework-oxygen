@@ -1,17 +1,17 @@
-from argparse import ArgumentParser
-from datetime import datetime, timedelta
-from inspect import signature
-from os.path import splitext
-from traceback import format_exception
+from argparse import ArgumentParser                                         # argparse allows to customize the command line statements
+from datetime import datetime, timedelta                                    # gives combination of date and time and differnces between two
+from inspect import signature                                               # refer https://docs.python.org/3/library/inspect.html
+from os.path import splitext                                                # refer https://docs.python.org/3/library/os.path.html
+from traceback import format_exception                                      # refer https://docs.python.org/2/library/traceback.html
 
-from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
-from yaml import load
+from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite   # https://robot-framework.readthedocs.io/en/3.0/autodoc/robot.api.html. Needs python library installation.
+from yaml import load                                                       # The function yaml. load converts a YAML document to a Python object. refer https://pyyaml.org/wiki/PyYAMLDocumentation - yaml needs external library installation.
 
-from .config import CONFIG_FILE
-from .errors import OxygenException
+from config import CONFIG_FILE                                             # importing the config.py file
+from errors import OxygenException                                         # importing the errors.py file
 
         
-class OxygenCore(object):
+class OxygenCore(object):                                                  # oxygen supports
 
     def __init__(self):
         with open(CONFIG_FILE, 'r') as infile:
@@ -90,7 +90,7 @@ class OxygenLibrary(OxygenCore):
         return [str(param) for param in method_sig.parameters.values()]
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
+    parser = ArgumentParser()                                                                                  # ArgumentParser is from argparse which enables to customize command line arguments and inputs
     subcommands = parser.add_subparsers()
     for tool_name, tool_handler in OxygenCore()._handlers.items():
         subcommand_parser = subcommands.add_parser(tool_name)

@@ -4,7 +4,9 @@ from invoke import run, task
 
 
 CURDIR = abspath(dirname(__file__))
+print(CURDIR)
 SRCPATH = path_join(CURDIR, 'src')
+print(SRCPATH)
 
 @task
 def clean(context):
