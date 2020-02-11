@@ -1,6 +1,5 @@
 *** Settings ***
-
-Library   ../src/oxygen.oxygen.py
+Library   oxygen.OxygenLibrary
 
 *** Test Cases ***
 My First Test
