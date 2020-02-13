@@ -9,3 +9,4 @@ output.xml
 build
 dist
 .idea
+venv

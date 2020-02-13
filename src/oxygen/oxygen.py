@@ -5,7 +5,7 @@ from os.path import splitext
 from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
-from yaml import load
+from yaml import load, FullLoader
 
 from .config import CONFIG_FILE
 from .errors import OxygenException
@@ -15,7 +15,7 @@ class OxygenCore(object):
 
     def __init__(self):
         with open(CONFIG_FILE, 'r') as infile:
-            self._config = load(infile)
+            self._config = load(infile, Loader=FullLoader)
         self._handlers = {}
         self._register_handlers()
 
