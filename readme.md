@@ -36,6 +36,9 @@ python --version
 
 Upgrade the python version if python version is less than `Python 3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
+IMPORTANT!! 
+Oxygen 1.0 also requires the package to be cloned to a directory where there is no 'spaces' in the directory path.
+
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
