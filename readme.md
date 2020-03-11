@@ -36,7 +36,7 @@ python --version
 
 Upgrade the python version if python version is less than `Python 3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
-##### IMPORTANT!! --  Oxygen 1.0 also requires the packaged to be cloned to a directory where there is no 'spaces' in the directory path.
+##### IMPORTANT!! --  Oxygen 1.0 requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
 
 ### Installing
 
@@ -96,7 +96,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Tatu Kairi** - *Eficode* - [](https://github.com/PurpleBooth)
+* **John Lindert** - *Eficode* - [](https://github.com/PurpleBooth)
+John Lindert
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
