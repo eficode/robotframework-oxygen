@@ -96,8 +96,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Tatu Kairi** - *Eficode* - [](https://github.com/PurpleBooth)
-* **John Lindert** - *Eficode* - [](https://github.com/PurpleBooth)
+* **Tatu Kairi** - *Eficode* - tatu.kairi@eficode.com 
+* **John Lindert** - *Eficode* - ADD JOHN'S EMAIL
 John Lindert
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
