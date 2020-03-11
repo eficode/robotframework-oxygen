@@ -11,15 +11,15 @@ Oxygen 1.0 has built-in parsers for 3 testing frameworks.
 Additionally, users can add your own parsers for any other testing framework tools to get the results in the robot framework's test results. 
 
 # Table of Contents
-**[Getting Started](#getting-started)**<br>
-**[Running the tests](#running-the-tests)**<br>
-**[Deployment](#deployment)**<br>
-**[Built With](#built-with)**<br>
-**[Contributing](#contributing)**<br>
-**[Versioning](#versioning)**<br>
-**[Authors](#authors)**<br>
-**[License](#license)**<br>
-**[Acknowledgments](#acknowledgments)**<br>
+1. [Getting Started](#getting-started)**<br>
+2. [Running the tests](#running-the-tests)**<br>
+3. [Deployment](#deployment)**<br>
+4. [Built With](#built-with)**<br>
+5. [Contributing](#contributing)**<br>
+6. [Versioning](#versioning)**<br>
+7. [Authors](#authors)**<br>
+8. [License](#license)**<br>
+9. [Acknowledgments](#acknowledgments)**<br>
 
 ## Getting Started
 
