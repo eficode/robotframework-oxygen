@@ -12,11 +12,7 @@ Additionally, users can add your own parsers for any other testing framework too
 
 # Table of Contents
 **[Getting Started](#getting-started)**<br>
-   * Prerequisites
-   * Installing
 **[Running the tests](#running-the-tests)**<br>
-   * Break down into end to end tests
-   * And coding style tests
 **[Deployment](#deployment)**<br>
 **[Built With](#built-with)**<br>
 **[Contributing](#contributing)**<br>
