@@ -30,13 +30,11 @@ These instructions will get you a copy of the project up and running on your loc
 Oxygen requires `Python 3.0` or above to be installed in the environment the oxygen tool is to be deployed. 
 
 Check the Python version on the command line:
-
-`python --version`
-
-Upgrade the python version if python version is less than `3.0`
 ```
-Give examples
+python --version
 ```
+
+Upgrade the python version if python version is less than `3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
 ### Installing
 
