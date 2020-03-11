@@ -11,15 +11,15 @@ Oxygen 1.0 has built-in parsers for 3 testing frameworks.
 Additionally, users can add your own parsers for any other testing framework tools to get the results in the robot framework's test results. 
 
 # Table of Contents
-1. [Getting Started](#getting-started)**<br>
-2. [Running the tests](#running-the-tests)**<br>
-3. [Deployment](#deployment)**<br>
-4. [Built With](#built-with)**<br>
-5. [Contributing](#contributing)**<br>
-6. [Versioning](#versioning)**<br>
-7. [Authors](#authors)**<br>
-8. [License](#license)**<br>
-9. [Acknowledgments](#acknowledgments)**<br>
+1. [Getting Started](#getting-started)
+2. [Running the tests](#running-the-tests)
+3. [Deployment](#deployment)
+4. [Built With](#built-with)
+5. [Contributing](#contributing)
+6. [Versioning](#versioning)
+7. [Authors](#authors)
+8. [License](#license)
+9. [Acknowledgments](#acknowledgments)
 
 ## Getting Started
 
@@ -34,7 +34,7 @@ Check the Python version on the command line:
 python --version
 ```
 
-Upgrade the python version if python version is less than `3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
+Upgrade the python version if python version is less than `Python 3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
 ### Installing
 
