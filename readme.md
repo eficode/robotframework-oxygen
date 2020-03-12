@@ -39,23 +39,19 @@ Upgrade the python version if python version is less than `Python 3.0`. Follow t
 ##### IMPORTANT!! --  Oxygen 1.0 requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
 
 ### Installing
-```
-A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Clone the oxygen repository to the enviromnent where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
 
-
-Give the example
-
-
-And repeat
+CVlone oxygen-core directory from the command line using:
 
 ```
-until finished
+git clone https://git.dev.eficode.io/scm/ox/oxygen-core.git
+```
+Change directory into the oxygen-core directory from command line:
+```
+cd oxygen-core
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
-```
 
 ## Running the tests
 ```
