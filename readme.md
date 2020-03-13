@@ -42,7 +42,7 @@ Upgrade the python version if python version is less than `Python 3.0`. Follow t
 
 Clone the oxygen repository to the enviromnent where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
 
-CVlone oxygen-core directory from the command line using:
+Clone oxygen-core directory from the command line using:
 
 ```
 git clone https://git.dev.eficode.io/scm/ox/oxygen-core.git
@@ -51,11 +51,23 @@ Change directory into the oxygen-core directory from command line:
 ```
 cd oxygen-core
 ```
+Oxygen 1.0 requires the following dependencies to be installed: 
+
+1. robotframework>=3.0.4
+2. junitparser>=1.2.2
+3. PyYAML>=3.13
+4. mock>=2.0.0
+5. invoke>=1.1.1
+
+Install the dependencies for oxygen 1.0 from the command line. 
+
+```
+pip install -r requirements.txt
+```
 
 
 ## Running the tests
 ```
-
 TO BE UPDATED
 ```
 ### Break down into end to end tests
