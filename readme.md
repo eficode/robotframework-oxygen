@@ -12,7 +12,7 @@ Additionally, users can add your own parsers for any other testing framework too
 
 # Table of Contents
 1. [Getting Started](#getting-started)
-2. [Running the tests](#running-the-tests)
+2. [Running a sample test](#running-the-tests)
 3. [Deployment](#deployment)
 4. [Built With](#built-with)
 5. [Contributing](#contributing)
@@ -65,11 +65,21 @@ Install the dependencies for oxygen 1.0 from the command line.
 pip install -r requirements.txt
 ```
 
+## Running a sample test
 
-## Running the tests
+Few sample tests has been written in the directory `test`in the oxgyen-core directory. To run the sample test run the invoke command on the command line.
+
 ```
-TO BE UPDATED
+invoke atest
 ```
+```
+invoke utest
+```
+```
+invoke test
+```
+Invoke is python library which provides a cleaner way to run shell commmands from a python file. `tasks.py` is the file associated with the invoke command. 
+
 ### Break down into end to end tests
 ```
 TO BE UPDATED
