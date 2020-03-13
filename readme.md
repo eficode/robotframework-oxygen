@@ -56,41 +56,32 @@ cd oxygen-core
 ## Running the tests
 ```
 
-Explain how to run the automated tests for this system
+TO BE UPDATED
 ```
 ### Break down into end to end tests
 ```
-Explain what these tests test and why
-
-
-Give an example
+TO BE UPDATED
 ```
 
 ### And coding style tests
 ```
-Explain what these tests test and why
-
-```
-Give an example
-```
+TO BE UPDATED
 ```
 ## Deployment
 ```
-Add additional notes about how to deploy this on a live system
+TO BE UPDATED
 ```
 ## Built With
 ```
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+TO BE UPDATED
 ```
 ## Contributing
 ```
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+TO BE UPDATED
 ```
 ## Versioning
 ```
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+TO BE UPDATED
 ```
 ## Authors
 
@@ -105,8 +96,5 @@ See also the list of [contributors](link to the contributors name and mail) who 
 Oxygen tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with SHOULD WE ADD DETAILS OF PARTNERS.
 
 ## Acknowledgments
-```
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+TO BE UPDATED
 ```
