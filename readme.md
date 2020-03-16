@@ -1,18 +1,18 @@
-# Oxygen 1.0
+# Oxygen 
 
-Oxygen is a [Robot Framework](https://robotframework.org/) library that empowers the user to convert the results of any testing framework to the [robot framework's test results](https://robotframework.org/robotframework/2.1.2/RobotFrameworkUserGuide.html#created-outputs). 
+Oxygen is a [ROBOT FRAMEWORK](https://robotframework.org/) library that empowers the user to convert the results of any testing framework to the [ROBOT FRAMEWORK's test results](https://robotframework.org/robotframework/2.1.2/RobotFrameworkUserGuide.html#created-outputs). 
 
-Oxygen 1.0 has built-in parsers for 3 testing frameworks. 
+Oxygen has built-in parsers for 3 testing frameworks. 
 
 1. [JUnit](https://en.wikipedia.org/wiki/JUnit) - unit testing framework for Java.
 2. [Gatling](https://en.wikipedia.org/wiki/Gatling_(software)) - load and performance testing framework.
 3. [Zed Attack Proxy(ZAP)](https://www.zaproxy.org/) - web security tool. 
 
-Additionally, users can add your own parsers for any other testing framework tools to get the results in the robot framework's test results. 
+Additionally, users can add your own parsers for any other testing framework tools to get the results in the ROBOT FRAMEWORK's test results. 
 
 # Table of Contents
 1. [Getting Started](#getting-started)
-2. [Running a sample test](#running-the-tests)
+2. [Running sample tests](#running-the-tests)
 3. [Deployment](#deployment)
 4. [Built With](#built-with)
 5. [Contributing](#contributing)
@@ -36,7 +36,7 @@ python --version
 
 Upgrade the python version if python version is less than `Python 3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
-##### IMPORTANT!! --  Oxygen 1.0 requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
+##### IMPORTANT!! --  Oxygen requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
 
 ### Installing
 
@@ -51,7 +51,7 @@ Change directory into the oxygen-core directory from command line:
 ```
 cd oxygen-core
 ```
-Oxygen 1.0 requires the following dependencies to be installed: 
+Oxygen requires the following dependencies to be installed: 
 
 1. robotframework>=3.0.4
 2. junitparser>=1.2.2
@@ -59,15 +59,15 @@ Oxygen 1.0 requires the following dependencies to be installed:
 4. mock>=2.0.0
 5. invoke>=1.1.1
 
-Install the dependencies for oxygen 1.0 from the command line. 
+Install the dependencies for oxygen from the command line. 
 
 ```
 pip install -r requirements.txt
 ```
 
-## Running a sample test
+## Running sample tests
 
-Few sample tests has been written in the directory `test`in the oxgyen-core directory. To run the sample test run the invoke command on the command line.
+Few sample tests has been written in the directory `test`in the oxgyen-core directory. To run the sample tests run the invoke command on the command line.
 
 ```
 invoke atest
@@ -115,7 +115,7 @@ See also the list of [contributors](link to the contributors name and mail) who 
 
 ## License
 
-Oxygen tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with SHOULD WE ADD DETAILS OF PARTNERS.
+Oxygen tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with `SHOULD WE ADD DETAILS OF PARTNERS?`.
 
 ## Acknowledgments
 TO BE UPDATED
