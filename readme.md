@@ -16,9 +16,8 @@ Additionally, users can add your own parsers for any other testing framework too
 3. [Deployment](#deployment)
 4. [Built With](#built-with)
 5. [Contributing](#contributing)
-6. [Authors](#authors)
-7. [License](#license)
-8. [Acknowledgments](#acknowledgments)
+6. [License](#license)
+7. [Acknowledgments](#acknowledgments)
 
 ## Getting Started
 
@@ -94,14 +93,6 @@ TO BE UPDATED
 ```
 TO BE UPDATED
 ```
-## Authors
-
-* **Tatu Kairi** - *Eficode* - tatu.kairi@eficode.com 
-* **John Lindert** - *Eficode* - ADD JOHN'S EMAIL
-
-
-See also the list of [contributors](link to the contributors name and mail) who participated in this project.
-
 ## License
 
 OXYGEN tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with `SHOULD WE ADD DETAILS OF PARTNERS?`.
