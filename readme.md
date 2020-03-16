@@ -95,8 +95,10 @@ TO BE UPDATED
 ```
 ## License
 
-OXYGEN tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with `SHOULD WE ADD DETAILS OF PARTNERS?`.
-
-## Acknowledgments
+```
 TO BE UPDATED
 ```
+
+## Acknowledgments
+
+OXYGEN tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with ` DETAILS OF PROJECT PARTNERS?`.
