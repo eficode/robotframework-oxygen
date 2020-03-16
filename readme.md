@@ -16,10 +16,9 @@ Additionally, users can add your own parsers for any other testing framework too
 3. [Deployment](#deployment)
 4. [Built With](#built-with)
 5. [Contributing](#contributing)
-6. [Versioning](#versioning)
-7. [Authors](#authors)
-8. [License](#license)
-9. [Acknowledgments](#acknowledgments)
+6. [Authors](#authors)
+7. [License](#license)
+8. [Acknowledgments](#acknowledgments)
 
 ## Getting Started
 
@@ -92,10 +91,6 @@ TO BE UPDATED
 TO BE UPDATED
 ```
 ## Contributing
-```
-TO BE UPDATED
-```
-## Versioning
 ```
 TO BE UPDATED
 ```
