@@ -49,7 +49,7 @@ Change directory into the oxygen-core directory from command line:
 ```
 cd oxygen-core
 ```
-Oxygen requires a set of dependencies to be installed. List of dependencies are liste in the [requirements](https://git.dev.eficode.io/projects/OX/repos/oxygen-core/browse/requirements.txt) file. 
+Oxygen requires a set of dependencies to be installed. Dependencies are listed in the [requirements](https://git.dev.eficode.io/projects/OX/repos/oxygen-core/browse/requirements.txt) file. 
 
 Install the dependencies for Oxygen from the command line. 
 
@@ -70,7 +70,7 @@ invoke utest
 ```
 invoke test
 ```
-To learn more about `ìnvoke`, refer documentation of [python library](http://www.pyinvoke.org/).
+To learn more about `invoke`, refer documentation of [python library](http://www.pyinvoke.org/).
 
 ### Break down into end to end tests
 ```
@@ -95,9 +95,7 @@ TO BE UPDATED
 ```
 ## License
 
-```
-TO BE UPDATED
-```
+Details of project licensing can be found in the [LICENSE](https://git.dev.eficode.io/projects/OX/repos/oxygen-core/browse/LICENSE?at=refs%2Fheads%2Fdocumentation) file in the project repository.
 
 ## Acknowledgments
 
