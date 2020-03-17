@@ -70,7 +70,7 @@ invoke utest
 ```
 invoke test
 ```
-Invoke is python library which provides a cleaner way to run shell commmands from a python file. `tasks.py` is the file associated with the invoke command. 
+To learn more about `ìnvoke`, refer documentation of [python library](http://www.pyinvoke.org/).
 
 ### Break down into end to end tests
 ```
