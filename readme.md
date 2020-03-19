@@ -49,7 +49,7 @@ Change directory into the oxygen-core directory from command line:
 ```
 cd oxygen-core
 ```
-Oxygen requires a set of dependencies to be installed. Dependencies are listed in the [requirements](https://git.dev.eficode.io/projects/OX/repos/oxygen-core/browse/requirements.txt) file. 
+Oxygen requires a set of dependencies to be installed. Dependencies are listed in the requirements.txt file. 
 
 Install the dependencies for Oxygen from the command line. 
 
@@ -95,7 +95,7 @@ TO BE UPDATED
 ```
 ## License
 
-Details of project licensing can be found in the [LICENSE](https://git.dev.eficode.io/projects/OX/repos/oxygen-core/browse/LICENSE?at=refs%2Fheads%2Fdocumentation) file in the project repository.
+Details of project licensing can be found in the LICENSE file in the project repository.
 
 ## Acknowledgments
 
