@@ -99,4 +99,4 @@ Details of project licensing can be found in the LICENSE file in the project rep
 
 ## Acknowledgments
 
-Oxygen tool  was developed by Eficode Oy as part of [Testomat Project](link) with association with ` DETAILS OF PROJECT PARTNERS?`.
+Oxygen tool  was developed by Eficode Oy as part of [Testomat project](https://www.testomatproject.eu/) with funding by [Business Finland](https://www.businessfinland.fi/).
