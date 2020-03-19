@@ -29,14 +29,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Oxygen requires `Python 3.0` or above to be installed in the environment the Oxygen tool is to be deployed. 
+Oxygen requires `Python 3.7` or above to be installed in the environment the Oxygen tool is to be deployed. 
 
 Check the Python version on the command line:
 ```
 python --version
 ```
 
-Upgrade the python version if python version is less than `Python 3.0`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
+Upgrade the python version if python version is less than `Python 3.7`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
 
 ##### IMPORTANT!! --  Oxygen requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
 
@@ -46,7 +46,28 @@ Upgrade the python version if python version is less than `Python 3.0`. Follow t
 
 ### Sample test case
 
-`TO BE UPDATED`
+After installing Oxygen, it can be used in the `robot` file while writing the Robot Framework tests. Sample of a `robot` file running JUnit test cases is as follows:
+
+```
+*** Test cases ***
+Sample JUnit test1
+    Run JUnit       myjunit_test1.xml       mvn     test     --resultfile=results_myjunit_test2.xml
+Sample JUnit test2
+    Run JUnit       myjunit_test2.xml       mvn     test     --resultfile=results_myjunit_test2.xml  
+```
+
+`myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results.
+
+The syntax of the Robot Framework tescases and keywords for using Oxygen for JUnit is as follows:
+
+```
+*** Test cases ***
+<Testcase Name>
+    Run Junit   <File name of Junit results(xml file)>      <Command line commands to run JUnit test>
+```
+
+Similarly, the command line commands for running tests for [Gatling](https://en.wikipedia.org/wiki/Gatling_(software)) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
+
 
 ### Using from command line
 
@@ -60,7 +81,7 @@ Refer the prerequisites in the "Using Oxygen" section.
 
 ### Installation in development environment
 
-Clone the Oxygen repository to the enviromnent where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
+Clone the Oxygen repository to the environment where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
 
 Clone oxygen-core directory from the command line using:
 
