@@ -42,9 +42,15 @@ Upgrade the python version if python version is less than `Python 3.0`. Follow t
 
 ### Installation
 
+`TO BE UPDATED`
+
 ### Sample test case
 
+`TO BE UPDATED`
+
 ### Using from command line
+
+`TO BE UPDATED`
 
 ## Developing Oxygen
 
