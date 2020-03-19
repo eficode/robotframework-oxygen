@@ -11,15 +11,19 @@ Oxygen has built-in parsers for 3 testing frameworks.
 Additionally, users can add your own parsers for any other testing framework tools to get the results in the Robot Framework's test results. 
 
 # Table of Contents
-1. [Getting Started](#getting-started)
-2. [Running sample tests](#running-the-tests)
-3. [Deployment](#deployment)
-4. [Built With](#built-with)
-5. [Contributing](#contributing)
-6. [License](#license)
-7. [Acknowledgments](#acknowledgments)
+1. [Using Oxygen](#getting-started)
+    1. [Prerequisites]()
+    2. [Installation]()
+    3. [Sample test case]()
+    4. [Using from command line]()
+2. [Developing Oxygen]()
+    1. [Prerequisites]()
+    2. [Installation in development environment]()
+    3. [Running sample tests in development environment]()
+3. [License]()
+4. [Acknowledgements]()
 
-## Getting Started
+## Using Oxygen
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
@@ -36,7 +40,19 @@ Upgrade the python version if python version is less than `Python 3.0`. Follow t
 
 ##### IMPORTANT!! --  Oxygen requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
 
-### Installing
+### Installation
+
+### Sample test case
+
+### Using from command line
+
+## Developing Oxygen
+
+### Prerequisites
+
+Refer the prerequisites in the "Using Oxygen" section.
+
+### Installation in development environment
 
 Clone the Oxygen repository to the enviromnent where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
 
@@ -57,7 +73,7 @@ Install the dependencies for Oxygen from the command line.
 pip install -r requirements.txt
 ```
 
-## Running sample tests
+### Running sample tests in development environment
 
 Few sample tests has been written in the directory `test`in the oxgyen-core directory. To run the sample tests run the invoke command on the command line.
 
@@ -72,27 +88,6 @@ invoke test
 ```
 To learn more about `invoke`, refer documentation of [python library](http://www.pyinvoke.org/).
 
-### Break down into end to end tests
-```
-TO BE UPDATED
-```
-
-### And coding style tests
-```
-TO BE UPDATED
-```
-## Deployment
-```
-TO BE UPDATED
-```
-## Built With
-```
-TO BE UPDATED
-```
-## Contributing
-```
-TO BE UPDATED
-```
 ## License
 
 Details of project licensing can be found in the LICENSE file in the project repository.
