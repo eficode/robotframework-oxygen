@@ -1,11 +1,11 @@
 # OXYGEN 
 
-Oxygen is a [Robot Framework](https://robotframework.org/) library that empowers the user to convert the results of any testing framework to the [Robot Framework's test results](https://robotframework.org/robotframework/2.1.2/RobotFrameworkUserGuide.html#created-outputs). 
+Oxygen is a [Robot Framework](https://robotframework.org/) library that empowers the user to convert the results of any testing framework to the [Robot Framework's test results](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#created-outputs). 
 
 Oxygen has built-in parsers for 3 testing frameworks. 
 
-1. [JUnit](https://en.wikipedia.org/wiki/JUnit) - unit testing framework for Java.
-2. [Gatling](https://en.wikipedia.org/wiki/Gatling_(software)) - load and performance testing framework.
+1. [JUnit](https://junit.org/junit5/) - unit testing framework for Java.
+2. [Gatling](https://gatling.io/) - load and performance testing framework.
 3. [Zed Attack Proxy(ZAP)](https://www.zaproxy.org/) - web security tool. 
 
 Additionally, users can add your own parsers for any other testing framework tools to get the results in the Robot Framework's test results. 
@@ -66,7 +66,7 @@ The syntax of the Robot Framework tescases and keywords for using Oxygen for JUn
     Run Junit   <File name of Junit results(xml file)>      <Command line commands to run JUnit test>
 ```
 
-Similarly, the command line commands for running tests for [Gatling](https://en.wikipedia.org/wiki/Gatling_(software)) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
+Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
 
 
 ### Using from command line
