@@ -56,10 +56,7 @@ Sample JUnit test2
     Run JUnit       myjunit_test2.xml       mvn     test     --resultfile=results_myjunit_test2.xml  
 ```
 
-`myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results.
-
-
-Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
+`myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results. Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
 
 
 The `sample_test.robot` file with Oxygen tool used in the test cases needs to be run as [Robot Framework listener](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface) to get the test results in the Robot Framework results format.
