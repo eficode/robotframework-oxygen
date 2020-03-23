@@ -46,7 +46,7 @@ Upgrade the python version if python version is less than `Python 3.7`. Follow t
 
 ### Sample test case
 
-After installing Oxygen, it can be used in the `robot` file while writing the Robot Framework tests. Sample of a `robot` file running JUnit test cases is as follows:
+After installing Oxygen, it can be used in the robot file while writing the Robot Framework tests. Sample of a robot file running JUnit test cases is as follows in a robot file named `sample_test.robot`:
 
 ```
 *** Test cases ***
@@ -60,6 +60,13 @@ Sample JUnit test2
 
 
 Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
+
+
+The `sample_test.robot` file with Oxygen tool used in the test cases needs to be run as [Robot Framework listener](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface) to get the test results in the Robot Framework results format.
+
+```
+robot --listener oxygen.Oxygyen sample_test.robot
+```
 
 
 ### Using from command line
