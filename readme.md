@@ -59,8 +59,6 @@ Sample JUnit test2
 `myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results.
 
 
-```
-
 Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
 
 
