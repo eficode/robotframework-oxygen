@@ -58,12 +58,7 @@ Sample JUnit test2
 
 `myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results.
 
-The syntax of the Robot Framework tescases and keywords for using Oxygen for JUnit is as follows:
 
-```
-*** Test cases ***
-<Testcase Name>
-    Run Junit   <File name of Junit results(xml file)>      <Command line commands to run JUnit test>
 ```
 
 Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
