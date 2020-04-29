@@ -1,2 +1,4 @@
-""" Read: https://docs.python.org/3/library/__main__.html"""
+from .oxygen import cli
 
+if __name__ == '__main__':
+    cli()

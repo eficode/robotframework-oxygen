@@ -10,7 +10,7 @@ from yaml import load, FullLoader
 from .config import CONFIG_FILE
 from .errors import OxygenException
 
-        
+
 class OxygenCore(object):
 
     def __init__(self):
@@ -89,8 +89,25 @@ class OxygenLibrary(OxygenCore):
         method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
         return [str(param) for param in method_sig.parameters.values()]
 
-if __name__ == '__main__':
-    parser = ArgumentParser()
+class FixElapsed(ResultVisitor):
+    def __init__(self, junit_suite):
+        self.junit_suite = junit_suite
+
+    def visit_test(self, test):
+        junit_test = self.find_junit(test.name)
+        now = datetime.now()
+        test.endtime = now.strftime('%Y%m%d %H:%M:%S.%f')
+        test.starttime = (now - timedelta(seconds=junit_test['keywords'][0]['elapsed'])).strftime('%Y%m%d %H:%M:%S.%f')
+
+    def find_junit(self, test_name_to_find):
+        for s in self.junit_suite['suites']:
+            for t in s['tests']:
+                if t['name'] == test_name_to_find:
+                    return t
+
+
+def cli():
+    parser = ArgumentParser(prog='oxygen')
     subcommands = parser.add_subparsers()
     for tool_name, tool_handler in OxygenCore()._handlers.items():
         subcommand_parser = subcommands.add_parser(tool_name)
@@ -112,28 +129,15 @@ if __name__ == '__main__':
             else:
                 test_robot_counterpart.keywords.create('Fail', args=[msg if msg else 'Test failed D:'])
 
-    output_filename = splitext(args.resultfile)
+    output_filename = list(splitext(args.resultfile))
+    output_filename[1] = output_filename[1] if output_filename[1].endswith('xml') else '.xml'
     output_filename = output_filename[0] + '_robot_output' + output_filename[1]
     result = robot_root_suite.run(output=None, report=None, log=None, quiet=True)
-
-    class FixElapsed(ResultVisitor):
-        def __init__(self, junit_suite):
-            self.junit_suite = junit_suite
-
-        def visit_test(self, test):
-            junit_test = self.find_junit(test.name)
-            now = datetime.now()
-            test.endtime = now.strftime('%Y%m%d %H:%M:%S.%f')
-            test.starttime = (now - timedelta(seconds=junit_test['keywords'][0]['elapsed'])).strftime('%Y%m%d %H:%M:%S.%f')
-
-        def find_junit(self, test_name_to_find):
-            for s in self.junit_suite['suites']:
-                for t in s['tests']:
-                    if t['name'] == test_name_to_find:
-                        return t
 
     result.visit(FixElapsed(parsed_results))
     result.save(output_filename)
 
 
 
+if __name__ == '__main__':
+    cli()
