@@ -1,123 +1,113 @@
-# OXYGEN 
+# Oxygen
 
-Oxygen is a [Robot Framework](https://robotframework.org/) library that empowers the user to convert the results of any testing framework to the [Robot Framework's test results](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#created-outputs). 
+Oxygen is a [Robot Framework](https://robotframework.org/) tool that empowers the user to convert the results of any testing tool or framework to the [Robot Framework's test results](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#created-outputs). This consolidates all test reporting together regardless of tool.
 
-Oxygen has built-in parsers for 3 testing frameworks. 
+Oxygen has built-in parsers for three testing frameworks: [JUnit](https://junit.org/junit5/), [Gatling](https://gatling.io/), and [Zed Attack Proxy (ZAP)](https://www.zaproxy.org/).
 
-1. [JUnit](https://junit.org/junit5/) - unit testing framework for Java.
-2. [Gatling](https://gatling.io/) - load and performance testing framework.
-3. [Zed Attack Proxy(ZAP)](https://www.zaproxy.org/) - web security tool. 
-
-Additionally, users can add your own parsers for any other testing framework tools to get the results in the Robot Framework's test results. 
+Oxygen is designed to be extensible. Users can create their own parsers for other testing framework or tools to transform their reporting into the Robot Framework's `log.html` and `report.html`.
 
 # Table of Contents
-1. [Using Oxygen](#getting-started)
-    1. [Prerequisites]()
-    2. [Installation]()
-    3. [Sample test case]()
-    4. [Using from command line]()
-2. [Developing Oxygen]()
-    1. [Prerequisites]()
-    2. [Installation in development environment]()
-    3. [Running sample tests in development environment]()
-3. [License]()
-4. [Acknowledgements]()
+1. [Installation](#installation)
+1. [Keyword documentation](#keyword-documentation)
+1. [Developing Oxygen](#developing-oxygen)
+1. [License](#license)
+1. [Acknowledgements](#acknowledgments)
 
-## Using Oxygen
+# Installation
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-### Prerequisites
-
-Oxygen requires `Python 3.7` or above to be installed in the environment the Oxygen tool is to be deployed. 
-
-Check the Python version on the command line:
+To install Oxygen, run the following:
 ```
-python --version
+$ pip install robotframework-oxygen
 ```
 
-Upgrade the python version if python version is less than `Python 3.7`. Follow the link for [python3](https://realpython.com/installing-python/) installation.
+## Pre-requisites
 
-##### IMPORTANT!! --  Oxygen requires the git repository to be cloned to a directory where there is no 'spaces' in the directory path.
+- Oxygen is supported on Windows, Linux and MacOS
+- [Python 3.7](http://python.org) or above
+- [pip](https://pypi.python.org/pypi/pip) for easy installation
+- [Robot Framework](http://robotframework.org)
+- [additional dependencies](requirements.txt)
 
-### Installation
-
-`TO BE UPDATED`
-
-### Sample test case
-
-After installing Oxygen, it can be used in the robot file while writing the Robot Framework tests. Sample of a robot file running JUnit test cases is as follows in a robot file named `sample_test.robot`:
-
+To check the Python version on the command line, run:
 ```
+$ python --version
+```
+
+# Keyword documentation
+
+[Keyword Documentation](http://eficode.github.io/robotframework-oxygen/doc/OxygenLibrary.html)
+
+# Usage
+
+## Example: Robot Framework running other test tools
+
+Main usage scenario for Oxygen is the ability to write Robot Framework test cases that run your tests in other test tools and integrate the resulting test report results as part of Robot Framework's. This means you are able to run all of your testing from Robot Framework and thus having all test reporting consolidated together.
+
+After installing Oxygen, it can be used in the Robot Framework suite to write test cases. For example, to build acceptance tests that run different sets of JUnit tests:
+
+``` RobotFramework
+*** Settings ***
+Library    oxygen.OxygenLibrary
+
 *** Test cases ***
-JUnit testcase1
-    Run JUnit       myjunit_test1.xml       mvn     test     --resultfile=results_myjunit_test2.xml
-JUnit testcase2
-    Run JUnit       myjunit_test2.xml       mvn     test     --resultfile=results_myjunit_test2.xml  
+
+JUnit unit tests should pass
+    Run JUnit    path/to/mydir/results.xml    java    -jar   junit.jar   --reports-dir=path/to/mydir
+
+JUnit integration tests should pass
+    Run JUnit    path/to/anotherdir/results.xml    java    -jar    junit.jar    --reports-dir=path/to/anotherdir
 ```
 
-`myjunit_test1.xml` and `myjunit_test2.xml` are results of two different JUnit tests. The results file are fed into the Oxgygen to get the Junit results as the Robot Framework results. The Junit results are parsed and the parsed results replaces the test casest thus generating the `output.xml` as in Robot Framework results. PLEASE ADD THE DETAILS ABOUT SETUPS AND TEARDOWN HERE
-
-Similarly, the command line commands for running tests for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) is to be referred in the respective documentations.
-
-
-The `sample_test.robot` file with Oxygen tool used in the test cases needs to be run as [Robot Framework listener](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface) to get the test results in the Robot Framework results format.
+Then, run the suite by providing Oxygen as [a listener](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface):
 
 ```
-robot --listener oxygen.Oxygyen sample_test.robot
+$ robot --listener oxygen.Oxygen my_tests.robot
 ```
 
+Opening the Robot Framework `log.html` and `report.html`, you should see that test case `JUnit unt tests should pass` has been replaced by Oxygen with test cases matching with what is in the `path/to/mydir/results.xml` JUnit report file. Similarly, test case `JUnit integration tests should pass` has been replaced with results from `path/to/anotherdir/results.xml`; each JUnit test case with its relevant information has a counterpart in the `log.html`.
 
-### Using from command line
+The example above, for the brevity, shows incomplete commands to run JUnit tool from command line. Please refer to [keyword documentation](#keyword-documentation) for more detailed documentation about keyword's arguments, as well as documentation for [Gatling](https://gatling.io/) and [ZAP](https://www.zaproxy.org/) related keywords. And, of course, refer to the particular tool documentation as well.
 
-`TO BE UPDATED`
+## Using from command line
 
-## Developing Oxygen
-
-### Prerequisites
-
-Refer the prerequisites in the "Using Oxygen" section.
-
-### Installation in development environment
-
-Clone the Oxygen repository to the environment where you want to the run the tool. Make sure that there are no 'spaces' in the directory path where the oxygen-core folder is cloned into.
-
-Clone oxygen-core directory from the command line using:
+In case where you want to run your other testing tools separately, but yet combine results into unified Robot Framework `log.html` and `report.html`, you can use Oxygen's command line interface to convert single result file to single corresponding Robot Framework `output.xml`:
 
 ```
-git clone https://git.dev.eficode.io/scm/ox/oxygen-core.git
-```
-Change directory into the oxygen-core directory from command line:
-```
-cd oxygen-core
-```
-Oxygen requires a set of dependencies to be installed. Dependencies are listed in the requirements.txt file. 
-
-Install the dependencies for Oxygen from the command line. 
-
-```
-pip install -r requirements.txt
+$ python -m oxygen oxygen.junit my_junit_results.xml
 ```
 
-### Running sample tests in development environment
+As a convention, the resulting Robot Framework xml file will be named by adding a suffix to the end. In the example above, the resulting Robot Framework xml file would be named `my_junit_results.xml`.
 
-Few sample tests has been written in the directory `test`in the oxgyen-core directory. To run the sample tests run the invoke command on the command line.
+**Note** that resulting xml file will also be created at the same location as the original result file. Therefore, when original result files are in another directory:
 
 ```
-invoke atest
+$ python -m oxygen oxygen.gatling path/to/results.log
 ```
-```
-invoke utest
-```
-```
-invoke test
-```
-To learn more about `invoke`, refer documentation of [python library](http://www.pyinvoke.org/).
 
-## License
+Then `results_robot_output.xml` will be created under `path/to/`.
 
-Details of project licensing can be found in the LICENSE file in the project repository.
+# Developing Oxygen
 
-## Acknowledgments
+Clone the Oxygen repository to the environment where you want to the run the tool.
+
+Oxygen requires a set of dependencies to be installed. Dependencies are listed in the `requirements.txt` file:
+```
+$ pip install -r requirements.txt
+```
+
+Oxygen uses task runner tool [`invoke`](http://www.pyinvoke.org/) to run tests, build the project, etc.
+
+Please refer to the available tasks for the project:
+```
+$ invoke --list
+```
+
+and the task file [`tasks.py`](tasks.py).
+
+# License
+
+Details of project licensing can be found in the [LICENSE](LICENSE) file in the project repository.
+
+# Acknowledgments
 
 Oxygen tool  was developed by Eficode Oy as part of [Testomat project](https://www.testomatproject.eu/) with funding by [Business Finland](https://www.businessfinland.fi/).
