@@ -34,8 +34,8 @@ class BaseHandler(object):
         return self.DEFAULT_CLI
 
     def parse_results(self, kw_args):
-        raise NotImplemented('Actual handler implementation should override '
-                             'this with proper implementation!')
+        raise NotImplementedError('Actual handler implementation should override '
+                                  'this with proper implementation!')
 
     def check_for_keyword(self, test):
         """Check if any of the keywords directly under this test trigger test
