@@ -25,6 +25,13 @@ def utest(context, k=''):
                                                 ('-k ' + k) if k else ''))
     run(cmd, env={'PYTHONPATH': SRCPATH})
 
+@task
+def coverage(context):
+  cmd = ('coverage run --source={} -m unittest discover --start-directory=tests/utest '
+         '--top-level-directory={}'.format(SRCPATH, CURDIR))
+  run(cmd, env={'PYTHONPATH': SRCPATH})
+  run('coverage report')
+
 @task(help={'rf': 'Command-line arguments for Robot Framework as single '
                   'string. E.g: invoke atest --rf "--name my_suite"'})
 def atest(context, rf=''):

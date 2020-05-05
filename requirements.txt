@@ -5,3 +5,4 @@ PyYAML>=3.13
 ### Dev
 mock>=2.0.0
 invoke>=1.1.1
+coverage>=5.1
