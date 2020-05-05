@@ -7,7 +7,7 @@ from ..helpers import get_config
 
 class TestInjectSuiteReport(TestCase):
     def setUp(self):
-        self.object = BaseHandler(get_config()['oxygen.junit'])
+        self.handler = BaseHandler(get_config()['oxygen.junit'])
 
         self.test = MagicMock()
         self.parent = MagicMock()
@@ -23,9 +23,9 @@ class TestInjectSuiteReport(TestCase):
         self.traveller.suites = self.suites
 
     def test_finds_and_appends(self):
-        self.object._inject_suite_report(self.test, self.suite)
+        self.handler._inject_suite_report(self.test, self.suite)
         self.suites.append.assert_called_once_with(self.suite)
 
     def test_finds_and_filters(self):
-        self.object._inject_suite_report(self.test, self.suite)
+        self.handler._inject_suite_report(self.test, self.suite)
         assert(self.parent.tests == [1, 2, 3])
