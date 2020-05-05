@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock
 
-from oxygen.oxygen import Oxygen
+from oxygen.oxygen import OxygenVisitor
 from oxygen import errors as oxygen_errors
 
 
@@ -18,7 +18,7 @@ class TestOxygen(TestCase):
             oxygen_errors.OxygenException('exceptions'),
             CustomUserException('for fun and profit')
         ]
-        oxy = Oxygen()
+        oxy = OxygenVisitor()
         oxy._handlers = {
             'fake_handler': m,
             'another_fake': m,
@@ -39,7 +39,7 @@ class TestOxygen(TestCase):
     def test_single_exception_raised_directly(self):
         m = Mock()
         m.check_for_keyword.side_effect = [CustomUserException('single')]
-        oxy = Oxygen()
+        oxy = OxygenVisitor()
         oxy._handlers = {'fake_handler': m}
 
         with self.assertRaises(CustomUserException) as ex:

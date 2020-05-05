@@ -1,6 +1,7 @@
 from unittest import skip, TestCase
 from unittest.mock import Mock, patch
 
+from oxygen.base_handler import BaseHandler
 from oxygen.junit import JUnitHandler
 from oxygen.errors import JUnitHandlerException
 from ..helpers import get_config
@@ -36,6 +37,5 @@ class JUnitBasicTests(TestCase):
         with self.assertRaises(JUnitHandlerException):
             self.handler.run_junit('somefile', 'some', 'command')
 
-    @skip('Reminder to add tests once CLI interface exists')
     def test_cli(self):
-        pass
+        self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)

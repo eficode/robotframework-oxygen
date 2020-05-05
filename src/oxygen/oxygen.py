@@ -89,6 +89,7 @@ class OxygenLibrary(OxygenCore):
         method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
         return [str(param) for param in method_sig.parameters.values()]
 
+
 class FixElapsed(ResultVisitor):
     def __init__(self, junit_suite):
         self.junit_suite = junit_suite

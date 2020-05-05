@@ -2,7 +2,6 @@ import re
 
 from .robot_interface import RobotInterface
 
-
 class BaseHandler(object):
     DEFAULT_CLI = {tuple(['resultfile']): {}}
 

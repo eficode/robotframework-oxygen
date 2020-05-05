@@ -1,6 +1,6 @@
 from tempfile import mkstemp
 
-from yaml import load
+from yaml import FullLoader, load
 
 TEST_CONFIG = '''
 oxygen.junit:
@@ -23,7 +23,7 @@ oxygen.zap:
 
 
 def get_config():
-    return load(TEST_CONFIG)
+    return load(TEST_CONFIG, Loader=FullLoader)
 
 def get_config_as_file():
     _, filepath = mkstemp()

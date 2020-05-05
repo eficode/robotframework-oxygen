@@ -1,6 +1,7 @@
 from unittest import skip, TestCase
 from unittest.mock import Mock, mock_open, patch
 
+from oxygen.base_handler import BaseHandler
 from oxygen.zap import ZAProxyHandler
 from oxygen.errors import ZAProxyHandlerException
 from ..helpers import get_config
@@ -58,6 +59,5 @@ class ZAPBasicTests(TestCase):
     def assertNotNoneOrEmpty(self, str_):
         return str_ is not None and str_ != ''
 
-    @skip('Reminder to add tests once CLI interface exists')
     def test_cli(self):
-        pass
+        self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)

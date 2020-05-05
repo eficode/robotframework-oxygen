@@ -1,6 +1,7 @@
 from unittest import skip, TestCase
 from unittest.mock import Mock, patch
 
+from oxygen.base_handler import BaseHandler
 from oxygen.gatling import GatlingHandler
 from oxygen.errors import GatlingHandlerException
 from ..helpers import get_config
@@ -33,6 +34,5 @@ class JUnitBasicTests(TestCase):
         with self.assertRaises(GatlingHandlerException):
             self.handler.run_gatling('somefile', 'some', 'command')
 
-    @skip('Reminder to add tests once CLI interface exists')
     def test_cli(self):
-        pass
+        self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
