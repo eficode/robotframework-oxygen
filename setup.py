@@ -15,7 +15,7 @@ SHORT_DESC = ('Oxygen is an extensible library for Robot Framework that '
               'enables you to integrate running other testing tools and their '
               'reports as part of Robot Framework\'s reporting.')
 
-with open(path_join(CURDIR, 'README'), 'r') as readme:
+with open(path_join(CURDIR, 'README.md'), 'r') as readme:
     LONG_DESCRIPTION = readme.read()
 
 CLASSIFIERS = '''
