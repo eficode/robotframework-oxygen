@@ -116,6 +116,8 @@ def cli():
             subcommand_parser.add_argument(*flags, **params)
             subcommand_parser.set_defaults(func=tool_handler.parse_results)
     args = parser.parse_args()
+    if not vars(args):
+        parser.error('No arguments given')
     parsed_results = args.func([args.resultfile])
 
     robot_root_suite = TestSuite(parsed_results['name'])
