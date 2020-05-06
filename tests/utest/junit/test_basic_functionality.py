@@ -1,11 +1,14 @@
 from pathlib import Path
 from unittest import skip, TestCase
-from unittest.mock import create_autospec, Mock, patch
+from unittest.mock import ANY, create_autospec, Mock, patch
+
+from junitparser import JUnitXml
+from testfixtures import compare
 
 from oxygen.base_handler import BaseHandler
 from oxygen.junit import JUnitHandler
 from oxygen.errors import JUnitHandlerException
-from ..helpers import get_config
+from ..helpers import example_robot_output, get_config, RESOURCES_PATH
 
 class JUnitBasicTests(TestCase):
 
@@ -45,3 +48,114 @@ class JUnitBasicTests(TestCase):
 
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
+
+    @patch('oxygen.junit.JUnitHandler._report_oxygen_run')
+    def test_check_for_keyword(self, mock_report):
+        fake_test = example_robot_output().suite.suites[0].tests[0]
+        expected_data = {'Atest.Test.My First Test': '/some/path/to.ext'}
+
+        self.handler.check_for_keyword(fake_test, expected_data)
+
+        self.assertEqual(mock_report.call_args[0][0].name,
+                         'oxygen.OxygenLibrary.Run Junit')
+        self.assertEqual(self.handler.run_time_data, '/some/path/to.ext')
+
+
+    def test_junit_parsing(self):
+        expected_output = {
+            'name': 'JUnit Execution',
+            'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],
+            'setup': [],
+            'teardown': [],
+            'suites': [{
+                'name': 'suite1',
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'suites': [{
+                    'name': 'suite2',
+                     'tags': [],
+                     'setup': [],
+                     'teardown': [],
+                     'suites': [],
+                     'tests': [{
+                        'name': 'casea',
+                        'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                        'setup': [],
+                        'teardown': [],
+                        'keywords': [{'name': 'casea (Execution)',
+                                      'pass': True,
+                                      'tags': [],
+                                      'messages': [],
+                                      'teardown': [],
+                                      'keywords': [],
+                                      'elapsed': 0.0}]
+                        }, {
+                        'name': 'caseb',
+                        'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                        'setup': [],
+                        'teardown': [],
+                        'keywords': [{
+                            'name': 'caseb (Execution)',
+                            'pass': True,
+                            'tags': [],
+                            'messages': [],
+                            'teardown': [],
+                            'keywords': [],
+                            'elapsed': 0.0
+                        }]
+                    }]
+                }],
+                'tests': [{
+                    'name': 'case1',
+                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'setup': [],
+                    'teardown': [],
+                    'keywords': [{
+                        'name': 'case1 (Execution)',
+                        'pass': True,
+                        'tags': [],
+                        'messages': [],
+                        'teardown': [],
+                        'keywords': [],
+                        'elapsed': 0.0
+                    }]
+                }, {
+                    'name': 'case2',
+                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'setup': [],
+                    'teardown': [],
+                    'keywords': [{
+                        'name': 'case2 (Execution)',
+                        'pass': False,
+                        'tags': [],
+                        'messages': [
+                            'ERROR: Example error message (the_error_type)'
+                        ],
+                        'teardown': [],
+                        'keywords': [],
+                        'elapsed': 0.0
+                    }]
+                }, {
+                    'name': 'case3',
+                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'setup': [],
+                    'teardown': [],
+                    'keywords': [{
+                        'name': 'case3 (Execution)',
+                        'pass': False,
+                        'tags': [],
+                        'messages': [
+                            'FAIL: Example failure message (the_failure_type)'
+                        ],
+                        'teardown': [],
+                        'keywords': [],
+                        'elapsed': 0.0
+                    }]
+                }]
+            }],
+            'tests': []
+        }
+        xml = JUnitXml.fromfile(RESOURCES_PATH / 'junit.xml')
+        retval = self.handler._transform_tests(xml)
+        compare(retval, expected_output)

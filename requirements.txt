@@ -6,3 +6,4 @@ PyYAML>=3.13
 mock>=2.0.0
 invoke>=1.1.1
 coverage>=5.1
+testfixtures>=6.14.1 # needed for large dict comparisons to make sense of them

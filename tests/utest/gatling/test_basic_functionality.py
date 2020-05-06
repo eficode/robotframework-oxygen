@@ -2,10 +2,15 @@ from pathlib import Path
 from unittest import skip, TestCase
 from unittest.mock import create_autospec, Mock, patch
 
+from testfixtures import compare
+
 from oxygen.base_handler import BaseHandler
 from oxygen.gatling import GatlingHandler
 from oxygen.errors import GatlingHandlerException
-from ..helpers import get_config
+from ..helpers import (example_robot_output,
+                       GATLING_EXPECTED_OUTPUT,
+                       get_config,
+                       RESOURCES_PATH)
 
 class JUnitBasicTests(TestCase):
 
@@ -40,3 +45,19 @@ class JUnitBasicTests(TestCase):
 
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
+
+    @patch('oxygen.gatling.GatlingHandler._report_oxygen_run')
+    def test_check_for_keyword(self, mock_report):
+        fake_test = example_robot_output().suite.suites[0].tests[2]
+        expected_data = {'Atest.Test.My Second Test': 'somefile.lol'}
+
+        self.handler.check_for_keyword(fake_test, expected_data)
+
+        self.assertEqual(mock_report.call_args[0][0].name,
+                         'oxygen.OxygenLibrary.Run Gatling')
+        self.assertEqual(self.handler.run_time_data, 'somefile.lol')
+
+    def test_gatling_parsing(self):
+        example_file = RESOURCES_PATH / 'gatling-example-simulation.log'
+        retval = self.handler._transform_tests(example_file)
+        compare(retval, GATLING_EXPECTED_OUTPUT)

@@ -2,10 +2,203 @@ from pathlib import Path
 from unittest import skip, TestCase
 from unittest.mock import create_autospec, Mock, mock_open, patch
 
+from testfixtures import compare
+
 from oxygen.base_handler import BaseHandler
 from oxygen.zap import ZAProxyHandler
 from oxygen.errors import ZAProxyHandlerException
-from ..helpers import get_config, suppress_stdout
+from ..helpers import (example_robot_output,
+                       get_config,
+                       RESOURCES_PATH,
+                       suppress_stdout)
+
+ZAP_EXPECTED_OUTPUT = {
+ 'name': 'Oxygen ZAProxy Report (2.7.0, Tue, 7 Aug 2018 13:17:56)',
+ 'suites': [{'name': 'Site: http://192.168.50.56:7272', 'tests': []},
+            {'name': 'Site: http://localhost:7272',
+             'tests': [{'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: <input '
+                                                   'id="password_field" '
+                                                   'size="30" '
+                                                   'type="password">'],
+                                      'name': 'GET http://localhost:7272/: '
+                                              'password_field',
+                                      'pass': True}],
+                        'name': '10012 Password Autocomplete in Browser',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://localhost:7272/: '
+                                              'X-Frame-Options',
+                                      'pass': False}],
+                        'name': '10020 X-Frame-Options Header Not Set',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://localhost:7272/: '
+                                              'X-XSS-Protection',
+                                      'pass': True}],
+                        'name': '10016 Web Browser XSS Protection Not Enabled',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://localhost:7272/: '
+                                              'X-Content-Type-Options',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://localhost:7272/demo.css: '
+                                              'X-Content-Type-Options',
+                                      'pass': True}],
+                        'name': '10021 X-Content-Type-Options Header Missing',
+                        'tags': []}]},
+            {'name': 'Site: http://127.0.0.1:7272',
+             'tests': [{'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/demo.css: '
+                                              'X-Content-Type-Options',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/welcome.html: '
+                                              'X-Content-Type-Options',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272/: '
+                                              'X-Content-Type-Options',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/error.html: '
+                                              'X-Content-Type-Options',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272: '
+                                              'X-Content-Type-Options',
+                                      'pass': True}],
+                        'name': '10021 X-Content-Type-Options Header Missing',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/favicon.ico: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272/: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/sitemap.xml: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/welcome.html: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/error.html: '
+                                              'X-XSS-Protection',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/robots.txt: '
+                                              'X-XSS-Protection',
+                                      'pass': True}],
+                        'name': '10016 Web Browser XSS Protection Not Enabled',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272/: '
+                                              'X-Frame-Options',
+                                      'pass': False},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET http://127.0.0.1:7272: '
+                                              'X-Frame-Options',
+                                      'pass': False},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/welcome.html: '
+                                              'X-Frame-Options',
+                                      'pass': False},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://127.0.0.1:7272/error.html: '
+                                              'X-Frame-Options',
+                                      'pass': False}],
+                        'name': '10020 X-Frame-Options Header Not Set',
+                        'tags': []},
+                       {'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: <input '
+                                                   'id="password_field" '
+                                                   'size="30" '
+                                                   'type="password">'],
+                                      'name': 'GET http://127.0.0.1:7272: '
+                                              'password_field',
+                                      'pass': True},
+                                     {'elapsed': 0.0,
+                                      'messages': ['Evidence: <input '
+                                                   'id="password_field" '
+                                                   'size="30" '
+                                                   'type="password">'],
+                                      'name': 'GET http://127.0.0.1:7272/: '
+                                              'password_field',
+                                      'pass': True}],
+                        'name': '10012 Password Autocomplete in Browser',
+                        'tags': []}]},
+            {'name': 'Site: http://detectportal.firefox.com',
+             'tests': [{'keywords': [{'elapsed': 0.0,
+                                      'messages': ['Evidence: [No Evidence '
+                                                   'Provided]'],
+                                      'name': 'GET '
+                                              'http://detectportal.firefox.com/success.txt: '
+                                              'X-Content-Type-Options',
+                                      'pass': True}],
+                        'name': '10021 X-Content-Type-Options Header Missing',
+                        'tags': []}]}],
+ 'tags': ['ZAP']}
 
 class ZAPBasicTests(TestCase):
     def setUp(self):
@@ -82,4 +275,17 @@ class ZAPBasicTests(TestCase):
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
 
+    @patch('oxygen.zap.ZAProxyHandler._report_oxygen_run')
+    def test_check_for_keyword(self, mock_report):
+        fake_test = example_robot_output().suite.suites[0].tests[4]
+        expected_data = {'Atest.Test.My Three Point Fifth Test': 'afile.ext'}
 
+        self.handler.check_for_keyword(fake_test, expected_data)
+
+        self.assertEqual(mock_report.call_args[0][0].name,
+                         'oxygen.OxygenLibrary.Run Zap')
+        self.assertEqual(self.handler.run_time_data, 'afile.ext')
+
+    def test_zap_parsing(self):
+        retval = self.handler.parse_results(RESOURCES_PATH / 'zap' / 'zap.xml')
+        compare(retval, ZAP_EXPECTED_OUTPUT)
