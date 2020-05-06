@@ -5,7 +5,7 @@ from unittest.mock import create_autospec, Mock, mock_open, patch
 from oxygen.base_handler import BaseHandler
 from oxygen.zap import ZAProxyHandler
 from oxygen.errors import ZAProxyHandlerException
-from ..helpers import get_config
+from ..helpers import get_config, suppress_stdout
 
 class ZAPBasicTests(TestCase):
     def setUp(self):
@@ -64,9 +64,12 @@ class ZAPBasicTests(TestCase):
         with patch('builtins.open',
                    mock_open(read_data='{"some": "json"}')) as f, \
             patch('oxygen.zap.validate_path') as mock_validate_path:
+
             m = create_autospec(Path)
             mock_validate_path.return_value = m
-            ret = self.handler.parse_results('somefile')
+
+            with suppress_stdout():
+                ret = self.handler.parse_results('somefile')
         mock_validate_path.assert_called_once_with('somefile')
         f.assert_called_once_with(m.resolve())
         self.assertNotNoneOrEmpty(ret['name'])
@@ -78,3 +81,5 @@ class ZAPBasicTests(TestCase):
 
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
+
+

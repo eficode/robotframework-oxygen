@@ -1,3 +1,7 @@
+import sys
+
+from contextlib import contextmanager
+from io import StringIO
 from tempfile import mkstemp
 
 from yaml import FullLoader, load
@@ -30,4 +34,13 @@ def get_config_as_file():
     with open(filepath, 'w') as f:
         f.write(TEST_CONFIG)
     return filepath
+
+@contextmanager
+def suppress_stdout():
+    old = sys.stdout
+    sys.stdout = StringIO()
+    try:
+        yield
+    finally:
+        sys.stdout = old
 
