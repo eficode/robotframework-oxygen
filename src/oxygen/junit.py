@@ -20,12 +20,10 @@ class JUnitHandler(BaseHandler):
             raise JUnitHandlerException(e)
         logger.info(output)
         logger.info('Result file: {}'.format(result_file))
+        return result_file
 
-    def parse_results(self, kw_args):
-        result_file = kw_args[0]
-        if not isinstance(result_file, str):
-            raise JUnitHandlerException('"{}" is not '
-                                        'a file path'.format(result_file))
+    def parse_results(self, result_file):
+        result_file = result_file
         xml = JUnitXml.fromfile(result_file)
         return self._transform_tests(xml)
 

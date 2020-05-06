@@ -18,7 +18,7 @@ class TestOxygen(TestCase):
             oxygen_errors.OxygenException('exceptions'),
             CustomUserException('for fun and profit')
         ]
-        oxy = OxygenVisitor()
+        oxy = OxygenVisitor('fakedata')
         oxy._handlers = {
             'fake_handler': m,
             'another_fake': m,
@@ -39,10 +39,11 @@ class TestOxygen(TestCase):
     def test_single_exception_raised_directly(self):
         m = Mock()
         m.check_for_keyword.side_effect = [CustomUserException('single')]
-        oxy = OxygenVisitor()
+        oxy = OxygenVisitor('fakedata')
         oxy._handlers = {'fake_handler': m}
 
         with self.assertRaises(CustomUserException) as ex:
             oxy.visit_test(Mock())
 
         self.assertIn('single', str(ex.exception))
+        self.assertEqual(oxy.data, 'fakedata')

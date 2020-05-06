@@ -17,9 +17,8 @@ class JUnitBasicTests(TestCase):
 
     @patch('oxygen.gatling.GatlingHandler._transform_tests')
     def test_parsing(self, mock_transform):
-        self.handler.parse_results(('some/file/path.ext',))
+        self.handler.parse_results('some/file/path.ext')
         mock_transform.assert_called_once_with('some/file/path.ext')
-
 
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):

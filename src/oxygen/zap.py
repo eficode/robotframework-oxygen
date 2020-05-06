@@ -22,10 +22,11 @@ class ZAProxyHandler(BaseHandler):
             raise ZAProxyHandlerException(e)
         logger.info(output)
         logger.info('Result file: {}'.format(result_file))
+        return result_file
 
 
-    def parse_results(self, kw_args):
-        zap_dict = self._read_results(kw_args[0])
+    def parse_results(self, result_file):
+        zap_dict = self._read_results(result_file)
         return self._parse_zap_dict(zap_dict)
 
     def _read_results(self, file_name):
@@ -41,7 +42,6 @@ class ZAProxyHandler(BaseHandler):
                   'back to JSON.'.format(file_name))
             json_dict = json.loads(result_contents)
         return json_dict
-
 
     def _xml_to_dict(self, xml):
         d = {xml.tag: {} if xml.attrib else None}

@@ -18,9 +18,10 @@ class GatlingHandler(BaseHandler):
             raise GatlingHandlerException(e)
         logger.info(output)
         logger.info('Result file: {}'.format(result_file))
+        return result_file
 
-    def parse_results(self, rf_kw_args):
-        return self._transform_tests(rf_kw_args[0])
+    def parse_results(self, result_file):
+        return self._transform_tests(result_file)
 
     def _transform_tests(self, result_file):
         """Given the result_file path, open the test results and get a suite dict

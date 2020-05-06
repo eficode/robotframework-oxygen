@@ -33,7 +33,7 @@ class ZAPBasicTests(TestCase):
         mock_read_results.return_value = {'hello': 'world'}
         mock_parse_zap_dict.return_value = {'goodbye': 'universe'}
 
-        ret = self.handler.parse_results(('some file'), )
+        ret = self.handler.parse_results('some file')
 
         mock_parse_zap_dict.assert_called_once_with({'hello': 'world'})
         self.assertEqual(ret, {'goodbye': 'universe'})
@@ -41,7 +41,7 @@ class ZAPBasicTests(TestCase):
 
     def test_parsing_xml(self):
         with patch('builtins.open', mock_open(read_data='<xml />')) as f:
-            ret = self.handler.parse_results(('somefile',))
+            ret = self.handler.parse_results('somefile')
         f.assert_called_once_with('somefile')
         self.assertNotNoneOrEmpty(ret['name'])
         self.assertEqual(ret['suites'], [])
@@ -50,7 +50,7 @@ class ZAPBasicTests(TestCase):
     def test_parsing_json(self):
         with patch('builtins.open',
                    mock_open(read_data='{"some": "json"}')) as f:
-            ret = self.handler.parse_results(('somefile',))
+            ret = self.handler.parse_results('somefile')
         f.assert_called_once_with('somefile')
         self.assertNotNoneOrEmpty(ret['name'])
         self.assertEqual(ret['suites'], [])

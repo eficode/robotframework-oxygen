@@ -19,8 +19,8 @@ class JUnitBasicTests(TestCase):
     @patch('oxygen.junit.JUnitHandler._transform_tests')
     def test_parsing(self, mock_transform, mock_junitxml):
         mock_junitxml.fromfile.return_value = 'some junit'
-        self.handler.parse_results(('some/file/path.ext',))
 
+        self.handler.parse_results('some/file/path.ext')
         mock_junitxml.fromfile.assert_called_once_with('some/file/path.ext')
         mock_transform.assert_called_once_with('some junit')
 

@@ -35,7 +35,7 @@ def coverage(context):
 @task(help={'rf': 'Command-line arguments for Robot Framework as single '
                   'string. E.g: invoke atest --rf "--name my_suite"'})
 def atest(context, rf=''):
-    run('robot --pythonpath {} --dotted {} --listener oxygen.Oxygen tests/atest'.format(SRCPATH, rf),
+    run('robot --pythonpath {} --dotted {} --listener oxygen.listener tests/atest'.format(SRCPATH, rf),
         pty=True)  # pty for colored output
 
 @task(pre=[utest, atest])

@@ -61,7 +61,7 @@ JUnit integration tests should pass
 Then, run the suite by providing Oxygen as [a listener](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface):
 
 ```
-$ robot --listener oxygen.Oxygen my_tests.robot
+$ robot --listener oxygen.listener my_tests.robot
 ```
 
 Opening the Robot Framework `log.html` and `report.html`, you should see that test case `JUnit unt tests should pass` has been replaced by Oxygen with test cases matching with what is in the `path/to/mydir/results.xml` JUnit report file. Similarly, test case `JUnit integration tests should pass` has been replaced with results from `path/to/anotherdir/results.xml`; each JUnit test case with its relevant information has a counterpart in the `log.html`.

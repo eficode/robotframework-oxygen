@@ -5,6 +5,7 @@ from os.path import splitext
 from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
+from robot.libraries.BuiltIn import BuiltIn
 from yaml import load, FullLoader
 
 from .config import CONFIG_FILE
@@ -32,11 +33,15 @@ class OxygenVisitor(OxygenCore, ResultVisitor):
     """Read up on what is Robot Framework SuiteVisitor:
     http://robot-framework.readthedocs.io/en/latest/autodoc/robot.model.html#module-robot.model.visitor
     """
+    def __init__(self, data):
+        super().__init__()
+        self.data = data
+
     def visit_test(self, test):
         failures = []
         for handler_type, handler in self._handlers.items():
             try:
-                handler.check_for_keyword(test)
+                handler.check_for_keyword(test, self.data)
             except Exception as e:
                 failures.append(e)
         if len(failures) == 1:
@@ -50,12 +55,26 @@ class OxygenVisitor(OxygenCore, ResultVisitor):
                 '\n'.join(tracebacks)))
 
 
-class Oxygen(object):
-    ROBOT_LISTENER_API_VERSION = 3
+class listener(object):
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self):
+        self.lib_data = {}
+        self.importers = []
+
+    def library_import(self, name, attributes):
+        if not attributes['originalname'] == 'oxygen.OxygenLibrary':
+            return
+        self.importers.append(attributes['importer'])
+
+    def end_test(self, name, attributes):
+        lib = BuiltIn().get_library_instance('oxygen.OxygenLibrary')
+        if lib:
+            self.lib_data[attributes['longname']] = lib.data
 
     def output_file(self, path):
         result = ExecutionResult(path)
-        result.visit(OxygenVisitor())
+        result.visit(OxygenVisitor(self.lib_data))
         result.save()
 
 
@@ -64,6 +83,10 @@ class OxygenLibrary(OxygenCore):
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     """
     LIBRARY_INITIALIZATION_DOC = '''Hello world'''
+
+    def __init__(self):
+        super().__init__()
+        self.data = None
 
     def _fetch_handler(self, name):
         try:
@@ -76,7 +99,10 @@ class OxygenLibrary(OxygenCore):
         return list(handler.keyword for handler in self._handlers.values())
 
     def run_keyword(self, name, args, kwargs):
-        return getattr(self._fetch_handler(name), name)(*args, **kwargs)
+        handler = self._fetch_handler(name)
+        retval = getattr(handler, name)(*args, **kwargs)
+        self.data = retval
+        return retval
 
     def get_keyword_documentation(self, kw_name):
         if kw_name == '__intro__':
@@ -139,7 +165,6 @@ def cli():
 
     result.visit(FixElapsed(parsed_results))
     result.save(output_filename)
-
 
 
 if __name__ == '__main__':

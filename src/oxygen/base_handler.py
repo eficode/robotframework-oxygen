@@ -19,7 +19,7 @@ class BaseHandler(object):
             tags = [tags]
         self._tags = tags
         self.keyword = self._normalize_keyword_name(self._config['keyword'])
-        self.result_file = None
+        self.run_time_data = None
 
     def cli(self):
         """
@@ -37,7 +37,7 @@ class BaseHandler(object):
         raise NotImplementedError('Actual handler implementation should override '
                                   'this with proper implementation!')
 
-    def check_for_keyword(self, test):
+    def check_for_keyword(self, test, data):
         """Check if any of the keywords directly under this test trigger test
         execution
 
@@ -48,6 +48,7 @@ class BaseHandler(object):
             if not (keyword_name == self.keyword):
                 continue
 
+            self.run_time_data = data[test.longname]
             # ALL keywords, setup or not, preceding the trigger will be treated
             # as setup keywords later. Same goes for keywords succeeding the
             # trigger; they will become teardown keywords.
@@ -96,7 +97,7 @@ class BaseHandler(object):
         teardown_keyword: The special oxygen teardown wrapper
         """
         test = keyword.parent
-        test_results = self.parse_results(keyword.args)
+        test_results = self.parse_results(self.run_time_data)
         end_time, result_suite = self._interface.build_suite(100000,
                                                              test_results)
 
