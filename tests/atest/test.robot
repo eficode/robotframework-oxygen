@@ -1,13 +1,16 @@
 *** Settings ***
 Library   oxygen.OxygenLibrary
 
+*** Variables ***
+${RESOURCES}    ${CURDIR}/../resources
+
 *** Test Cases ***
 My First Test
   [Tags]    JUNIT_ROBOT_TAG
   Log   Junit Setup Here 1
   Log   Junit Setup Here 2
   run_junit
-    ...   ${CURDIR}/junit.xml
+    ...   ${RESOURCES}/junit.xml
     ...   echo
     ...   JUNIT_TEST_STRING
   Log   Junit Teardown Here 1
@@ -18,7 +21,7 @@ My First Test Director's Cut
   Sleep   2
   Log   Junit Setup Here 2
   run junit
-    ...   ${CURDIR}/big.xml
+    ...   ${RESOURCES}/big.xml
     ...   echo
     ...   JUNIT_TEST_STRING_BIG
   Log   Junit Teardown Here 1
@@ -29,7 +32,7 @@ My Second Test
   Log   Gatling Setup Here 1
   Log   Gatling Setup Here 2
   run_gatling
-    ...   ${CURDIR}/gatling-example-simulation.log
+    ...   ${RESOURCES}/gatling-example-simulation.log
     ...   echo
     ...   GATLING TEST STRING
   Log   Gatling Teardown Here 2
@@ -39,7 +42,7 @@ My Third Test
   Log   ZAP Setup Here 1
   Log   ZAP Setup Here 2
   run_zap
-    ...   ${CURDIR}/zap/zap.xml.lol
+    ...   ${RESOURCES}/zap/zap.xml.lol
     ...   echo
     ...   ZAP TEST STRING 2
   Log   ZAP Teardown Here 1
@@ -50,7 +53,7 @@ My Three Point Fifth Test
   Log   ZAP Setup Here 1
   Log   ZAP Setup Here 2
   run_zap
-    ...   ${CURDIR}/zap/zap_pp.json
+    ...   ${RESOURCES}/zap/zap_pp.json
     ...   echo
     ...   ZAP TEST STRING 3
   Log   ZAP Teardown Here 1
