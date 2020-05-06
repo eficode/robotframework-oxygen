@@ -16,3 +16,11 @@ class SubprocessException(Exception):
 
 class ZAProxyHandlerException(Exception):
     pass
+
+
+class ResultFileNotFoundException(Exception):
+    pass
+
+
+class ResultFileIsNotAFileException(Exception):
+    pass

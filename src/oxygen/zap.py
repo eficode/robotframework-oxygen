@@ -7,7 +7,7 @@ from robot.api import logger
 
 from .base_handler import BaseHandler
 from .errors import SubprocessException, ZAProxyHandlerException
-from .utils import run_command_line
+from .utils import run_command_line, validate_path
 
 class ZAProxyHandler(BaseHandler):
     def run_zap(self, result_file, *command):
@@ -26,7 +26,7 @@ class ZAProxyHandler(BaseHandler):
 
 
     def parse_results(self, result_file):
-        zap_dict = self._read_results(result_file)
+        zap_dict = self._read_results(validate_path(result_file).resolve())
         return self._parse_zap_dict(zap_dict)
 
     def _read_results(self, file_name):

@@ -2,7 +2,7 @@ from robot.api import logger
 
 from .base_handler import BaseHandler
 from .errors import GatlingHandlerException, SubprocessException
-from .utils import run_command_line
+from .utils import run_command_line, validate_path
 
 class GatlingHandler(BaseHandler):
 
@@ -21,7 +21,7 @@ class GatlingHandler(BaseHandler):
         return result_file
 
     def parse_results(self, result_file):
-        return self._transform_tests(result_file)
+        return self._transform_tests(validate_path(result_file).resolve())
 
     def _transform_tests(self, result_file):
         """Given the result_file path, open the test results and get a suite dict

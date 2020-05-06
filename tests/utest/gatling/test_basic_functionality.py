@@ -1,5 +1,6 @@
+from pathlib import Path
 from unittest import skip, TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import create_autospec, Mock, patch
 
 from oxygen.base_handler import BaseHandler
 from oxygen.gatling import GatlingHandler
@@ -16,9 +17,13 @@ class JUnitBasicTests(TestCase):
         self.assertEqual(self.handler._tags, ['GATLING'])
 
     @patch('oxygen.gatling.GatlingHandler._transform_tests')
-    def test_parsing(self, mock_transform):
+    @patch('oxygen.gatling.validate_path')
+    def test_parsing(self, mock_validate_path, mock_transform):
+        m = create_autospec(Path)
+        mock_validate_path.return_value = m
         self.handler.parse_results('some/file/path.ext')
-        mock_transform.assert_called_once_with('some/file/path.ext')
+        mock_validate_path.assert_called_once_with('some/file/path.ext')
+        mock_transform.assert_called_once_with(m.resolve())
 
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):

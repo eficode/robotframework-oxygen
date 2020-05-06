@@ -3,7 +3,7 @@ from junitparser import Error, Failure, JUnitXml
 
 from .base_handler import BaseHandler
 from .errors import JUnitHandlerException, SubprocessException
-from .utils import run_command_line
+from .utils import run_command_line, validate_path
 
 
 class JUnitHandler(BaseHandler):
@@ -23,8 +23,7 @@ class JUnitHandler(BaseHandler):
         return result_file
 
     def parse_results(self, result_file):
-        result_file = result_file
-        xml = JUnitXml.fromfile(result_file)
+        xml = JUnitXml.fromfile(validate_path(result_file).resolve())
         return self._transform_tests(xml)
 
     def _transform_tests(self, node):
