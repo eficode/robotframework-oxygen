@@ -23,8 +23,15 @@ class JUnitHandler(BaseHandler):
         return result_file
 
     def parse_results(self, result_file):
-        xml = JUnitXml.fromfile(validate_path(result_file).resolve())
+        result_file = self._validate_path(result_file)
+        try:
+            xml = JUnitXml.fromfile(result_file)
+        except TypeError as e:
+            raise JUnitHandlerException(e)
         return self._transform_tests(xml)
+
+    def _validate_path(self, result_file):
+        return str(validate_path(result_file).resolve())
 
     def _transform_tests(self, node):
         """Convert the given xml object into a test suite dict

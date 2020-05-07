@@ -30,8 +30,17 @@ class JUnitBasicTests(TestCase):
         self.handler.parse_results('some/file/path.ext')
 
         mock_validate_path.assert_called_once_with('some/file/path.ext')
-        mock_junitxml.fromfile.assert_called_once_with(m.resolve())
+        mock_junitxml.fromfile.assert_called_once_with(str(m.resolve()))
         mock_transform.assert_called_once_with('some junit')
+
+    @patch('oxygen.junit.JUnitHandler._validate_path')
+    def test_JUnitXml_requires_path_to_be_string(self, mock_validate_path):
+        mock_validate_path.return_value = create_autospec(Path)
+
+        with self.assertRaises(JUnitHandlerException):
+            self.handler.parse_results('some/file/path.ext')
+
+        mock_validate_path.assert_called_once_with('some/file/path.ext')
 
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
@@ -61,7 +70,7 @@ class JUnitBasicTests(TestCase):
         self.assertEqual(self.handler.run_time_data, '/some/path/to.ext')
 
 
-    def test_junit_parsing(self):
+    def test_transform_tests(self):
         expected_output = {
             'name': 'JUnit Execution',
             'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],
