@@ -1,10 +1,13 @@
-from os.path import abspath, dirname, join as path_join
+from pathlib import Path
 
 from invoke import run, task
 
 
-CURDIR = abspath(dirname(__file__))
-SRCPATH = path_join(CURDIR, 'src')
+CURDIR = Path.cwd()
+SRCPATH = CURDIR / 'src'
+UNIT_TESTS = CURDIR / 'tests' / 'utest'
+
+# If you want colored output for the tasks, use `run()` with `pty=True`
 
 @task
 def clean(context):
@@ -18,25 +21,31 @@ def install(context, package=None):
     if package:
         run('pip install {}'.format(package))
 
-@task
-def utest(context, k=''):
-    cmd = ('python -m unittest discover --start-directory tests/utest '
-           '--top-level-directory {} {}'.format(CURDIR,
-                                                ('-k ' + k) if k else ''))
-    run(cmd, env={'PYTHONPATH': SRCPATH})
+@task(iterable=['test'],
+      help={
+          'test': 'Limit unit test execution to specific tests. Must be given '
+                  'multiple times to select several targets. See more: '
+                  'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5'
+      })
+def utest(context, test):
+    run(f'green {" ".join(test) if test else UNIT_TESTS}',
+        env={'PYTHONPATH': SRCPATH},
+        pty=True)
 
 @task
 def coverage(context):
-  cmd = ('coverage run --source={} -m unittest discover --start-directory=tests/utest '
-         '--top-level-directory={}'.format(SRCPATH, CURDIR))
-  run(cmd, env={'PYTHONPATH': SRCPATH})
-  run('coverage report')
+  run(f'green -r {UNIT_TESTS}', env={'PYTHONPATH': SRCPATH}, pty=True)
 
-@task(help={'rf': 'Command-line arguments for Robot Framework as single '
-                  'string. E.g: invoke atest --rf "--name my_suite"'})
+@task(help={'rf': 'Additional command-line arguments for Robot Framework as '
+                  'single string. E.g: invoke atest --rf "--name my_suite"'})
 def atest(context, rf=''):
-    run('robot --pythonpath {} --dotted {} --listener oxygen.listener tests/atest'.format(SRCPATH, rf),
-        pty=True)  # pty for colored output
+    run(f'robot '
+        f'--pythonpath {SRCPATH} '
+        f'--dotted '
+        f'{rf} '
+        f'--listener oxygen.listener '
+        f'{CURDIR / "tests" / "atest"}',
+        pty=True)
 
 @task(pre=[utest, atest])
 def test(context):
