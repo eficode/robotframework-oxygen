@@ -31,6 +31,7 @@ def utest(context, test):
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
         env={'PYTHONPATH': SRCPATH},
         pty=True)
+    run('coverage html')
 
 @task
 def coverage(context):
