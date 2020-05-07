@@ -59,18 +59,12 @@ class listener(object):
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self):
-        self.lib_data = {}
-        self.importers = []
-
-    def library_import(self, name, attributes):
-        if not attributes['originalname'] == 'oxygen.OxygenLibrary':
-            return
-        self.importers.append(attributes['importer'])
+        self.run_time_data = {}
 
     def end_test(self, name, attributes):
         lib = BuiltIn().get_library_instance('oxygen.OxygenLibrary')
         if lib:
-            self.lib_data[attributes['longname']] = lib.data
+            self.run_time_data[attributes['longname']] = lib.data
 
     def output_file(self, path):
         result = ExecutionResult(path)
