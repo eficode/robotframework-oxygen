@@ -156,6 +156,6 @@ class JUnitBasicTests(TestCase):
             }],
             'tests': []
         }
-        xml = JUnitXml.fromfile(RESOURCES_PATH / 'junit.xml')
+        xml = JUnitXml.fromfile(str(RESOURCES_PATH / 'junit.xml'))
         retval = self.handler._transform_tests(xml)
         compare(retval, expected_output)
