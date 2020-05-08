@@ -10,14 +10,14 @@ from .errors import SubprocessException, ZAProxyHandlerException
 from .utils import run_command_line, validate_path
 
 class ZAProxyHandler(BaseHandler):
-    def run_zap(self, result_file, *command):
-        """Run Zed Attack Proxy tool specified with ``command``.
+    def run_zap(self, result_file, command, check_return_code=False, **env):
+        """Run Zed Attack Proxy security testing tool specified with
+        ``command``.
 
-        ``result_file`` must be first argument, so Oxygen can find the result
-        file when parsing the results.
+        See documentation for other arguments in `Run Gatling`.
         """
         try:
-            output = run_command_line(*command)
+            output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
             raise ZAProxyHandlerException(e)
         logger.info(output)

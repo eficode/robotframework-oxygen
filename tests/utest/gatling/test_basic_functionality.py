@@ -33,15 +33,34 @@ class JUnitBasicTests(TestCase):
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
-        self.handler.run_gatling('somefile', 'some', 'command')
-        mock_subprocess.run.assert_called_once_with(('some', 'command'),
-                                                    capture_output=True)
+        self.handler.run_gatling('somefile', 'some command')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={})
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_with_passing_environment_variables(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=0)
+        self.handler.run_gatling('somefile', 'some command', ENV_VAR='hello')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={'ENV_VAR': 'hello'})
 
     @patch('oxygen.utils.subprocess')
     def test_running_fails_correctly(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=255)
         with self.assertRaises(GatlingHandlerException):
-            self.handler.run_gatling('somefile', 'some', 'command')
+            self.handler.run_gatling('somefile',
+                                     'some command',
+                                     check_return_code=True)
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_does_not_fail_by_default(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=255)
+        retval = self.handler.run_gatling('somefile', 'some command')
+        self.assertEqual(retval, 'somefile')
 
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)

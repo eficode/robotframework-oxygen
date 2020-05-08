@@ -211,16 +211,34 @@ class ZAPBasicTests(TestCase):
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
-        self.handler.run_zap('somefile', 'some', 'command')
-        mock_subprocess.run.assert_called_once_with(('some', 'command'),
-                                                    capture_output=True)
+        self.handler.run_zap('somefile', 'some command')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={})
 
-    @patch('oxygen.zap.validate_path')
     @patch('oxygen.utils.subprocess')
-    def test_running_fails_correctly(self, mock_subprocess, _):
+    def test_running_with_passing_environment_values(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=0)
+        self.handler.run_zap('somefile', 'some command', ENV_VAR='value')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={'ENV_VAR': 'value'})
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_fails_correctly(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=-1)
         with self.assertRaises(ZAProxyHandlerException):
-            self.handler.run_zap('somefile', 'some', 'command')
+            self.handler.run_zap('somefile',
+                                 'some command',
+                                 check_return_code=True)
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_does_not_fail_by_default(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=-1)
+        retval = self.handler.run_zap('somefile', 'some command')
+        self.assertEqual(retval, 'somefile')
 
     @patch('oxygen.zap.ZAProxyHandler._read_results')
     @patch('oxygen.zap.ZAProxyHandler._parse_zap_dict')

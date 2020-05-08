@@ -5,13 +5,14 @@ from .errors import (SubprocessException,
                      ResultFileIsNotAFileException,
                      ResultFileNotFoundException)
 
-def run_command_line(*command):
+def run_command_line(command, check_return_code=True, **env):
     try:
-        proc = subprocess.run(command, capture_output=True)
+        proc = subprocess.run(command, capture_output=True, env=env, shell=True)
     except IndexError as e:
         raise SubprocessException('Command "{}" was empty'.format(command))
-    if proc.returncode != 0:
-        raise SubprocessException('Command "{}" failed'.format(command))
+    if check_return_code and proc.returncode != 0:
+        raise SubprocessException(f'Command "{command}" failed with return '
+                                  f'code {proc.returncode}:\n"{proc.stdout.decode("utf-8")}"')
     return proc.stdout
 
 def validate_path(filepath):

@@ -6,14 +6,26 @@ from .utils import run_command_line, validate_path
 
 class GatlingHandler(BaseHandler):
 
-    def run_gatling(self, result_file, *command):
-        """Run Gatling tool specified with ``command``.
+    def run_gatling(self, result_file, command, check_return_code=False, **env):
+        """Run Gatling performance testing tool specified with ``command``.
 
-        ``result_file`` must be first argument, so Oxygen can find the result
-        file when parsing the results.
+        ``result_file`` is path to the file Oxygen uses to parse the results. It
+        is important you craft your `command` to produce the file
+        `result_file` expects.
+
+        ``command`` is used to run JUnit tests. It is a single string.
+
+        ``check_return_code`` checks that ``command`` returns with exit code zero
+        (0). By default, return code is not checked as failing test execution
+        generally is reported with non-zero return code. However, it is useful
+        to set ``check_return_code`` to ``True`` when you want to debug why
+        it  is failing for other reasons than failing test execution.
+
+        ``env`` is used to pass environment variables that are set in the subshell
+        the ``command`` is run in.
         """
         try:
-            output = run_command_line(*command)
+            output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
             raise GatlingHandlerException(e)
         logger.info(output)

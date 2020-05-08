@@ -42,18 +42,47 @@ class JUnitBasicTests(TestCase):
 
         mock_validate_path.assert_called_once_with('some/file/path.ext')
 
+
+    #@patch('oxygen.junit.JUnitHandler.validate_path')
+    def test_result_file_is_not_a_string(self):
+        with self.assertRaises(JUnitHandlerException) as ex:
+            self.handler.parse_results(None)
+
+        ex = str(ex.exception)
+        self.assertIn('Invalid result file path', ex)
+        self.assertIn('not NoneType', ex)
+
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
-        self.handler.run_junit('somefile', 'some', 'command')
-        mock_subprocess.run.assert_called_once_with(('some', 'command'),
-                                                    capture_output=True)
+        self.handler.run_junit('somefile', 'some command')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={})
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_with_passing_environment_variables(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=0)
+        self.handler.run_junit('somefile', 'some command', env_var='value')
+        mock_subprocess.run.assert_called_once_with('some command',
+                                                    capture_output=True,
+                                                    shell=True,
+                                                    env={'env_var': 'value'})
 
     @patch('oxygen.utils.subprocess')
     def test_running_fails_correctly(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=255)
         with self.assertRaises(JUnitHandlerException):
-            self.handler.run_junit('somefile', 'some', 'command')
+            self.handler.run_junit('somefile',
+                                   'some command',
+                                   check_return_code=True)
+
+    @patch('oxygen.utils.subprocess')
+    def test_running_does_not_fail_by_default(self, mock_subprocess):
+        mock_subprocess.run.return_value = Mock(returncode=255)
+        retval = self.handler.run_junit('somefile', 'some command')
+        self.assertEqual(retval, 'somefile')
 
     def test_cli(self):
         self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)

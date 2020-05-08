@@ -8,14 +8,14 @@ from .utils import run_command_line, validate_path
 
 class JUnitHandler(BaseHandler):
 
-    def run_junit(self, result_file, *command):
-        """Run JUnit tool specified with ``command``.
+    def run_junit(self, result_file, command, check_return_code=False, **env):
+        """Run JUnit unit testing tool specified with ``command``.
 
-        ``result_file`` must be first argument, so Oxygen can find the result
-        file when parsing the results.
+        See documentation for other arguments in `Run Gatling`.
         """
+
         try:
-            output = run_command_line(*command)
+            output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
             raise JUnitHandlerException(e)
         logger.info(output)
@@ -31,7 +31,10 @@ class JUnitHandler(BaseHandler):
         return self._transform_tests(xml)
 
     def _validate_path(self, result_file):
-        return str(validate_path(result_file).resolve())
+        try:
+            return str(validate_path(result_file).resolve())
+        except TypeError as e:
+            raise JUnitHandlerException(f'Invalid result file path: {e}')
 
     def _transform_tests(self, node):
         """Convert the given xml object into a test suite dict

@@ -68,7 +68,7 @@ class listener(object):
 
     def output_file(self, path):
         result = ExecutionResult(path)
-        result.visit(OxygenVisitor(self.lib_data))
+        result.visit(OxygenVisitor(self.run_time_data))
         result.save()
 
 
