@@ -1,10 +1,12 @@
 from time import time
 from unittest import TestCase
 
-from robot.result.model import Keyword as RobotKeyword
-from robot.result.model import Message as RobotMessage
-from robot.result.model import TestCase as RobotTest
-from robot.result.model import TestSuite as RobotSuite
+from robot.result.model import (Keyword as RobotKeyword,
+                                Message as RobotMessage,
+                                TestCase as RobotTest,
+                                TestSuite as RobotSuite)
+
+from robot.running.model import TestSuite as RobotRunningSuite
 
 from oxygen import RobotInterface
 
@@ -120,7 +122,7 @@ EXAMPLE_SUITES = [{
                            'keywords': [],
                            'messages': [],
                            'name': 'caseb (Execution)',
-                           'pass': True,
+                           'pass': False,
                            'tags': [],
                            'teardown': []}],
              'name': 'caseb',
@@ -136,11 +138,11 @@ class  RobotInterfaceBasicTests(TestCase):
     all the other functions, pretty much everything is covered.
     '''
     def setUp(self):
-        self.interface = RobotInterface()
+        self.iface = RobotInterface()
 
-    def test_build_suites(self):
+    def test_result_build_suites(self):
         now = int(round(time() * 1000))
-        timestamp, converted = self.interface.build_suites(now, *EXAMPLE_SUITES)
+        _, converted = self.iface.result.build_suites(now, *EXAMPLE_SUITES)
 
         self.assertIsInstance(converted, list)
         self.assertEqual(len(converted), 2)
@@ -160,24 +162,30 @@ class  RobotInterfaceBasicTests(TestCase):
         for message in converted_suite.tests[1].keywords[0].messages:
             self.assertIsInstance(message, RobotMessage)
 
-    def test_create_wrapper_keyword_for_setup(self):
-        retval = self.interface.create_wrapper_keyword('My Wrapper',
+    def test_result_create_wrapper_keyword_for_setup(self):
+        ret = self.iface.result.create_wrapper_keyword('My Wrapper',
                                                        '20200507 13:42:50.001',
                                                        '20200507 14:59:01.999',
                                                        True,
                                                        RobotKeyword(),
                                                        RobotKeyword())
 
-        self.assertIsInstance(retval, RobotKeyword)
-        self.assertEqual(retval.name, 'My Wrapper')
-        self.assertEqual(len(retval.keywords), 2)
-        self.assertEqual(retval.type, retval.SETUP_TYPE)
+        self.assertIsInstance(ret, RobotKeyword)
+        self.assertEqual(ret.name, 'My Wrapper')
+        self.assertEqual(len(ret.keywords), 2)
+        self.assertEqual(ret.type, ret.SETUP_TYPE)
 
-    def test_create_wrapper_keyword_for_setup(self):
-        retval = self.interface.create_wrapper_keyword('My Wrapper',
+    def test_result_create_wrapper_keyword_for_setup(self):
+        ret = self.iface.result.create_wrapper_keyword('My Wrapper',
                                                        '20200507 13:42:50.001',
                                                        '20200507 14:59:01.999',
                                                        False,
                                                        RobotKeyword())
 
-        self.assertEqual(retval.type, retval.TEARDOWN_TYPE)
+        self.assertEqual(ret.type, ret.TEARDOWN_TYPE)
+
+    def test_running_build_suite(self):
+        ret = self.iface.running.build_suite(EXAMPLE_SUITES[1])
+
+        self.assertIsInstance(ret, RobotRunningSuite)
+        self.assertEqual(ret.name, EXAMPLE_SUITES[1]['name'])

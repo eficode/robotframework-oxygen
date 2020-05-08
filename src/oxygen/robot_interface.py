@@ -1,12 +1,15 @@
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
-from robot.result.model import Keyword as RobotKeyword
-from robot.result.model import Message as RobotMessage
-from robot.result.model import TestCase as RobotTest
-from robot.result.model import TestSuite as RobotSuite
+from robot.result.model import (Keyword as RobotResultKeyword,
+                                Message as RobotResultMessage,
+                                TestCase as RobotResultTest,
+                                TestSuite as RobotResultSuite)
 
-class RobotInterface(object):
+from robot.running.model import TestSuite as RobotRunningSuite
+
+
+class RobotResultInterface(object):
     def build_suites(self, starting_time, *suites):
         """Convert a given `suite` dict into a Robot suite"""
         finished_suites = []
@@ -71,7 +74,7 @@ class RobotInterface(object):
         start_timestamp = self.ms_to_timestamp(start_time)
         end_timestamp = self.ms_to_timestamp(end_time)
 
-        robot_suite = RobotSuite(name,
+        robot_suite = RobotResultSuite(name,
                                  starttime=start_timestamp,
                                  endtime=end_timestamp)
         robot_suite.set_tags(add=tags, persist=True)
@@ -142,7 +145,7 @@ class RobotInterface(object):
         end_timestamp = self.ms_to_timestamp(end_time)
         status = self.get_keywords_status(setup_keyword, teardown_keyword, *(keywords or []))
 
-        robot_test = RobotTest(name,
+        robot_test = RobotResultTest(name,
                                tags=tags,
                                status=status,
                                starttime=start_timestamp,
@@ -219,11 +222,11 @@ class RobotInterface(object):
         end_timestamp = self.ms_to_timestamp(end_time)
 
         if setup:
-            keyword_type = RobotKeyword.SETUP_TYPE
+            keyword_type = RobotResultKeyword.SETUP_TYPE
         elif teardown:
-            keyword_type = RobotKeyword.TEARDOWN_TYPE
+            keyword_type = RobotResultKeyword.TEARDOWN_TYPE
         else:
-            keyword_type = RobotKeyword.KEYWORD_TYPE
+            keyword_type = RobotResultKeyword.KEYWORD_TYPE
 
         if status is None:
             keyword_status = 'NOT_RUN'
@@ -232,7 +235,7 @@ class RobotInterface(object):
         else:
             keyword_status = 'FAIL'
 
-        robot_keyword = RobotKeyword(name,
+        robot_keyword = RobotResultKeyword(name,
                                      tags=tags,
                                      status=keyword_status,
                                      starttime=start_timestamp,
@@ -249,7 +252,7 @@ class RobotInterface(object):
 
         for message in messages:
             if message:
-                robot_keyword.messages.append(RobotMessage(message))
+                robot_keyword.messages.append(RobotResultMessage(message))
 
         return robot_keyword
 
@@ -324,3 +327,37 @@ class RobotInterface(object):
                                                  (not setup))
 
         return robot_keyword
+
+
+class RobotRunningInterface(object):
+    def build_suite(self, parsed_results):
+        robot_root_suite = RobotRunningSuite(parsed_results['name'])
+        for parsed_suite in parsed_results['suites']:
+            robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
+            for subsuite in parsed_suite['suites']:
+                robot_subsuite = self.build_suite(subsuite)
+                robot_suite.suites.append(robot_subsuite)
+            self.build_tests(parsed_suite, robot_suite)
+        self.build_tests(parsed_results, robot_root_suite)
+        return robot_root_suite
+
+    def build_tests(self, oxygen_suite, robot_suite):
+        for parsed_test in oxygen_suite['tests']:
+            name = parsed_test['name']
+            tags = parsed_test['tags']
+            kw = parsed_test['keywords'][0]
+            msg = '\n'.join(kw['messages'])
+            test_robot_counterpart = robot_suite.tests.create(name, tags=tags)
+            if kw['pass']:
+                args = [msg if msg else 'Test passed :D']
+                test_robot_counterpart.keywords.create('Pass execution',
+                                                       args=args)
+            else:
+                args = [msg if msg else 'Test failed D:']
+                test_robot_counterpart.keywords.create('Fail', args=args)
+
+
+class RobotInterface(object):
+    def __init__(self):
+        self.result = RobotResultInterface()
+        self.running = RobotRunningInterface()

@@ -4,13 +4,13 @@ from inspect import signature
 from pathlib import Path
 from traceback import format_exception
 
-from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
+from robot.api import ExecutionResult, ResultVisitor, ResultWriter
 from robot.libraries.BuiltIn import BuiltIn
 from yaml import load, FullLoader
 
 from .config import CONFIG_FILE
 from .errors import OxygenException
-
+from .robot_interface import RobotInterface
 
 class OxygenCore(object):
 
@@ -119,24 +119,6 @@ class OxygenCLI(OxygenCore):
                 subcommand_parser.set_defaults(func=tool_handler.parse_results)
         return parser.parse_args()
 
-    def convert_results_to_RF(self, parsed_results):
-        robot_root_suite = TestSuite(parsed_results['name'])
-        for parsed_suite in parsed_results['suites']:
-            robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
-            for parsed_test in parsed_suite['tests']:
-                test_robot_counterpart = robot_suite.tests.create(parsed_test['name'], tags=parsed_test['tags'])
-                kw = parsed_test['keywords'][0]
-                print(parsed_test['keywords'])
-                msg = '\n'.join(kw['messages'])
-                if kw['pass']:
-                    args = [msg if msg else 'Test passed :D']
-                    test_robot_counterpart.keywords.create('Pass execution',
-                                                           args=args)
-                else:
-                    args = [msg if msg else 'Test failed D:']
-                    test_robot_counterpart.keywords.create('Fail', args=args)
-        return robot_root_suite
-
     def get_output_filename(self, resultfile):
         filename = Path(resultfile)
         filename = filename.with_suffix('.xml')
@@ -155,7 +137,7 @@ class OxygenCLI(OxygenCore):
             parser.error('No arguments given')
         output_filename = self.get_output_filename(args.resultfile)
         parsed_results = args.func(args.resultfile)
-        robot_suite = self.convert_results_to_RF(parsed_results)
+        robot_suite = RobotInterface().running.build_suite(parsed_results)
         self.save_robot_output(output_filename, robot_suite)
 
 

@@ -71,7 +71,7 @@ class BaseHandler(object):
         if setup_keywords:
             setup_start = setup_keywords[0].starttime
             setup_end = setup_keywords[-1].endtime
-            setup_keyword = self._interface.create_wrapper_keyword(
+            setup_keyword = self._interface.result.create_wrapper_keyword(
                 'Oxygen Setup',
                 setup_start,
                 setup_end,
@@ -81,7 +81,7 @@ class BaseHandler(object):
         if teardown_keywords:
             teardown_start = teardown_keywords[0].starttime
             teardown_end = teardown_keywords[-1].endtime
-            teardown_keyword = self._interface.create_wrapper_keyword(
+            teardown_keyword = self._interface.result.create_wrapper_keyword(
                 'Oxygen Teardown',
                 teardown_start,
                 teardown_end,
@@ -98,8 +98,8 @@ class BaseHandler(object):
         """
         test = keyword.parent
         test_results = self.parse_results(self.run_time_data)
-        end_time, result_suite = self._interface.build_suite(100000,
-                                                             test_results)
+        end_time, result_suite = self._interface.result.build_suite(100000,
+                                                                   test_results)
 
         if not result_suite:
             return

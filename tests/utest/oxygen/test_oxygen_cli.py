@@ -59,20 +59,19 @@ class TestOxygenCLI(TestCase):
         self.cli = OxygenCLI()
 
     @patch('oxygen.oxygen.OxygenCLI.save_robot_output')
-    @patch('oxygen.oxygen.OxygenCLI.convert_results_to_RF')
+    @patch('oxygen.oxygen.RobotInterface')
     @patch('oxygen.oxygen.OxygenCLI.parse_args')
-    def test_run(self, mock_parse_args, mock_convert, mock_save):
-        m = Mock()
-        m.resultfile = 'path/to/file.xml'
-        m.func = lambda r: {'some': 'results'}
-        mock_parse_args.return_value = m
-
+    def test_run(self, mock_parse_args, mock_robot_iface, mock_save):
+        mock_parse_args.return_value = Mock(resultfile='path/to/file.xml',
+                                            func=lambda _: {'some': 'results'})
         expected_suite = create_autospec(TestSuite)
-        mock_convert.return_value = expected_suite
+        mock = Mock()
+        mock.running.build_suite = Mock(return_value=expected_suite)
+        mock_robot_iface.return_value = mock
 
         self.cli.run()
 
-        mock_convert.assert_called_once_with({'some': 'results'})
+        mock.running.build_suite.assert_called_once_with({'some': 'results'})
         mock_save.assert_called_once_with('path/to/file_robot_output.xml',
                                           expected_suite)
 
