@@ -115,19 +115,17 @@ class BaseHandler(object):
         self._inject_suite_report(test, result_suite)
 
     def _inject_suite_report(self, test, result_suite):
-        """Add the given suite to the top level of the current test execution
+        """Add the given suite to the parent suite of the test case.
+
+        This also filters out the test case from the parent suite test cases.
 
         test: Any Robot object part of the current test execution
         result_suite: Robot suite to report on
         """
-        traveller = test.parent
-        while traveller.parent is not None:
-            traveller = traveller.parent
-
-        traveller.suites.append(result_suite)
-
-        test.parent.tests = [
-            sibling for sibling in test.parent.tests if sibling is not test]
+        suite = test.parent
+        new_tests = [t for t in suite.tests if t is not test]
+        suite.suites.append(result_suite)
+        suite.tests = new_tests
 
     def _normalize_keyword_name(self, keyword_name):
         """

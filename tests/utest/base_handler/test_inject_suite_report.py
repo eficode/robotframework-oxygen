@@ -24,8 +24,8 @@ class TestInjectSuiteReport(TestCase):
 
     def test_finds_and_appends(self):
         self.handler._inject_suite_report(self.test, self.suite)
-        self.suites.append.assert_called_once_with(self.suite)
+        self.test.parent.suites.append.assert_called_once_with(self.suite)
 
     def test_finds_and_filters(self):
         self.handler._inject_suite_report(self.test, self.suite)
-        assert(self.parent.tests == [1, 2, 3])
+        self.assertEqual(self.parent.tests, [1, 2, 3])
