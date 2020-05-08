@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="utest.base_handler.test_errors.TestBaseHandlerErrors" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="test_parse_results_raises_an_error" classname="TestBaseHandlerErrors"/>
+  </testsuite>
+  <testsuite name="utest.base_handler.test_inject_suite_report.TestInjectSuiteReport" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_finds_and_appends" classname="TestInjectSuiteReport"/>
+    <testcase name="test_finds_and_filters" classname="TestInjectSuiteReport"/>
+  </testsuite>
+  <testsuite name="utest.base_handler.test_normalize_keyword_name.TestNormalizeKeywordName" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="test_normalize" classname="TestNormalizeKeywordName"/>
+  </testsuite>
+  <testsuite name="utest.base_handler.test_set_suite_tags.TestSetSuiteTags" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="test_tags_are_set" classname="TestSetSuiteTags"/>
+  </testsuite>
+  <testsuite name="utest.gatling.test_basic_functionality.JUnitBasicTests" tests="9" failures="0" errors="0" skipped="0">
+    <testcase name="test_check_for_keyword" classname="JUnitBasicTests"/>
+    <testcase name="test_cli" classname="JUnitBasicTests"/>
+    <testcase name="test_gatling_parsing" classname="JUnitBasicTests"/>
+    <testcase name="test_initialization" classname="JUnitBasicTests"/>
+    <testcase name="test_parsing" classname="JUnitBasicTests"/>
+    <testcase name="test_running" classname="JUnitBasicTests"/>
+    <testcase name="test_running_does_not_fail_by_default" classname="JUnitBasicTests"/>
+    <testcase name="test_running_fails_correctly" classname="JUnitBasicTests"/>
+    <testcase name="test_running_with_passing_environment_variables" classname="JUnitBasicTests"/>
+  </testsuite>
+  <testsuite name="utest.junit.test_basic_functionality.JUnitBasicTests" tests="11" failures="0" errors="0" skipped="0">
+    <testcase name="test_JUnitXml_requires_path_to_be_string" classname="JUnitBasicTests"/>
+    <testcase name="test_check_for_keyword" classname="JUnitBasicTests"/>
+    <testcase name="test_cli" classname="JUnitBasicTests"/>
+    <testcase name="test_initialization" classname="JUnitBasicTests"/>
+    <testcase name="test_parsing" classname="JUnitBasicTests"/>
+    <testcase name="test_result_file_is_not_a_string" classname="JUnitBasicTests"/>
+    <testcase name="test_running" classname="JUnitBasicTests"/>
+    <testcase name="test_running_does_not_fail_by_default" classname="JUnitBasicTests"/>
+    <testcase name="test_running_fails_correctly" classname="JUnitBasicTests"/>
+    <testcase name="test_running_with_passing_environment_variables" classname="JUnitBasicTests"/>
+    <testcase name="test_transform_tests" classname="JUnitBasicTests"/>
+  </testsuite>
+  <testsuite name="utest.oxygen.test_oxygen_listener.OxygenListenerBasicTests" tests="3" failures="0" errors="0" skipped="0">
+    <testcase name="test_end_test_when_library_was_not_used" classname="OxygenListenerBasicTests"/>
+    <testcase name="test_end_test_when_library_was_used" classname="OxygenListenerBasicTests"/>
+    <testcase name="test_listener_api_version_is_not_changed_accidentally" classname="OxygenListenerBasicTests"/>
+  </testsuite>
+  <testsuite name="utest.oxygen.test_oxygen_visitor.TestOxygen" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_multiple_errors_are_reported" classname="TestOxygen"/>
+    <testcase name="test_single_exception_raised_directly" classname="TestOxygen"/>
+  </testsuite>
+  <testsuite name="utest.oxygen.test_oxygenlibrary.TestOxygenLibrary" tests="6" failures="0" errors="0" skipped="0">
+    <testcase name="test_arguments" classname="TestOxygenLibrary"/>
+    <testcase name="test_config_is_correct" classname="TestOxygenLibrary"/>
+    <testcase name="test_documentation" classname="TestOxygenLibrary"/>
+    <testcase name="test_initialization" classname="TestOxygenLibrary"/>
+    <testcase name="test_run_keyword" classname="TestOxygenLibrary"/>
+    <testcase name="test_run_keyword_should_fail_if_nonexistent_kw_is_called" classname="TestOxygenLibrary"/>
+  </testsuite>
+  <testsuite name="utest.robot_interface.test_robot_interface_basic_usage.RobotInterfaceBasicTests" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_build_suites" classname="RobotInterfaceBasicTests"/>
+    <testcase name="test_create_wrapper_keyword_for_setup" classname="RobotInterfaceBasicTests"/>
+  </testsuite>
+  <testsuite name="utest.robot_interface.test_time_conversions.TestMsToTimestamp" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_should_be_associative" classname="TestMsToTimestamp"/>
+    <testcase name="test_should_be_correct" classname="TestMsToTimestamp"/>
+  </testsuite>
+  <testsuite name="utest.robot_interface.test_time_conversions.TestTimestampToMs" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_should_be_associative" classname="TestTimestampToMs"/>
+    <testcase name="test_should_be_correct" classname="TestTimestampToMs"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_basic_functionality.ZAPBasicTests" tests="11" failures="0" errors="0" skipped="0">
+    <testcase name="test_check_for_keyword" classname="ZAPBasicTests"/>
+    <testcase name="test_cli" classname="ZAPBasicTests"/>
+    <testcase name="test_initialization" classname="ZAPBasicTests"/>
+    <testcase name="test_parsing" classname="ZAPBasicTests"/>
+    <testcase name="test_parsing_json" classname="ZAPBasicTests"/>
+    <testcase name="test_parsing_xml" classname="ZAPBasicTests"/>
+    <testcase name="test_running" classname="ZAPBasicTests"/>
+    <testcase name="test_running_does_not_fail_by_default" classname="ZAPBasicTests"/>
+    <testcase name="test_running_fails_correctly" classname="ZAPBasicTests"/>
+    <testcase name="test_running_with_passing_environment_values" classname="ZAPBasicTests"/>
+    <testcase name="test_zap_parsing" classname="ZAPBasicTests"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_parse_zap_alert_dict.TestParseZapAlertDict" tests="3" failures="0" errors="0" skipped="0">
+    <testcase name="test_has_defaults" classname="TestParseZapAlertDict"/>
+    <testcase name="test_keeps_params" classname="TestParseZapAlertDict"/>
+    <testcase name="test_passes_down" classname="TestParseZapAlertDict"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_parse_zap_dict.TestParseZapDict" tests="4" failures="0" errors="0" skipped="0">
+    <testcase name="test_calls_down" classname="TestParseZapDict"/>
+    <testcase name="test_handles_oddparams" classname="TestParseZapDict"/>
+    <testcase name="test_has_defaults" classname="TestParseZapDict"/>
+    <testcase name="test_keepsparams" classname="TestParseZapDict"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_parse_zap_instance.TestParseZapInstance" tests="6" failures="0" errors="0" skipped="0">
+    <testcase name="test_has_defaults" classname="TestParseZapInstance"/>
+    <testcase name="test_is_fail_if_risk_and_confident" classname="TestParseZapInstance"/>
+    <testcase name="test_is_pass_if_not_risk_and_confident" classname="TestParseZapInstance"/>
+    <testcase name="test_is_pass_if_not_risk_and_not_confident" classname="TestParseZapInstance"/>
+    <testcase name="test_is_pass_if_risk_and_not_confident" classname="TestParseZapInstance"/>
+    <testcase name="test_keepsparams" classname="TestParseZapInstance"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_parse_zap_site_dict.TestParseZapSiteDict" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="test_has_defaults" classname="TestParseZapSiteDict"/>
+    <testcase name="test_reads_prefixed" classname="TestParseZapSiteDict"/>
+  </testsuite>
+  <testsuite name="utest.zap.test_xml_to_dict.TestXmlToDict" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="test_converts_xml" classname="TestXmlToDict"/>
+  </testsuite>
+  <testsuite name="utest.oxygen.test_oxygen_cli.TestOxygenCLI" tests="3" failures="1" errors="2" skipped="0">
+    <testcase name="test_cli_with_no_args" classname="TestOxygenCLI">
+      <failure>Traceback (most recent call last):
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 59, in testPartExecutor
+    yield
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 628, in run
+    testMethod()
+
+  File "/Users/tkairi/Coding/oxygen/tests/utest/oxygen/test_oxygen_cli.py", line 28, in test_cli_with_no_args
+    self.assertEqual(proc.returncode, 2)
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 852, in assertEqual
+    assertion_func(first, second, msg=msg)
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 845, in _baseAssertEqual
+    raise self.failureException(msg)
+
+AssertionError: 1 != 2
+</failure>
+    </testcase>
+    <testcase name="test_direct_module_entrypoint" classname="TestOxygenCLI">
+      <error>Traceback (most recent call last):
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 59, in testPartExecutor
+    yield
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 628, in run
+    testMethod()
+
+  File "/Users/tkairi/Coding/oxygen/tests/utest/oxygen/test_oxygen_cli.py", line 20, in test_direct_module_entrypoint
+    self.verify_cli_help_text('python -m oxygen.oxygen --help')
+
+  File "/Users/tkairi/Coding/oxygen/tests/utest/oxygen/test_oxygen_cli.py", line 32, in verify_cli_help_text
+    out = check_output(cmd, text=True, shell=True)
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py", line 411, in check_output
+    **kwargs).stdout
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py", line 512, in run
+    output=stdout, stderr=stderr)
+
+subprocess.CalledProcessError: Command 'python -m oxygen.oxygen --help' returned non-zero exit status 1.
+</error>
+    </testcase>
+    <testcase name="test_main_level_entrypoint" classname="TestOxygenCLI">
+      <error>Traceback (most recent call last):
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 59, in testPartExecutor
+    yield
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py", line 628, in run
+    testMethod()
+
+  File "/Users/tkairi/Coding/oxygen/tests/utest/oxygen/test_oxygen_cli.py", line 16, in test_main_level_entrypoint
+    self.verify_cli_help_text('python -m oxygen --help')
+
+  File "/Users/tkairi/Coding/oxygen/tests/utest/oxygen/test_oxygen_cli.py", line 32, in verify_cli_help_text
+    out = check_output(cmd, text=True, shell=True)
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py", line 411, in check_output
+    **kwargs).stdout
+
+  File "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py", line 512, in run
+    output=stdout, stderr=stderr)
+
+subprocess.CalledProcessError: Command 'python -m oxygen --help' returned non-zero exit status 1.
+</error>
+    </testcase>
+  </testsuite>
+</testsuites>

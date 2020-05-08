@@ -1,8 +1,15 @@
+from argparse import ArgumentParser
 from subprocess import check_output, run
-from unittest import TestCase, skip
+from unittest import TestCase
+from unittest.mock import create_autospec, patch, Mock
 
+from robot.result.model import TestSuite
 
-class TestOxygenCLI(TestCase):
+from oxygen.oxygen import OxygenCLI
+
+from ..helpers import RESOURCES_PATH
+
+class TestOxygenCLIEntryPoints(TestCase):
     """Coverage does not measure coverage correctly for these tests.
 
     We have tests for __main__ entrypoint below, but Coverage is unable to
@@ -26,9 +33,63 @@ class TestOxygenCLI(TestCase):
                    text=True,
                    capture_output=True)
         self.assertEqual(proc.returncode, 2)
-        self.assertTrue('usage: oxygen' in proc.stderr)
+        self.assertIn('usage: oxygen', proc.stderr)
 
     def verify_cli_help_text(self, cmd):
         out = check_output(cmd, text=True, shell=True)
-        self.assertTrue('usage: oxygen' in out)
-        self.assertTrue('-h, --help' in out)
+        self.assertIn('usage: oxygen', out)
+        self.assertIn('-h, --help', out)
+
+    def test_junit_works_on_cli(self):
+        target = RESOURCES_PATH / 'green-junit-example.xml'
+        expected = target.with_name('green-junit-expected-robot-output.xml')
+        actual = target.with_name('green-junit-example_robot_output.xml')
+        if actual.exists():
+            actual.unlink() # delete file if exists
+
+        out = check_output(f'python -m oxygen oxygen.junit {target}',
+                           text=True,
+                           shell=True)
+
+        self.assertEqual(expected.read_text(), expected.read_text())
+
+class TestOxygenCLI(TestCase):
+
+    def setUp(self):
+        self.cli = OxygenCLI()
+
+    @patch('oxygen.oxygen.OxygenCLI.save_robot_output')
+    @patch('oxygen.oxygen.OxygenCLI.convert_results_to_RF')
+    @patch('oxygen.oxygen.OxygenCLI.parse_args')
+    def test_run(self, mock_parse_args, mock_convert, mock_save):
+        m = Mock()
+        m.resultfile = 'path/to/file.xml'
+        m.func = lambda r: {'some': 'results'}
+        mock_parse_args.return_value = m
+
+        expected_suite = create_autospec(TestSuite)
+        mock_convert.return_value = expected_suite
+
+        self.cli.run()
+
+        mock_convert.assert_called_once_with({'some': 'results'})
+        mock_save.assert_called_once_with('path/to/file_robot_output.xml',
+                                          expected_suite)
+
+    def test_parse_args(self):
+        mock_parser = create_autospec(ArgumentParser)
+        m = Mock()
+        mock_parser.add_subparsers.return_value = m
+
+        self.cli.parse_args(mock_parser)
+
+        self.assertEqual(len(m.add_parser.call_args_list), 3)
+
+    def test_get_output_filename(self):
+        self.assertEqual(self.cli.get_output_filename('absolute/path/to.file'),
+                         'absolute/path/to_robot_output.xml')
+        self.assertEqual(self.cli.get_output_filename('path/to/file.xml'),
+                         'path/to/file_robot_output.xml')
+        self.assertEqual(self.cli.get_output_filename('file.extension'),
+                         'file_robot_output.xml')
+

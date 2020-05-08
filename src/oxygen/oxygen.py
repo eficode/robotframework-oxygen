@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from inspect import signature
-from os.path import splitext
+from pathlib import Path
 from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter, TestSuite
@@ -109,57 +109,55 @@ class OxygenLibrary(OxygenCore):
         method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
         return [str(param) for param in method_sig.parameters.values()]
 
+class OxygenCLI(OxygenCore):
+    def parse_args(self, parser):
+        subcommands = parser.add_subparsers()
+        for tool_name, tool_handler in self._handlers.items():
+            subcommand_parser = subcommands.add_parser(tool_name)
+            for flags, params in tool_handler.cli().items():
+                subcommand_parser.add_argument(*flags, **params)
+                subcommand_parser.set_defaults(func=tool_handler.parse_results)
+        return parser.parse_args()
 
-class FixElapsed(ResultVisitor):
-    def __init__(self, junit_suite):
-        self.junit_suite = junit_suite
+    def convert_results_to_RF(self, parsed_results):
+        robot_root_suite = TestSuite(parsed_results['name'])
+        for parsed_suite in parsed_results['suites']:
+            robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
+            for parsed_test in parsed_suite['tests']:
+                test_robot_counterpart = robot_suite.tests.create(parsed_test['name'], tags=parsed_test['tags'])
+                kw = parsed_test['keywords'][0]
+                print(parsed_test['keywords'])
+                msg = '\n'.join(kw['messages'])
+                if kw['pass']:
+                    args = [msg if msg else 'Test passed :D']
+                    test_robot_counterpart.keywords.create('Pass execution',
+                                                           args=args)
+                else:
+                    args = [msg if msg else 'Test failed D:']
+                    test_robot_counterpart.keywords.create('Fail', args=args)
+        return robot_root_suite
 
-    def visit_test(self, test):
-        junit_test = self.find_junit(test.name)
-        now = datetime.now()
-        test.endtime = now.strftime('%Y%m%d %H:%M:%S.%f')
-        test.starttime = (now - timedelta(seconds=junit_test['keywords'][0]['elapsed'])).strftime('%Y%m%d %H:%M:%S.%f')
+    def get_output_filename(self, resultfile):
+        filename = Path(resultfile)
+        filename = filename.with_suffix('.xml')
+        robot_name = filename.stem + '_robot_output' + filename.suffix
+        filename = filename.with_name(robot_name)
+        return str(filename)
 
-    def find_junit(self, test_name_to_find):
-        for s in self.junit_suite['suites']:
-            for t in s['tests']:
-                if t['name'] == test_name_to_find:
-                    return t
+    def save_robot_output(self, output_filename, robot_suite):
+        result = robot_suite.run(output=None, report=None, log=None, quiet=True)
+        result.save(output_filename)
 
-
-def cli():
-    parser = ArgumentParser(prog='oxygen')
-    subcommands = parser.add_subparsers()
-    for tool_name, tool_handler in OxygenCore()._handlers.items():
-        subcommand_parser = subcommands.add_parser(tool_name)
-        for flags, params in tool_handler.cli().items():
-            subcommand_parser.add_argument(*flags, **params)
-            subcommand_parser.set_defaults(func=tool_handler.parse_results)
-    args = parser.parse_args()
-    if not vars(args):
-        parser.error('No arguments given')
-    parsed_results = args.func([args.resultfile])
-
-    robot_root_suite = TestSuite(parsed_results['name'])
-    for parsed_suite in parsed_results['suites']:
-        robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
-        for parsed_test in parsed_suite['tests']:
-            test_robot_counterpart = robot_suite.tests.create(parsed_test['name'], tags=parsed_test['tags'])
-            kw = parsed_test['keywords'][0]
-            msg = '\n'.join(kw['messages'])
-            if kw['pass']:
-                test_robot_counterpart.keywords.create('Pass execution', args=[msg if msg else 'Test passed :D'])
-            else:
-                test_robot_counterpart.keywords.create('Fail', args=[msg if msg else 'Test failed D:'])
-
-    output_filename = list(splitext(args.resultfile))
-    output_filename[1] = output_filename[1] if output_filename[1].endswith('xml') else '.xml'
-    output_filename = output_filename[0] + '_robot_output' + output_filename[1]
-    result = robot_root_suite.run(output=None, report=None, log=None, quiet=True)
-
-    result.visit(FixElapsed(parsed_results))
-    result.save(output_filename)
+    def run(self):
+        parser = ArgumentParser(prog='oxygen')
+        args = self.parse_args(parser)
+        if not vars(args):
+            parser.error('No arguments given')
+        output_filename = self.get_output_filename(args.resultfile)
+        parsed_results = args.func(args.resultfile)
+        robot_suite = self.convert_results_to_RF(parsed_results)
+        self.save_robot_output(output_filename, robot_suite)
 
 
 if __name__ == '__main__':
-    cli()
+    OxygenCLI().run()

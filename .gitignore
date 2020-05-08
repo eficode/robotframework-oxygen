@@ -13,3 +13,4 @@ venv
 .coverage
 htmlcov
 green-junit.xml
+tests/resources/green-junit-example_robot_output.xml

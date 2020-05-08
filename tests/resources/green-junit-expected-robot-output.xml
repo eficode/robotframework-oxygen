@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Rebot 3.2.1 (Python 3.7.7 on darwin)" generated="20200508 11:54:16.323" rpa="false">
+<suite id="s1" name="JUnit Execution">
+<suite id="s1-s1" name="utest.base_handler.test_errors.TestBaseHandlerErrors">
+<test id="s1-s1-t1" name="test_parse_results_raises_an_error">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316481" endtime="20200508 11:54:16.316481" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.203" endtime="20200508 11:54:16.206"></status>
+</suite>
+<suite id="s1-s2" name="utest.base_handler.test_inject_suite_report.TestInjectSuiteReport">
+<test id="s1-s2-t1" name="test_finds_and_appends">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316550" endtime="20200508 11:54:16.316550" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s2-t2" name="test_finds_and_filters">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316566" endtime="20200508 11:54:16.316566" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.207" endtime="20200508 11:54:16.210"></status>
+</suite>
+<suite id="s1-s3" name="utest.base_handler.test_normalize_keyword_name.TestNormalizeKeywordName">
+<test id="s1-s3-t1" name="test_normalize">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316584" endtime="20200508 11:54:16.316584" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.210" endtime="20200508 11:54:16.213"></status>
+</suite>
+<suite id="s1-s4" name="utest.base_handler.test_set_suite_tags.TestSetSuiteTags">
+<test id="s1-s4-t1" name="test_tags_are_set">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316602" endtime="20200508 11:54:16.316602" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.213" endtime="20200508 11:54:16.216"></status>
+</suite>
+<suite id="s1-s5" name="utest.gatling.test_basic_functionality.JUnitBasicTests">
+<test id="s1-s5-t1" name="test_check_for_keyword">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316620" endtime="20200508 11:54:16.316620" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t2" name="test_cli">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316634" endtime="20200508 11:54:16.316634" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t3" name="test_gatling_parsing">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316648" endtime="20200508 11:54:16.316648" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t4" name="test_initialization">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316662" endtime="20200508 11:54:16.316662" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t5" name="test_parsing">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316675" endtime="20200508 11:54:16.316675" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t6" name="test_running">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316688" endtime="20200508 11:54:16.316688" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t7" name="test_running_does_not_fail_by_default">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316702" endtime="20200508 11:54:16.316702" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t8" name="test_running_fails_correctly">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316716" endtime="20200508 11:54:16.316716" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s5-t9" name="test_running_with_passing_environment_variables">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316729" endtime="20200508 11:54:16.316729" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.216" endtime="20200508 11:54:16.225"></status>
+</suite>
+<suite id="s1-s6" name="utest.junit.test_basic_functionality.JUnitBasicTests">
+<test id="s1-s6-t1" name="test_JUnitXml_requires_path_to_be_string">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316747" endtime="20200508 11:54:16.316747" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t2" name="test_check_for_keyword">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316761" endtime="20200508 11:54:16.316761" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t3" name="test_cli">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316774" endtime="20200508 11:54:16.316774" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t4" name="test_initialization">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316787" endtime="20200508 11:54:16.316787" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t5" name="test_parsing">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316800" endtime="20200508 11:54:16.316800" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t6" name="test_result_file_is_not_a_string">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316814" endtime="20200508 11:54:16.316814" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t7" name="test_running">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316827" endtime="20200508 11:54:16.316827" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t8" name="test_running_does_not_fail_by_default">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316841" endtime="20200508 11:54:16.316841" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t9" name="test_running_fails_correctly">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316854" endtime="20200508 11:54:16.316854" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t10" name="test_running_with_passing_environment_variables">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316868" endtime="20200508 11:54:16.316868" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s6-t11" name="test_transform_tests">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316882" endtime="20200508 11:54:16.316882" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.226" endtime="20200508 11:54:16.236"></status>
+</suite>
+<suite id="s1-s7" name="utest.oxygen.test_oxygen_listener.OxygenListenerBasicTests">
+<test id="s1-s7-t1" name="test_end_test_when_library_was_not_used">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316900" endtime="20200508 11:54:16.316900" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s7-t2" name="test_end_test_when_library_was_used">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316915" endtime="20200508 11:54:16.316915" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s7-t3" name="test_listener_api_version_is_not_changed_accidentally">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316930" endtime="20200508 11:54:16.316930" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.237" endtime="20200508 11:54:16.241"></status>
+</suite>
+<suite id="s1-s8" name="utest.oxygen.test_oxygen_visitor.TestOxygen">
+<test id="s1-s8-t1" name="test_multiple_errors_are_reported">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316949" endtime="20200508 11:54:16.316949" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s8-t2" name="test_single_exception_raised_directly">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316965" endtime="20200508 11:54:16.316965" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.241" endtime="20200508 11:54:16.244"></status>
+</suite>
+<suite id="s1-s9" name="utest.oxygen.test_oxygenlibrary.TestOxygenLibrary">
+<test id="s1-s9-t1" name="test_arguments">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316984" endtime="20200508 11:54:16.316984" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s9-t2" name="test_config_is_correct">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.316999" endtime="20200508 11:54:16.316999" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s9-t3" name="test_documentation">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317014" endtime="20200508 11:54:16.317014" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s9-t4" name="test_initialization">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317028" endtime="20200508 11:54:16.317028" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s9-t5" name="test_run_keyword">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317043" endtime="20200508 11:54:16.317043" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s9-t6" name="test_run_keyword_should_fail_if_nonexistent_kw_is_called">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317059" endtime="20200508 11:54:16.317059" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.245" endtime="20200508 11:54:16.252"></status>
+</suite>
+<suite id="s1-s10" name="utest.robot_interface.test_robot_interface_basic_usage.RobotInterfaceBasicTests">
+<test id="s1-s10-t1" name="test_build_suites">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317079" endtime="20200508 11:54:16.317079" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s10-t2" name="test_create_wrapper_keyword_for_setup">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317095" endtime="20200508 11:54:16.317095" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.252" endtime="20200508 11:54:16.256"></status>
+</suite>
+<suite id="s1-s11" name="utest.robot_interface.test_time_conversions.TestMsToTimestamp">
+<test id="s1-s11-t1" name="test_should_be_associative">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317114" endtime="20200508 11:54:16.317114" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s11-t2" name="test_should_be_correct">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317131" endtime="20200508 11:54:16.317131" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.256" endtime="20200508 11:54:16.259"></status>
+</suite>
+<suite id="s1-s12" name="utest.robot_interface.test_time_conversions.TestTimestampToMs">
+<test id="s1-s12-t1" name="test_should_be_associative">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317150" endtime="20200508 11:54:16.317150" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s12-t2" name="test_should_be_correct">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317167" endtime="20200508 11:54:16.317167" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.260" endtime="20200508 11:54:16.263"></status>
+</suite>
+<suite id="s1-s13" name="utest.zap.test_basic_functionality.ZAPBasicTests">
+<test id="s1-s13-t1" name="test_check_for_keyword">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317184" endtime="20200508 11:54:16.317184" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t2" name="test_cli">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317198" endtime="20200508 11:54:16.317198" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t3" name="test_initialization">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317211" endtime="20200508 11:54:16.317211" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t4" name="test_parsing">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317225" endtime="20200508 11:54:16.317225" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t5" name="test_parsing_json">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317241" endtime="20200508 11:54:16.317241" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t6" name="test_parsing_xml">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317258" endtime="20200508 11:54:16.317258" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t7" name="test_running">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317272" endtime="20200508 11:54:16.317272" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t8" name="test_running_does_not_fail_by_default">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317285" endtime="20200508 11:54:16.317285" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t9" name="test_running_fails_correctly">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317299" endtime="20200508 11:54:16.317299" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t10" name="test_running_with_passing_environment_values">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317315" endtime="20200508 11:54:16.317315" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s13-t11" name="test_zap_parsing">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317332" endtime="20200508 11:54:16.317332" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.264" endtime="20200508 11:54:16.275"></status>
+</suite>
+<suite id="s1-s14" name="utest.zap.test_parse_zap_alert_dict.TestParseZapAlertDict">
+<test id="s1-s14-t1" name="test_has_defaults">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317353" endtime="20200508 11:54:16.317353" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s14-t2" name="test_keeps_params">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317371" endtime="20200508 11:54:16.317371" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s14-t3" name="test_passes_down">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317388" endtime="20200508 11:54:16.317388" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.275" endtime="20200508 11:54:16.279"></status>
+</suite>
+<suite id="s1-s15" name="utest.zap.test_parse_zap_dict.TestParseZapDict">
+<test id="s1-s15-t1" name="test_calls_down">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317409" endtime="20200508 11:54:16.317409" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s15-t2" name="test_handles_oddparams">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317427" endtime="20200508 11:54:16.317427" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s15-t3" name="test_has_defaults">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317444" endtime="20200508 11:54:16.317444" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s15-t4" name="test_keepsparams">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317461" endtime="20200508 11:54:16.317461" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.280" endtime="20200508 11:54:16.291"></status>
+</suite>
+<suite id="s1-s16" name="utest.zap.test_parse_zap_instance.TestParseZapInstance">
+<test id="s1-s16-t1" name="test_has_defaults">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317555" endtime="20200508 11:54:16.317555" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s16-t2" name="test_is_fail_if_risk_and_confident">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317595" endtime="20200508 11:54:16.317595" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s16-t3" name="test_is_pass_if_not_risk_and_confident">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317615" endtime="20200508 11:54:16.317615" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s16-t4" name="test_is_pass_if_not_risk_and_not_confident">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317647" endtime="20200508 11:54:16.317647" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s16-t5" name="test_is_pass_if_risk_and_not_confident">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317665" endtime="20200508 11:54:16.317665" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s16-t6" name="test_keepsparams">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317682" endtime="20200508 11:54:16.317682" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.291" endtime="20200508 11:54:16.298"></status>
+</suite>
+<suite id="s1-s17" name="utest.zap.test_parse_zap_site_dict.TestParseZapSiteDict">
+<test id="s1-s17-t1" name="test_has_defaults">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317705" endtime="20200508 11:54:16.317705" critical="yes">Test passed :D</status>
+</test>
+<test id="s1-s17-t2" name="test_reads_prefixed">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317723" endtime="20200508 11:54:16.317723" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.299" endtime="20200508 11:54:16.302"></status>
+</suite>
+<suite id="s1-s18" name="utest.zap.test_xml_to_dict.TestXmlToDict">
+<test id="s1-s18-t1" name="test_converts_xml">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="PASS" starttime="20200508 11:54:16.317746" endtime="20200508 11:54:16.317746" critical="yes">Test passed :D</status>
+</test>
+<status status="PASS" starttime="20200508 11:54:16.303" endtime="20200508 11:54:16.305"></status>
+</suite>
+<suite id="s1-s19" name="utest.oxygen.test_oxygen_cli.TestOxygenCLI">
+<test id="s1-s19-t1" name="test_cli_with_no_args">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="FAIL" starttime="20200508 11:54:16.317769" endtime="20200508 11:54:16.317769" critical="yes">FAIL: None (None)</status>
+</test>
+<test id="s1-s19-t2" name="test_direct_module_entrypoint">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="FAIL" starttime="20200508 11:54:16.317788" endtime="20200508 11:54:16.317788" critical="yes">ERROR: None (None)</status>
+</test>
+<test id="s1-s19-t3" name="test_main_level_entrypoint">
+<tags>
+<tag>OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</tag>
+</tags>
+<status status="FAIL" starttime="20200508 11:54:16.317806" endtime="20200508 11:54:16.317806" critical="yes">ERROR: None (None)</status>
+</test>
+<status status="FAIL" starttime="20200508 11:54:16.305" endtime="20200508 11:54:16.310"></status>
+</suite>
+<status status="FAIL" starttime="20200508 11:54:16.180" endtime="20200508 11:54:16.311"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="69" fail="3">Critical Tests</stat>
+<stat pass="69" fail="3">All Tests</stat>
+</total>
+<tag>
+<stat pass="69" fail="3">OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME</stat>
+</tag>
+<suite>
+<stat pass="69" fail="3" id="s1" name="JUnit Execution">JUnit Execution</stat>
+<stat pass="1" fail="0" id="s1-s1" name="utest.base_handler.test_errors.TestBaseHandlerErrors">JUnit Execution.utest.base_handler.test_errors.TestBaseHandlerErrors</stat>
+<stat pass="2" fail="0" id="s1-s2" name="utest.base_handler.test_inject_suite_report.TestInjectSuiteReport">JUnit Execution.utest.base_handler.test_inject_suite_report.TestInjectSuiteReport</stat>
+<stat pass="1" fail="0" id="s1-s3" name="utest.base_handler.test_normalize_keyword_name.TestNormalizeKeywordName">JUnit Execution.utest.base_handler.test_normalize_keyword_name.TestNormalizeKeywordName</stat>
+<stat pass="1" fail="0" id="s1-s4" name="utest.base_handler.test_set_suite_tags.TestSetSuiteTags">JUnit Execution.utest.base_handler.test_set_suite_tags.TestSetSuiteTags</stat>
+<stat pass="9" fail="0" id="s1-s5" name="utest.gatling.test_basic_functionality.JUnitBasicTests">JUnit Execution.utest.gatling.test_basic_functionality.JUnitBasicTests</stat>
+<stat pass="11" fail="0" id="s1-s6" name="utest.junit.test_basic_functionality.JUnitBasicTests">JUnit Execution.utest.junit.test_basic_functionality.JUnitBasicTests</stat>
+<stat pass="3" fail="0" id="s1-s7" name="utest.oxygen.test_oxygen_listener.OxygenListenerBasicTests">JUnit Execution.utest.oxygen.test_oxygen_listener.OxygenListenerBasicTests</stat>
+<stat pass="2" fail="0" id="s1-s8" name="utest.oxygen.test_oxygen_visitor.TestOxygen">JUnit Execution.utest.oxygen.test_oxygen_visitor.TestOxygen</stat>
+<stat pass="6" fail="0" id="s1-s9" name="utest.oxygen.test_oxygenlibrary.TestOxygenLibrary">JUnit Execution.utest.oxygen.test_oxygenlibrary.TestOxygenLibrary</stat>
+<stat pass="2" fail="0" id="s1-s10" name="utest.robot_interface.test_robot_interface_basic_usage.RobotInterfaceBasicTests">JUnit Execution.utest.robot_interface.test_robot_interface_basic_usage.RobotInterfaceBasicTests</stat>
+<stat pass="2" fail="0" id="s1-s11" name="utest.robot_interface.test_time_conversions.TestMsToTimestamp">JUnit Execution.utest.robot_interface.test_time_conversions.TestMsToTimestamp</stat>
+<stat pass="2" fail="0" id="s1-s12" name="utest.robot_interface.test_time_conversions.TestTimestampToMs">JUnit Execution.utest.robot_interface.test_time_conversions.TestTimestampToMs</stat>
+<stat pass="11" fail="0" id="s1-s13" name="utest.zap.test_basic_functionality.ZAPBasicTests">JUnit Execution.utest.zap.test_basic_functionality.ZAPBasicTests</stat>
+<stat pass="3" fail="0" id="s1-s14" name="utest.zap.test_parse_zap_alert_dict.TestParseZapAlertDict">JUnit Execution.utest.zap.test_parse_zap_alert_dict.TestParseZapAlertDict</stat>
+<stat pass="4" fail="0" id="s1-s15" name="utest.zap.test_parse_zap_dict.TestParseZapDict">JUnit Execution.utest.zap.test_parse_zap_dict.TestParseZapDict</stat>
+<stat pass="6" fail="0" id="s1-s16" name="utest.zap.test_parse_zap_instance.TestParseZapInstance">JUnit Execution.utest.zap.test_parse_zap_instance.TestParseZapInstance</stat>
+<stat pass="2" fail="0" id="s1-s17" name="utest.zap.test_parse_zap_site_dict.TestParseZapSiteDict">JUnit Execution.utest.zap.test_parse_zap_site_dict.TestParseZapSiteDict</stat>
+<stat pass="1" fail="0" id="s1-s18" name="utest.zap.test_xml_to_dict.TestXmlToDict">JUnit Execution.utest.zap.test_xml_to_dict.TestXmlToDict</stat>
+<stat pass="0" fail="3" id="s1-s19" name="utest.oxygen.test_oxygen_cli.TestOxygenCLI">JUnit Execution.utest.oxygen.test_oxygen_cli.TestOxygenCLI</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
