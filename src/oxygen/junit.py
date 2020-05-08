@@ -13,7 +13,7 @@ class JUnitHandler(BaseHandler):
 
         See documentation for other arguments in `Run Gatling`.
         """
-
+        logger.debug(f'Command: {command}')
         try:
             output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
