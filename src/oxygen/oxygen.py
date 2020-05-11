@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from inspect import signature
+from io import StringIO
 from pathlib import Path
 from traceback import format_exception
 
@@ -126,10 +127,6 @@ class OxygenCLI(OxygenCore):
         filename = filename.with_name(robot_name)
         return str(filename)
 
-    def save_robot_output(self, output_filename, robot_suite):
-        result = robot_suite.run(output=None, report=None, log=None, quiet=True)
-        result.save(output_filename)
-
     def run(self):
         parser = ArgumentParser(prog='oxygen')
         args = self.parse_args(parser)
@@ -138,7 +135,10 @@ class OxygenCLI(OxygenCore):
         output_filename = self.get_output_filename(args.resultfile)
         parsed_results = args.func(args.resultfile)
         robot_suite = RobotInterface().running.build_suite(parsed_results)
-        self.save_robot_output(output_filename, robot_suite)
+        robot_suite.run(output=output_filename,
+                        log=None,
+                        report=None,
+                        stdout=StringIO())
 
 
 if __name__ == '__main__':
