@@ -35,9 +35,9 @@ class OxygenCore(object):
 
 
 class OxygenVisitor(OxygenCore, ResultVisitor):
-    """Read up on what is Robot Framework SuiteVisitor:
+    '''Read up on what is Robot Framework SuiteVisitor:
     http://robot-framework.readthedocs.io/en/latest/autodoc/robot.model.html#module-robot.model.visitor
-    """
+    '''
     def __init__(self, data):
         super().__init__()
         self.data = data
@@ -78,9 +78,9 @@ class listener(object):
 
 
 class OxygenLibrary(OxygenCore):
-    """Read up on what is Robot Framework dynamic library:
+    '''Read up on what is Robot Framework dynamic library:
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
-    """
+    '''
 
     def __init__(self):
         super().__init__()

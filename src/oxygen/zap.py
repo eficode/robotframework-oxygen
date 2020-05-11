@@ -11,11 +11,11 @@ from .utils import run_command_line, validate_path
 
 class ZAProxyHandler(BaseHandler):
     def run_zap(self, result_file, command, check_return_code=False, **env):
-        """Run Zed Attack Proxy security testing tool specified with
+        '''Run Zed Attack Proxy security testing tool specified with
         ``command``.
 
         See documentation for other arguments in `Run Gatling`.
-        """
+        '''
         try:
             output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:

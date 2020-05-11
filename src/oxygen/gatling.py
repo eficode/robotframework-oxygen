@@ -7,7 +7,7 @@ from .utils import run_command_line, validate_path
 class GatlingHandler(BaseHandler):
 
     def run_gatling(self, result_file, command, check_return_code=False, **env):
-        """Run Gatling performance testing tool specified with ``command``.
+        '''Run Gatling performance testing tool specified with ``command``.
 
         ``result_file`` is path to the file Oxygen uses to parse the results. It
         is important you craft your `command` to produce the file
@@ -23,7 +23,7 @@ class GatlingHandler(BaseHandler):
 
         ``env`` is used to pass environment variables that are set in the subshell
         the ``command`` is run in.
-        """
+        '''
         try:
             output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
@@ -36,13 +36,14 @@ class GatlingHandler(BaseHandler):
         return self._transform_tests(validate_path(result_file).resolve())
 
     def _transform_tests(self, result_file):
-        """Given the result_file path, open the test results and get a suite dict
+        '''Given the result_file path, open the test results and get a suite
+        dict.
 
         The whole Gatling format is jank 3000.
         Here be dragons.
 
         result_file: The path to the Gatling results
-        """
+        '''
         test_cases = []
         with open(result_file) as results:
             result_contents = results.readlines()

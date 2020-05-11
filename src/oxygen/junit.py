@@ -9,10 +9,10 @@ from .utils import run_command_line, validate_path
 class JUnitHandler(BaseHandler):
 
     def run_junit(self, result_file, command, check_return_code=False, **env):
-        """Run JUnit unit testing tool specified with ``command``.
+        '''Run JUnit unit testing tool specified with ``command``.
 
         See documentation for other arguments in `Run Gatling`.
-        """
+        '''
         logger.debug(f'Command: {command}')
         try:
             output = run_command_line(command, check_return_code, **env)
@@ -37,12 +37,12 @@ class JUnitHandler(BaseHandler):
             raise JUnitHandlerException(f'Invalid result file path: {e}')
 
     def _transform_tests(self, node):
-        """Convert the given xml object into a test suite dict
+        '''Convert the given xml object into a test suite dict
 
         node: An xml object from JUnitXml.fromfile()
 
         Return: The test suite dict
-        """
+        '''
         suite_dict = {
             'name': 'JUnit Execution',
             'tags': self._tags,
@@ -59,12 +59,12 @@ class JUnitHandler(BaseHandler):
         return suite_dict
 
     def _transform_test_suite(self, test_suite):
-        """Convert the given suite xml object into a suite dict
+        '''Convert the given suite xml object into a suite dict
 
         test_suite: A JUnit suite xml object
 
         Return: A suite dict
-        """
+        '''
         suite_dict = {
             'name': test_suite.name,
             'tags': [],
@@ -87,12 +87,12 @@ class JUnitHandler(BaseHandler):
         return suite_dict
 
     def _transform_test_case(self, test_case):
-        """Convert the given test case xml object into a test case dict
+        '''Convert the given test case xml object into a test case dict
 
         test_case: A JUnit case xml object
 
         Return: A test case dict
-        """
+        '''
         test_dict = {
             'name': '{} (Execution)'.format(test_case.name),
             'pass': True,

@@ -11,7 +11,7 @@ from robot.running.model import TestSuite as RobotRunningSuite
 
 class RobotResultInterface(object):
     def build_suites(self, starting_time, *suites):
-        """Convert a given `suite` dict into a Robot suite"""
+        '''Convert a given `suite` dictionaries into a Robot suite'''
         finished_suites = []
         current_time = starting_time
 
@@ -25,14 +25,14 @@ class RobotResultInterface(object):
 
 
     def build_suite(self, starting_time, suite):
-        """Convert a set of suite dicts into Robot suites and append them to the
+        '''Convert a set of suite dicts into Robot suites and append them to the
         given list-like object
 
         target: List-like object to add the Robot suites to
         suites: Set of suite dicts to build into Robot suites
 
         Return: The updated list-like object
-        """
+        '''
 
         if not suite:
             return starting_time, None
@@ -94,7 +94,7 @@ class RobotResultInterface(object):
 
 
     def build_tests(self, starting_time, *tests):
-        """Convert a set of `tests` dicts and add to a Robot suite `target`"""
+        '''Convert a set of `tests` dicts and add to a Robot suite `target`'''
         updated_time = starting_time
         robot_tests = []
         for test in tests:
@@ -107,7 +107,7 @@ class RobotResultInterface(object):
 
 
     def build_test(self, starting_time, test):
-        """Convert a set of `tests` dicts and add to a Robot suite `target`"""
+        '''Convert a set of `tests` dicts and add to a Robot suite `target`'''
         if not test:
             return starting_time, None
 
@@ -118,9 +118,14 @@ class RobotResultInterface(object):
         keywords = test.get('keywords') or []
         teardown_keyword = test.get('teardown') or None
 
-        updated_time, robot_setup = self.build_keyword(updated_time, setup_keyword, setup=True)
-        updated_time, robot_keywords = self.build_keywords(updated_time, *keywords)
-        updated_time, robot_teardown = self.build_keyword(updated_time, teardown_keyword, teardown=True)
+        updated_time, robot_setup = self.build_keyword(updated_time,
+                                                       setup_keyword,
+                                                       setup=True)
+        updated_time, robot_keywords = self.build_keywords(updated_time,
+                                                           *keywords)
+        updated_time, robot_teardown = self.build_keyword(updated_time,
+                                                          teardown_keyword,
+                                                          teardown=True)
 
         robot_test = self.spawn_robot_test(test_name,
                                            starting_time,
@@ -163,7 +168,7 @@ class RobotResultInterface(object):
 
 
     def build_keywords(self, starting_time, *keywords):
-        """Convert `keywords` dicts, add them as sub-keywords to a `target`"""
+        '''Convert `keywords` dicts, add them as sub-keywords to a `target`'''
         updated_time = starting_time
         robot_keywords = []
         for keyword in keywords:
@@ -258,7 +263,7 @@ class RobotResultInterface(object):
 
 
     def get_time_format(self):
-        """Convenience to return the general Robot timestamp format."""
+        '''Convenience to return the general Robot timestamp format.'''
         return '%Y%m%d %H:%M:%S.%f'
 
 
@@ -294,11 +299,11 @@ class RobotResultInterface(object):
 
 
     def get_keywords_status(self, *keywords):
-        """
+        '''
         keywords: List of Robot keywords
 
         Return: 'PASS' or 'FAIL'
-        """
+        '''
         if sum(not kw.passed for kw in filter(None, keywords)):
             return 'FAIL'
         else:
