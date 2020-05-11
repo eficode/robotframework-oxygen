@@ -11,7 +11,7 @@ with open(path_join(SRC, 'oxygen', 'version.py')) as f:
 KEYWORDS = ('robotframework testing testautomation acceptancetesting atdd bdd'
             'reporting testreporting')
 
-SHORT_DESC = ('Oxygen is an extensible library for Robot Framework that '
+SHORT_DESC = ('Oxygen is an extensible tool for Robot Framework that '
               'enables you to integrate running other testing tools and their '
               'reports as part of Robot Framework\'s reporting.')
 
@@ -38,8 +38,10 @@ setup(name='robotframework-oxygen',
       ],
       packages=find_packages(SRC),
       package_dir={'': 'src'},
+      package_data={'oxygen': ['*.yml']},
       keywords=KEYWORDS,
       classifiers=CLASSIFIERS,
       version=VERSION,
       description=SHORT_DESC,
-      long_description=LONG_DESCRIPTION)
+      long_description=LONG_DESCRIPTION,
+      long_description_content_type="text/markdown")
