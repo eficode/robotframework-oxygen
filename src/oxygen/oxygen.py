@@ -81,8 +81,6 @@ class OxygenLibrary(OxygenCore):
     """Read up on what is Robot Framework dynamic library:
     http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     """
-    LIBRARY_INITIALIZATION_DOC = '''Hello world'''
-
 
     def __init__(self):
         super().__init__()
@@ -107,8 +105,6 @@ class OxygenLibrary(OxygenCore):
     def get_keyword_documentation(self, kw_name):
         if kw_name == '__intro__':
             return self.__class__.__doc__
-        if kw_name == '__init__':
-            return self.LIBRARY_INITIALIZATION_DOC
         return getattr(self._fetch_handler(kw_name), kw_name).__doc__
 
     def get_keyword_arguments(self, kw_name):
