@@ -12,8 +12,12 @@ from yaml import load, FullLoader
 from .config import CONFIG_FILE
 from .errors import OxygenException
 from .robot_interface import RobotInterface
+from .version import VERSION
+
 
 class OxygenCore(object):
+    __version__ = VERSION
+
 
     def __init__(self):
         with open(CONFIG_FILE, 'r') as infile:
@@ -79,6 +83,7 @@ class OxygenLibrary(OxygenCore):
     """
     LIBRARY_INITIALIZATION_DOC = '''Hello world'''
 
+
     def __init__(self):
         super().__init__()
         self.data = None
@@ -129,6 +134,9 @@ class OxygenCLI(OxygenCore):
 
     def run(self):
         parser = ArgumentParser(prog='oxygen')
+        parser.add_argument('--version',
+                            action='version',
+                            version=f'%(prog)s {self.__version__}')
         args = self.parse_args(parser)
         if not vars(args):
             parser.error('No arguments given')
