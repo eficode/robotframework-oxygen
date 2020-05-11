@@ -1,16 +1,16 @@
 from argparse import ArgumentParser
 from subprocess import check_output, run
 from unittest import TestCase
-from unittest.mock import create_autospec, patch, Mock
+from unittest.mock import ANY, create_autospec, patch, Mock
 
-from robot.result.model import TestSuite
+from robot.running.model import TestSuite
 
 from oxygen.oxygen import OxygenCLI
 
 from ..helpers import RESOURCES_PATH
 
 class TestOxygenCLIEntryPoints(TestCase):
-    """Coverage does not measure coverage correctly for these tests.
+    '''Coverage does not measure coverage correctly for these tests.
 
     We have tests for __main__ entrypoint below, but Coverage is unable to
     do its measurements as they are running in subprocesses. They are run in
@@ -18,7 +18,7 @@ class TestOxygenCLIEntryPoints(TestCase):
 
     Setting up Coverage to see subprocesses as well seems a lot of work and
     quite a hack: https://coverage.readthedocs.io/en/latest/subprocess.html
-    """
+    '''
     def test_main_level_entrypoint(self):
         self.verify_cli_help_text('python -m oxygen --help')
         self.verify_cli_help_text('python -m oxygen -h')
@@ -58,10 +58,9 @@ class TestOxygenCLI(TestCase):
     def setUp(self):
         self.cli = OxygenCLI()
 
-    @patch('oxygen.oxygen.OxygenCLI.save_robot_output')
     @patch('oxygen.oxygen.RobotInterface')
     @patch('oxygen.oxygen.OxygenCLI.parse_args')
-    def test_run(self, mock_parse_args, mock_robot_iface, mock_save):
+    def test_run(self, mock_parse_args, mock_robot_iface):
         mock_parse_args.return_value = Mock(resultfile='path/to/file.xml',
                                             func=lambda _: {'some': 'results'})
         expected_suite = create_autospec(TestSuite)
@@ -72,8 +71,12 @@ class TestOxygenCLI(TestCase):
         self.cli.run()
 
         mock.running.build_suite.assert_called_once_with({'some': 'results'})
-        mock_save.assert_called_once_with('path/to/file_robot_output.xml',
-                                          expected_suite)
+        expected_suite.run.assert_called_once_with(
+            output='path/to/file_robot_output.xml',
+            log=None,
+            report=None,
+            stdout=ANY
+        )
 
     def test_parse_args(self):
         mock_parser = create_autospec(ArgumentParser)

@@ -35,7 +35,6 @@ class TestOxygenLibrary(TestCase):
             self.assertNotNoneOrEmpty(self.lib.get_keyword_documentation(kw))
         # Libdoc specific values
         self.assertNotNoneOrEmpty(self.lib.get_keyword_documentation('__intro__'))
-        self.assertNotNoneOrEmpty(self.lib.get_keyword_documentation('__init__'))
 
     def assertNotNoneOrEmpty(self, value):
         assert value != None or value == '', \
