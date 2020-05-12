@@ -27,7 +27,7 @@ def install(context, package=None):
                   'multiple times to select several targets. See more: '
                   'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5'
       })
-def utest(context, test):
+def utest(context, test=None):
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
         env={'PYTHONPATH': SRCPATH},
         pty=True)
