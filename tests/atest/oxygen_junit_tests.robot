@@ -4,7 +4,6 @@ Library    OperatingSystem
 
 *** Variables ***
 ${JUNIT XML FILE}=    ${EXECDIR}/green-junit.xml
-${GREEN}=    green    # override from command line if your `green` is not globally in PATH
 
 *** Test Cases ***
 Oxygen's unit tests should pass
@@ -14,8 +13,10 @@ Oxygen's unit tests should pass
     ...                subprocesses within subprocesses all the way down.
     ...
     ...                We can also inspect errors are reported correctly.
+    [Tags]    oxygen-own-junit
     Remove file     ${JUNIT XML FILE}
     File should not exist    ${JUNIT XML FILE}
+    ${green}=   Run    which green
     Run JUnit     ${JUNIT XML FILE}
-    ...           ${GREEN} -j ${JUNIT XML FILE} ${EXECDIR}
+    ...           ${green} -j ${JUNIT XML FILE} ${EXECDIR}
     ...           PYTHONPATH=${EXECDIR}/src
