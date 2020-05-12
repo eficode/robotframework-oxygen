@@ -2,15 +2,14 @@ oxygen.junit:
   handler: JUnitHandler
   keyword: run_junit
   tags:
-    - JUNIT
-    - EXTRA_JUNIT_CASE
+    - oxygen-junit
 oxygen.gatling:
   handler: GatlingHandler
   keyword: run_gatling
-  tags: GATLING
+  tags: oxygen-gatling
 oxygen.zap:
   handler: ZAProxyHandler
   keyword: run_zap
-  tags: ZAP
+  tags: oxygen-zap
   accepted_risk_level: 2
   required_confidence_level: 1

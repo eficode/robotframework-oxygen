@@ -43,7 +43,6 @@ class JUnitBasicTests(TestCase):
         mock_validate_path.assert_called_once_with('some/file/path.ext')
 
 
-    #@patch('oxygen.junit.JUnitHandler.validate_path')
     def test_result_file_is_not_a_string(self):
         with self.assertRaises(JUnitHandlerException) as ex:
             self.handler.parse_results(None)
@@ -118,7 +117,7 @@ class JUnitBasicTests(TestCase):
                      'suites': [],
                      'tests': [{
                         'name': 'casea',
-                        'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                        'tags': ['oxygen-junit-unknown-execution-time'],
                         'setup': [],
                         'teardown': [],
                         'keywords': [{'name': 'casea (Execution)',
@@ -130,7 +129,7 @@ class JUnitBasicTests(TestCase):
                                       'elapsed': 0.0}]
                         }, {
                         'name': 'caseb',
-                        'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                        'tags': ['oxygen-junit-unknown-execution-time'],
                         'setup': [],
                         'teardown': [],
                         'keywords': [{
@@ -146,7 +145,7 @@ class JUnitBasicTests(TestCase):
                 }],
                 'tests': [{
                     'name': 'case1',
-                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'tags': ['oxygen-junit-unknown-execution-time'],
                     'setup': [],
                     'teardown': [],
                     'keywords': [{
@@ -160,7 +159,7 @@ class JUnitBasicTests(TestCase):
                     }]
                 }, {
                     'name': 'case2',
-                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'tags': ['oxygen-junit-unknown-execution-time'],
                     'setup': [],
                     'teardown': [],
                     'keywords': [{
@@ -176,7 +175,7 @@ class JUnitBasicTests(TestCase):
                     }]
                 }, {
                     'name': 'case3',
-                    'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+                    'tags': ['oxygen-junit-unknown-execution-time'],
                     'setup': [],
                     'teardown': [],
                     'keywords': [{

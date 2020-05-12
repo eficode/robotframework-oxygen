@@ -141,6 +141,6 @@ class JUnitHandler(BaseHandler):
         # This is really unreliable but at least we can find the trouble spots
         if not test_case.time:
             test_case_dict['tags'].append(
-                'OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME')
+                'oxygen-junit-unknown-execution-time')
 
         return test_case_dict
