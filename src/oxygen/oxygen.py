@@ -16,6 +16,9 @@ from .version import VERSION
 
 
 class OxygenCore(object):
+    '''OxygenCore collects shared faculties used by the actual classes that do
+    something'''
+
     __version__ = VERSION
 
 
@@ -35,7 +38,11 @@ class OxygenCore(object):
 
 
 class OxygenVisitor(OxygenCore, ResultVisitor):
-    '''Read up on what is Robot Framework SuiteVisitor:
+    '''OxygenVisitor goes over Robot Framework ExcutionResult object,
+    transforming test cases that use keywords of OxygenLibrary to parsed test
+    results from other tools.
+
+    Read up on what is Robot Framework SuiteVisitor:
     http://robot-framework.readthedocs.io/en/latest/autodoc/robot.model.html#module-robot.model.visitor
     '''
     def __init__(self, data):
@@ -61,6 +68,16 @@ class OxygenVisitor(OxygenCore, ResultVisitor):
 
 
 class listener(object):
+    '''listener passes data from test execution to where results are written.
+
+    listener object is used during test execution to get dynamically data
+    from OxygenLibrary keywords. After test execution is finished, listener
+    will initiate OxygenVisitor, replacing test cases that used OxygenLibrary
+    keywords with parsed test results from other test tools. In the end, the new
+    output is written on the disk for rebot to take over and generate Robot
+    Framework log and report normally
+    '''
+
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self):
@@ -186,6 +203,10 @@ class OxygenLibrary(OxygenCore):
 
 
 class OxygenCLI(OxygenCore):
+    '''
+    OxygenCLI is a command line interface to transform one test result file to
+    corresponding Robot Framework output.xml
+    '''
     def parse_args(self, parser):
         subcommands = parser.add_subparsers()
         for tool_name, tool_handler in self._handlers.items():
