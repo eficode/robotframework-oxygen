@@ -11,7 +11,7 @@ class JUnitHandler(BaseHandler):
     def run_junit(self, result_file, command, check_return_code=False, **env):
         '''Run JUnit unit testing tool specified with ``command``.
 
-        See documentation for other arguments in `Run Gatling`.
+        See documentation for other arguments in \`Run Gatling\`.
         '''
         logger.debug(f'Command: {command}')
         try:

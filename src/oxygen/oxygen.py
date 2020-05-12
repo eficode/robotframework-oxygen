@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
-from inspect import signature
+from inspect import getdoc, signature
 from io import StringIO
 from pathlib import Path
 from traceback import format_exception
@@ -78,9 +78,82 @@ class listener(object):
 
 
 class OxygenLibrary(OxygenCore):
-    '''Read up on what is Robot Framework dynamic library:
-    http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
+    '''Oxygen is a tool to consolidate different test tools' reports together
+    as a single Robot Framework log and report. ``oxygen.OxygenLibrary``
+    enables you to write acceptance tests that run your other test tools, parse
+    their results and include them into the Robot Framework reporting.
+
+    In addition, you can use the `oxygen command line interface`_ to transform
+    an existing test tool report to a single Robot Framework ``output.xml``
+    which you can combine together with other Robot Framework ``output.xml``'s
+    with Robot Frameworks built-in tool rebot_.
+
+    Acceptance tests that run other test tools might look something like this:
+
+    .. code:: robotframework
+
+        *** Test cases ***
+        Java unit tests should pass
+            Prepare environment    platform=${PLATFORM}
+            Run JUnit    path/to/resuls.xml    mvn clean test
+
+        Java integration tests should pass
+            [Tags]    integration-tests
+            Prepare environment    platform=${PLATFORM}
+            Run JUnit    another/path/results.xml    mvn clean integration-test
+
+        Performance should not degrade
+            ${gatling output folder}=    Set variable    path/to/simulations
+            Run Gatling    ${gatling output folder}/gatling.log
+            ...            %{GATLING_HOME}/bin/gatling.sh
+            ...            --results-folder ${gatling output folder}
+            ...            --simulation MyStressTest
+
+        Application should not have security holes
+            Run ZAP    path/to/zap.json    node my_zap_active_scan.js
+
+    As you can see from the examples above, creating acceptance tests that run
+    your other test tools is quite flexible. Tests can, in addition to keywords
+    described in this documentation, have other Robot Framework keywords (like
+    the imaginary user keyword ``Prepare environment`` in the examples above)
+    that are normally executed before or after. These are also reported in the
+    final Robot Framework reporting.
+
+    You can also observe from the ``Java integration tests should pass`` example
+    that tags in the test case will also be part of the final RF reporting —
+    these tags will be added to each parsed test result from the other tool.
+    This is a good way to add additional metadata like categorization of test
+    cases for quality dashboards, if the test tool does not provide this
+    themselves.
+
+    Extending oxygen.OxygenLibrary
+    ------------------------------
+
+    ``oxygen.OxygenLibrary`` provides keywords and is designed to be extensible
+    with writing your own *handler* for Oxygen to use. It is expected that your
+    *handler* also provides a keyword for running the test tool you want to
+    provide integration for. Since ``oxygen.OxygenLibrary`` is a `dynamic
+    library`_, it will also know how to run your *handler's* keyword.
+
+    Keyword documentation should be provided as per `normal
+    way one does with Robot Framework libraries`_. The documentation syntax is
+    expected to be reStructuredText_.
+
+    After editing Oxygen's ``config.yml`` to add your own handler, you can
+    regenerate this library documentation to show your keyword with command:
+
+    .. code:: bash
+
+        $ python -m robot.libdoc OxygenLibrary MyOxygenLibrary.html
+
+    .. _oxygen command line interface: http://github.com/eficode/robotframework-oxygen#using-from-command-line
+    .. _rebot: http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#post-processing-outputs
+    .. _dynamic library: http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
+    .. _normal way one does with Robot Framework libraries: http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#documenting-libraries
+    .. _reStructuredText: https://docutils.sourceforge.io/docs/user/rst/quickref.html
     '''
+
+    ROBOT_LIBRARY_DOC_FORMAT = 'reST'
 
     def __init__(self):
         super().__init__()
@@ -104,12 +177,13 @@ class OxygenLibrary(OxygenCore):
 
     def get_keyword_documentation(self, kw_name):
         if kw_name == '__intro__':
-            return self.__class__.__doc__
-        return getattr(self._fetch_handler(kw_name), kw_name).__doc__
+            return getdoc(self.__class__)
+        return getdoc(getattr(self._fetch_handler(kw_name), kw_name))
 
     def get_keyword_arguments(self, kw_name):
         method_sig = signature(getattr(self._fetch_handler(kw_name), kw_name))
         return [str(param) for param in method_sig.parameters.values()]
+
 
 class OxygenCLI(OxygenCore):
     def parse_args(self, parser):
