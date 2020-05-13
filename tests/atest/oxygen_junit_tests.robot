@@ -3,7 +3,7 @@ Library    oxygen.OxygenLibrary
 Library    OperatingSystem
 
 *** Variables ***
-${JUNIT XML FILE}=    ${EXECDIR}/green-junit.xml
+${JUNIT XML FILE}=    ${EXECDIR}${/}green-junit.xml
 
 *** Test Cases ***
 Oxygen's unit tests should pass
@@ -16,7 +16,13 @@ Oxygen's unit tests should pass
     [Tags]    oxygen-own-junit
     Remove file     ${JUNIT XML FILE}
     File should not exist    ${JUNIT XML FILE}
-    ${green}=   Run    which green
+    ${green}=   Get command    green
     Run JUnit     ${JUNIT XML FILE}
     ...           ${green} -j ${JUNIT XML FILE} ${EXECDIR}
     ...           PYTHONPATH=${EXECDIR}/src
+
+*** Keywords ***
+Get command
+    [Arguments]   ${program}
+    ${locate}=    Set variable if    '${:}' == ';'    where    which
+    Run keyword and return    Run    ${locate} ${program}
