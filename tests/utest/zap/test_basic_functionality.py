@@ -1,6 +1,6 @@
 from pathlib import Path
 from unittest import skip, TestCase
-from unittest.mock import create_autospec, Mock, mock_open, patch
+from unittest.mock import ANY, create_autospec, Mock, mock_open, patch
 
 from testfixtures import compare
 
@@ -215,16 +215,25 @@ class ZAPBasicTests(TestCase):
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={})
+                                                    env=ANY)
+
+    def subdict_in_parent_dict(self, parent_dict, subdict):
+        return all(
+            subitem in parent_dict.items() for subitem in subdict.items())
 
     @patch('oxygen.utils.subprocess')
     def test_running_with_passing_environment_values(self, mock_subprocess):
         mock_subprocess.run.return_value = Mock(returncode=0)
+
         self.handler.run_zap('somefile', 'some command', ENV_VAR='value')
+
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={'ENV_VAR': 'value'})
+                                                    env=ANY)
+        passed_full_env = mock_subprocess.run.call_args[-1]['env']
+        self.assertTrue(self.subdict_in_parent_dict(passed_full_env,
+                                                    {'ENV_VAR': 'value'}))
 
     @patch('oxygen.utils.subprocess')
     def test_running_fails_correctly(self, mock_subprocess):

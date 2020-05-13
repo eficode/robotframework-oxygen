@@ -1,4 +1,6 @@
+import os
 import subprocess
+
 from pathlib import Path
 
 from .errors import (SubprocessException,
@@ -6,8 +8,10 @@ from .errors import (SubprocessException,
                      ResultFileNotFoundException)
 
 def run_command_line(command, check_return_code=True, **env):
+    new_env = os.environ.copy()
+    new_env.update(env)
     try:
-        proc = subprocess.run(command, capture_output=True, env=env, shell=True)
+        proc = subprocess.run(command, capture_output=True, env=new_env, shell=True)
     except IndexError as e:
         raise SubprocessException('Command "{}" was empty'.format(command))
     if check_return_code and proc.returncode != 0:

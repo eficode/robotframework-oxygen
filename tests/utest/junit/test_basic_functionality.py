@@ -58,7 +58,11 @@ class JUnitBasicTests(TestCase):
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={})
+                                                    env=ANY)
+
+    def subdict_in_parent_dict(self, parent_dict, subdict):
+        return all(
+            subitem in parent_dict.items() for subitem in subdict.items())
 
     @patch('oxygen.utils.subprocess')
     def test_running_with_passing_environment_variables(self, mock_subprocess):
@@ -67,7 +71,10 @@ class JUnitBasicTests(TestCase):
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={'env_var': 'value'})
+                                                    env=ANY)
+        passed_full_env = mock_subprocess.run.call_args[-1]['env']
+        self.assertTrue(self.subdict_in_parent_dict(passed_full_env,
+                                                    {'env_var': 'value'}))
 
     @patch('oxygen.utils.subprocess')
     def test_running_fails_correctly(self, mock_subprocess):

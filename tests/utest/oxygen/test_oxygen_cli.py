@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from pathlib import Path
 from subprocess import check_output, run
 from unittest import TestCase
 from unittest.mock import ANY, create_autospec, patch, Mock
@@ -72,7 +73,7 @@ class TestOxygenCLI(TestCase):
 
         mock.running.build_suite.assert_called_once_with({'some': 'results'})
         expected_suite.run.assert_called_once_with(
-            output='path/to/file_robot_output.xml',
+            output=str(Path('path/to/file_robot_output.xml')),
             log=None,
             report=None,
             stdout=ANY
@@ -89,9 +90,9 @@ class TestOxygenCLI(TestCase):
 
     def test_get_output_filename(self):
         self.assertEqual(self.cli.get_output_filename('absolute/path/to.file'),
-                         'absolute/path/to_robot_output.xml')
+                         str(Path('absolute/path/to_robot_output.xml')))
         self.assertEqual(self.cli.get_output_filename('path/to/file.xml'),
-                         'path/to/file_robot_output.xml')
+                         str(Path('path/to/file_robot_output.xml')))
         self.assertEqual(self.cli.get_output_filename('file.extension'),
-                         'file_robot_output.xml')
+                         str(Path('file_robot_output.xml')))
 

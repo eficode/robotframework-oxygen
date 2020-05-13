@@ -1,6 +1,6 @@
 from pathlib import Path
 from unittest import skip, TestCase
-from unittest.mock import create_autospec, Mock, patch
+from unittest.mock import ANY, create_autospec, Mock, patch
 
 from testfixtures import compare
 
@@ -37,7 +37,12 @@ class JUnitBasicTests(TestCase):
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={})
+                                                    env=ANY)
+
+    def subdict_in_parent_dict(self, parent_dict, subdict):
+        return all(
+            subitem in parent_dict.items() for subitem in subdict.items())
+
 
     @patch('oxygen.utils.subprocess')
     def test_running_with_passing_environment_variables(self, mock_subprocess):
@@ -46,7 +51,10 @@ class JUnitBasicTests(TestCase):
         mock_subprocess.run.assert_called_once_with('some command',
                                                     capture_output=True,
                                                     shell=True,
-                                                    env={'ENV_VAR': 'hello'})
+                                                    env=ANY)
+        passed_full_env = mock_subprocess.run.call_args[-1]['env']
+        self.assertTrue(self.subdict_in_parent_dict(passed_full_env,
+                                                    {'ENV_VAR': 'hello'}))
 
     @patch('oxygen.utils.subprocess')
     def test_running_fails_correctly(self, mock_subprocess):
