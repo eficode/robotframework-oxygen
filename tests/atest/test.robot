@@ -11,8 +11,7 @@ My First Test
   Log   Junit Setup Here 2
   run_junit
     ...   ${RESOURCES}/junit.xml
-    ...   echo
-    ...   JUNIT_TEST_STRING
+    ...   echo JUNIT_TEST_STRING
   Log   Junit Teardown Here 1
   Log   Junit Teardown Here 2
 
@@ -22,8 +21,7 @@ My First Test Director's Cut
   Log   Junit Setup Here 2
   run junit
     ...   ${RESOURCES}/big.xml
-    ...   echo
-    ...   JUNIT_TEST_STRING_BIG
+    ...   echo JUNIT_TEST_STRING_BIG
   Log   Junit Teardown Here 1
   Log   Junit Teardown Here 2
 
@@ -33,8 +31,7 @@ My Second Test
   Log   Gatling Setup Here 2
   run_gatling
     ...   ${RESOURCES}/gatling-example-simulation.log
-    ...   echo
-    ...   GATLING TEST STRING
+    ...   echo GATLING TEST STRING
   Log   Gatling Teardown Here 2
 
 My Third Test
@@ -43,8 +40,7 @@ My Third Test
   Log   ZAP Setup Here 2
   run_zap
     ...   ${RESOURCES}/zap/zap.xml.lol
-    ...   echo
-    ...   ZAP TEST STRING 2
+    ...   echo ZAP TEST STRING 2
   Log   ZAP Teardown Here 1
   Log   ZAP Teardown Here 2
 
@@ -54,8 +50,7 @@ My Three Point Fifth Test
   Log   ZAP Setup Here 2
   run_zap
     ...   ${RESOURCES}/zap/zap_pp.json
-    ...   echo
-    ...   ZAP TEST STRING 3
+    ...   echo ZAP TEST STRING 3
   Log   ZAP Teardown Here 1
   Log   ZAP Teardown Here 2
 
