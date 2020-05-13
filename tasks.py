@@ -1,13 +1,15 @@
 from pathlib import Path
+from platform import system
 
 from invoke import run, task
 
 
 CURDIR = Path.cwd()
 SRCPATH = CURDIR / 'src'
-UNIT_TESTS = CURDIR / 'tests' / 'utest'
+UNIT_TESTS = CURDIR / 'tests'
 
 # If you want colored output for the tasks, use `run()` with `pty=True`
+# Not on Windows, though
 
 @task
 def clean(context):
@@ -29,24 +31,26 @@ def install(context, package=None):
       })
 def utest(context, test=None):
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
-        env={'PYTHONPATH': SRCPATH},
-        pty=True)
+        env={'PYTHONPATH': str(SRCPATH)},
+        pty=(not system() == 'Windows'))
     run('coverage html')
 
 @task
 def coverage(context):
-  run(f'green -r {UNIT_TESTS}', env={'PYTHONPATH': SRCPATH}, pty=True)
+  run(f'green -r {str(UNIT_TESTS)}',
+      env={'PYTHONPATH': str(SRCPATH)},
+      pty=(not system() == 'Windows'))
 
 @task(help={'rf': 'Additional command-line arguments for Robot Framework as '
                   'single string. E.g: invoke atest --rf "--name my_suite"'})
 def atest(context, rf=''):
     run(f'robot '
-        f'--pythonpath {SRCPATH} '
+        f'--pythonpath {str(SRCPATH)} '
         f'--dotted '
         f'{rf} '
         f'--listener oxygen.listener '
-        f'{CURDIR / "tests" / "atest"}',
-        pty=True)
+        f'{str(CURDIR / "tests" / "atest")}',
+        pty=(not system() == 'Windows'))
 
 @task(pre=[utest, atest])
 def test(context):
