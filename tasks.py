@@ -9,13 +9,21 @@ SRCPATH = CURDIR / 'src'
 UNIT_TESTS = CURDIR / 'tests'
 
 # If you want colored output for the tasks, use `run()` with `pty=True`
-# Not on Windows, though
+# Not on Windows, though -- it'll fail if you have `pty=True`
 
 @task
 def clean(context):
-    run('rm -rf {}'.format(path_join(SRCPATH,
-                                     'robotframework_oxygen.egg-info')))
-    run('python {} clean'.format(path_join(CURDIR, 'setup.py')))
+    for path in (f'{SRCPATH / "robotframework_oxygen.egg-info"}',
+                 f'{CURDIR / "build"}',
+                 f'{CURDIR / "dist"}',
+                 f'{CURDIR / ".tox"}',
+                 f'{CURDIR / "htmlcov"}',
+                 f'{CURDIR / "log.html"}',
+                 f'{CURDIR / "report.html"}',
+                 f'{CURDIR / "output.xml"}',
+                 f'{CURDIR / "green-junit.xml"}'):
+      run(f'rm -rf {path}')
+    run(f'python {CURDIR / "setup.py"} clean')
 
 @task(pre=[clean])
 def install(context, package=None):
