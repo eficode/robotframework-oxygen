@@ -1,6 +1,7 @@
 __pycache__/
 *.bak
-*.html
+report.html
+log.html
 output.xml
 *.pyc
 .python-version
