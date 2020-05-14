@@ -63,3 +63,16 @@ def atest(context, rf=''):
 @task(pre=[utest, atest])
 def test(context):
     pass
+
+@task
+def doc(context):
+    doc_path = CURDIR / 'docs'
+    if not doc_path.exists():
+        run(f'mkdir {doc_path}')
+    version = run('python -c "import oxygen; print(oxygen.__version__)"',
+                  env={'PYTHONPATH': str(SRCPATH)})
+    version = version.stdout.strip()
+    doc_path = doc_path / f'OxygenLibrary-{version}.html'
+    run(f'python -m robot.libdoc oxygen.OxygenLibrary {doc_path}',
+        env={'PYTHONPATH': str(SRCPATH)})
+
