@@ -79,7 +79,7 @@ In case where you want to run your other testing tools separately, but yet combi
 $ python -m oxygen oxygen.junit my_junit_results.xml
 ```
 
-As a convention, the resulting Robot Framework xml file will be named by adding a suffix to the end. In the example above, the resulting Robot Framework xml file would be named `my_junit_results.xml`.
+As a convention, the resulting Robot Framework xml file will be named by adding a suffix to the end. In the example above, the resulting Robot Framework xml file would be named `my_junit_results_robot_output.xml`.
 
 **Note** that resulting xml file will also be created at the same location as the original result file. Therefore, when original result files are in another directory:
 
