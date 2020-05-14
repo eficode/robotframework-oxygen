@@ -76,6 +76,7 @@ def doc(context):
     run(f'python -m robot.libdoc oxygen.OxygenLibrary {target}',
         env={'PYTHONPATH': str(SRCPATH)})
     run(f'cp {target} {doc_path / "index.html"}')
-@task
+
+@task(pre=[clean])
 def build(context):
     run(f'python {CURDIR / "setup.py"} bdist_wheel')
