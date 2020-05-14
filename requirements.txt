@@ -10,3 +10,4 @@ testfixtures>=6.14.1 # needed for large dict comparisons to make sense of them
 green>=3.1.3 # unit test runner
 docutils>=0.16   # needed to generate library documentation with libdoc
 Pygments>=2.6.1  # this one too
+twine>=3.1.1 # needed for releasing to pypi
