@@ -72,7 +72,10 @@ def doc(context):
     version = run('python -c "import oxygen; print(oxygen.__version__)"',
                   env={'PYTHONPATH': str(SRCPATH)})
     version = version.stdout.strip()
-    doc_path = doc_path / f'OxygenLibrary-{version}.html'
-    run(f'python -m robot.libdoc oxygen.OxygenLibrary {doc_path}',
+    target = doc_path / f'OxygenLibrary-{version}.html'
+    run(f'python -m robot.libdoc oxygen.OxygenLibrary {target}',
         env={'PYTHONPATH': str(SRCPATH)})
-
+    run(f'cp {target} {doc_path / "index.html"}')
+@task
+def build(context):
+    run(f'python {CURDIR / "setup.py"} bdist_wheel')
