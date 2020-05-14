@@ -27,9 +27,9 @@ def clean(context):
 
 @task(pre=[clean])
 def install(context, package=None):
-    run('pip install -r {}'.format(path_join(CURDIR, 'requirements.txt')))
+    run(f'pip install -r {CURDIR / "requirements.txt"}')
     if package:
-        run('pip install {}'.format(package))
+        run(f'pip install {package}')
 
 @task(iterable=['test'],
       help={
