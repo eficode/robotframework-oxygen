@@ -36,7 +36,7 @@ $ python --version
 
 # Keyword documentation
 
-[Keyword Documentation](http://eficode.github.io/robotframework-oxygen/doc/OxygenLibrary.html)
+[Keyword Documentation](http://eficode.github.io/robotframework-oxygen/)
 
 # Usage
 
