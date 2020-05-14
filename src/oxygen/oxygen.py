@@ -1,3 +1,4 @@
+
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from inspect import getdoc, signature
@@ -122,9 +123,7 @@ class OxygenLibrary(OxygenCore):
         Performance should not degrade
             ${gatling output folder}=    Set variable    path/to/simulations
             Run Gatling    ${gatling output folder}/gatling.log
-            ...            %{GATLING_HOME}/bin/gatling.sh
-            ...            --results-folder ${gatling output folder}
-            ...            --simulation MyStressTest
+            ...            %{GATLING_HOME}/bin/gatling.sh --results-folder ${gatling output folder} --simulation MyStressTest
 
         Application should not have security holes
             Run ZAP    path/to/zap.json    node my_zap_active_scan.js
@@ -146,15 +145,15 @@ class OxygenLibrary(OxygenCore):
     Extending oxygen.OxygenLibrary
     ------------------------------
 
-    ``oxygen.OxygenLibrary`` provides keywords and is designed to be extensible
-    with writing your own *handler* for Oxygen to use. It is expected that your
-    *handler* also provides a keyword for running the test tool you want to
-    provide integration for. Since ``oxygen.OxygenLibrary`` is a `dynamic
-    library`_, it will also know how to run your *handler's* keyword.
+    ``oxygen.OxygenLibrary`` is designed to be extensible with writing your
+    own *handler* for Oxygen to use. It is expected that your *handler* also
+    provides a keyword for running the test tool you want to provide
+    integration for. Since ``oxygen.OxygenLibrary`` is a `dynamic library`_,
+    it will also know how to run your *handler's* keyword.
 
-    Keyword documentation should be provided as per `normal
-    way one does with Robot Framework libraries`_. The documentation syntax is
-    expected to be reStructuredText_.
+    Keyword documentation should be provided as per `normal way one does with
+    Robot Framework libraries`_. The documentation syntax is expected to be
+    reStructuredText_.
 
     After editing Oxygen's ``config.yml`` to add your own handler, you can
     regenerate this library documentation to show your keyword with command:
