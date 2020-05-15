@@ -105,7 +105,7 @@ Please refer to the available tasks for the project:
 $ invoke --list
 ```
 
-and the task file [`tasks.py`](tasks.py).
+and the task file [`tasks.py`](https://github.com/eficode/robotframework-oxygen/blob/master/tasks.py).
 
 # License
 
