@@ -12,7 +12,7 @@ from ..helpers import (example_robot_output,
                        get_config,
                        RESOURCES_PATH)
 
-class JUnitBasicTests(TestCase):
+class GatlingBasicTests(TestCase):
 
     def setUp(self):
         self.handler = GatlingHandler(get_config()['oxygen.gatling'])
