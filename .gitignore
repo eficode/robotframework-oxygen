@@ -17,3 +17,4 @@ green-junit.xml
 tests/resources/green-junit-example_robot_output.xml
 example/results_robot_output.xml
 example/results.json
+.vscode
