@@ -104,8 +104,35 @@ class JUnitBasicTests(TestCase):
                          'oxygen.OxygenLibrary.Run Junit')
         self.assertEqual(self.handler.run_time_data, '/some/path/to.ext')
 
+    def test_transform_tests_with_single_test_suite(self):
+        expected_output = {
+            'name': 'JUnit Execution',
+            'setup': [],
+            'suites': [{'name': 'com.example.demo.DemoApplicationTests',
+            'setup': [],
+            'suites': [],
+            'tags': [],
+            'teardown': [],
+            'tests': [{'keywords': [{'elapsed': 454.0,
+                                    'keywords': [],
+                                    'messages': [],
+                                    'name': 'contextLoads() (Execution)',
+                                    'pass': True,
+                                    'tags': [],
+                                    'teardown': []}],
+                        'name': 'contextLoads()',
+                        'setup': [],
+                        'tags': [],
+                        'teardown': []}]}],
+            'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],
+            'teardown': [],
+            'tests': []
+        }
+        xml = JUnitXml.fromfile(str(RESOURCES_PATH / 'junit-single-testsuite.xml'))
+        retval = self.handler._transform_tests(xml)
+        compare(retval, expected_output)
 
-    def test_transform_tests(self):
+    def test_transform_tests_with_multiple_suites(self):
         expected_output = {
             'name': 'JUnit Execution',
             'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],

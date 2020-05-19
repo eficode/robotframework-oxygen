@@ -1,5 +1,6 @@
 from robot.api import logger
 from junitparser import Error, Failure, JUnitXml
+from junitparser.junitparser import TestSuite as JUnitXmlTestSuite
 
 from .base_handler import BaseHandler
 from .errors import JUnitHandlerException, SubprocessException
@@ -51,6 +52,9 @@ class JUnitHandler(BaseHandler):
             'suites': [],
             'tests': [],
         }
+
+        if isinstance(node, JUnitXmlTestSuite):
+            node = [node]
 
         for xunit_suite in node:
             suite = self._transform_test_suite(xunit_suite)
