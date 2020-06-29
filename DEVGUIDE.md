@@ -34,7 +34,7 @@ cd locust
 
 ### Writing LocustHandler and unit tests
 
-Let's create `__init__.py`  to our `/locust` folder. Next we can write `locusthandler.py` with following content:
+Let's create `__init__.py`  to our `locustenv/locust` folder. Next we can write `locusthandler.py` with following content:
 
 ```
 import json
@@ -108,7 +108,8 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-  We still need to write test file `locust/test_locust.py` with following content:
+
+  Let's create a `tests` folder in `locustenv/locust` . Then we write test file `test_locust.py` with following content:
 
 ```
 from unittest import TestCase
@@ -121,7 +122,7 @@ class TestLocust(TestCase):
     def setUp(self):
         config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
         self.handler = LocustHandler(config)
-        path = Path.cwd() / 'requests.csv'
+        path = Path.cwd() / 'resources/requests.csv'
         self.test_suite = self.handler.parse_results(path)
 
     def test_suite_has_four_cases(self):
@@ -135,7 +136,7 @@ class TestLocust(TestCase):
 ```
 
 
-and create test data file `locust/requests.csv` which has the following:
+and create test data file `locustenv/locust/resources/requests.csv` which has the following:
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
 "GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
@@ -144,10 +145,10 @@ and create test data file `locust/requests.csv` which has the following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Now we can run unit tests with command
+Now we can run unit tests from the `locustenv/locust` folder with command 
 
 ````
-python -m unittest test_locust
+python -m unittest tests/test_locust.py
 ````
 
 and all 3 tests should pass.
@@ -155,7 +156,7 @@ and all 3 tests should pass.
 
 ### Configuring LocustHandler to Oxygen
 
-Let's open the python interpreter from the `locustenv/` directory and check that we can import the locusthandler:
+Let's open the python interpreter from the `locustenv` directory and check that we can import the locusthandler:
 
 ```
 python
@@ -183,7 +184,7 @@ First we install locust to our virtualenv:
 pip install locust
 ```
 
-Then we add `locust/locustfile.py` file to `locust` folder which contains the commands for the performance test:
+Then we add `locustfile.py` file to `locustenv/locust` folder which contains the commands for the performance test:
 
 ```
 from locust import HttpUser, task, between
@@ -199,7 +200,7 @@ class QuickstartUser(HttpUser):
 
 
 
-Let's write `locust/test.robot` file which contains test case that runs locust from command line:
+Let's write `locustenv/locust/test.robot` file which contains test case that runs locust from command line:
 
 ```
 *** Settings ***
@@ -237,7 +238,7 @@ My Locust test
 ```
 
 
- We can run the test by using command
+ We can run the test from `locustenv` folder by using command
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
@@ -276,7 +277,7 @@ locust.locusthandler:
 ```
 
 
-Let's implement function, which returns the failure_percentage to `locust/locusthandler.py`:
+Let's implement function, which returns the failure_percentage to `locustenv/locust/locusthandler.py`:
 
 ```
     def _get_treshold_failure_percentage(self):
@@ -333,7 +334,7 @@ and let's use it in `_transform_tests` function:
             return test_suite
 ```
 
-Let's update the tests to match the current functionality. Let's start by defining new data set in `locust/requests.csv`:
+Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locust/resources/requests.csv`:
 
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
@@ -343,7 +344,7 @@ Let's update the tests to match the current functionality. Let's start by defini
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-now we can update the unit tests in `locust/test_locust.py`:
+now we can update the unit tests in `locust/tests/test_locust.py`:
 
 ```
 from unittest import TestCase
@@ -356,7 +357,7 @@ class TestLocust(TestCase):
     def setUp(self):
         config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
         self.handler = LocustHandler(config)
-        path = Path.cwd() / 'requests.csv'
+        path = Path.cwd() / '/resources/requests.csv'
         self.test_suite = self.handler.parse_results(path)
 
     def test_suite_has_four_cases(self):
@@ -382,12 +383,17 @@ class TestLocust(TestCase):
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now the unit tests should pass:
+Now the unit tests should pass, run the tests from `locustenv/locust` folder with command:
+
 ````
-python -m unittest test_locust
+python -m unittest tests/test_locust.py
 ````
 
-And we can also run the robot tests using the new .yaml configuration: 
+And we can also try out the robot tests using the new .yaml configuration. Run the tests from `locustenv` folder by using command
+
+```
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+```
 
 
 
