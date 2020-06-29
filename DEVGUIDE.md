@@ -1,0 +1,407 @@
+## Oxygen developer guide
+
+This is a developer guide for Oxygen. We will write a handler for [https://locust.io/](https://locust.io/), which is a performance testing tool.
+
+# Getting started
+
+## Prerequisisites
+
+Python 3
+
+
+## Start developing
+
+Let's create a virtual environment and install oxygen.
+
+
+```
+python3 -m venv locustenv
+source locustenv/bin/activate
+```
+
+Install Oxygen by running the following:
+```
+$ pip install robotframework-oxygen
+```
+
+Let's start developing by creating a working folder
+````
+cd locustenv
+mkdir locust
+cd locust
+````
+
+
+### Writing LocustHandler and unit tests
+
+Let's create `__init__.py`  to our `/locust` folder. Next we can write `locusthandler.py` with following content:
+
+```
+import json
+import csv
+
+from oxygen import BaseHandler
+from robot.api import logger
+
+from oxygen.errors import SubprocessException, LocustHandlerException
+from oxygen.utils import run_command_line, validate_path
+
+
+class LocustHandler(BaseHandler):
+
+
+    def run_locust(self, result_file, command, check_return_code=False, **env):
+        '''Run Locust performance testing tool with command
+        ``command``.
+
+        See documentation for other arguments in \`Run Gatling\`.
+        '''
+        try:
+            output = run_command_line(command, check_return_code, **env)
+        except SubprocessException as e:
+            raise LocustHandlerException(e)
+        logger.info(output)
+        logger.info('Result file: {}'.format(result_file))
+        return result_file
+
+    def parse_results(self, result_file):
+        return self._transform_tests(validate_path(result_file).resolve())
+
+
+    def _transform_tests(self, file):
+        with open(file, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            test_cases = []
+            for row in reader:
+                failure_count = row['Failure Count']
+                success = failure_count == '0'
+                keyword = {
+                    'name': " | ".join(row),
+                    'pass': success,
+                    'tags': [],
+                    'messages': [],
+                    'teardown': [],
+                    'keywords': [],
+                }                               
+                test_case = {
+                'name': 'Locust test case',
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'keywords': [keyword]
+                }
+                test_cases.append(test_case)
+            test_suite = {
+            'name': 'Locust Scenario',
+            'tags': self._tags,
+            'setup': [],
+            'teardown': [],
+            'suites': [],
+            'tests': test_cases,
+            }
+            return test_suite
+```
+
+Next we will add LocustHandlerException to `lib/python3.7/site-packages/oxygen/errors.py`, write this to the end of the file:
+```
+class LocustHandlerException(Exception):
+    pass
+```
+
+  We still need to write test file `locust/test_locust.py` with following content:
+
+```
+from unittest import TestCase
+
+from pathlib import Path
+from locusthandler import LocustHandler
+
+class TestLocust(TestCase):
+    
+    def setUp(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
+        self.handler = LocustHandler(config)
+        path = Path.cwd() / 'requests.csv'
+        self.test_suite = self.handler.parse_results(path)
+
+    def test_suite_has_four_cases(self):
+        self.assertEqual(len(self.test_suite['tests']),4)
+
+    def test_pass_is_true_when_failure_request_is_zero(self):
+        self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
+
+    def test_pass_is_false_when_failure_request_is_not_zero(self):
+        self.assertEqual(self.test_suite['tests'][1]['keywords'][0]['pass'], False)
+```
+
+
+and create test data file `locust/requests.csv` which has the following:
+```
+"Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
+"GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
+"POST","/",5,5,300,323,288,402,157,0.13,0.13,300,330,330,400,400,400,400,400,400,400,400,400
+"GET","/item",24,0,80,79,67,100,2175,0.63,0.00,81,85,86,86,89,92,100,100,100,100,100,100
+"None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
+```
+
+Now we can run unit tests with command
+
+````
+python -m unittest test_locust
+````
+
+and all 3 tests should pass.
+
+
+### Configuring LocustHandler to Oxygen
+
+Let's open the python interpreter from the `locustenv/` directory and check that we can import the locusthandler:
+
+```
+python
+import locust.locusthandler
+```
+
+running this should not produce any errors, and we can import file `locusthandler.py` from `/locust` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
+
+```
+locust.locusthandler:
+  handler: LocustHandler
+  keyword: run_locust
+  tags: oxygen-locusthandler
+```
+
+### Install demoapp to run tests against
+
+[Install and run demo-app](https://github.com/robotframework/WebDemo)
+
+### Running Locust with LocustHandler in Robot test
+
+First we install locust to our virtualenv:
+
+```
+pip install locust
+```
+
+Then we add `locust/locustfile.py` file to `locust` folder which contains the commands for the performance test:
+
+```
+from locust import HttpUser, task, between
+
+class QuickstartUser(HttpUser):
+    wait_time = between(5000, 15000)
+
+    @task
+    def index_page(self):
+        self.client.get("/")
+
+```
+
+
+
+Let's write `locust/test.robot` file which contains test case that runs locust from command line:
+
+```
+*** Settings ***
+Library   oxygen.OxygenLibrary
+Library   OperatingSystem
+
+*** Variables ***
+${STATS_FILE}       ${CURDIR}/../example_stats.csv
+${FAILURE_FILE}     ${CURDIR}/../example_failures.csv
+${HISTORY_FILE}     ${CURDIR}/../example_stats_history.csv
+${LOCUSTFILEPATH}   ${CURDIR}/locustfile.py
+${LOCUSTCOMMAND}    locust -f ${LOCUSTFILEPATH} --headless --host http://localhost:7272 -u 5 -r 1 --run-time 1m --csv=example
+
+*** Keywords ***
+
+Remove csv file
+  [Arguments]             ${path}
+  Remove file             ${path}
+  File should not exist   ${path}
+
+Remove csv files
+  Remove csv file         ${STATS_FILE}
+  Remove csv file         ${FAILURE_FILE}
+  Remove csv file         ${HISTORY_FILE}
+
+
+*** Test Cases ***
+
+My Locust test
+  [Tags]                  LOCUST_ROBOT_TAG
+  Remove csv files
+  run_locust
+    ...   ${STATS_FILE}
+    ...   ${LOCUSTCOMMAND}
+```
+
+
+ We can run the test by using command
+
+```
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+```
+
+The test should execute for about 60 seconds. After this you can see the statistics of the performance tests in `log.html` and `report.html`. 
+
+
+If the test case fails, you can set variable `check_return_code` to "True" in order to get more specific logging:
+
+```
+*** Test Cases ***
+
+My Locust test
+  [Tags]                  LOCUST_ROBOT_TAG
+  Remove csv files
+  run_locust
+    ...   ${STATS_FILE}
+    ...   ${LOCUSTCOMMAND}
+    ...   check_return_code=${True}
+```
+
+
+## Defining your own parameters
+
+In our first solution the Locust test case will fail if even one request fails during the performance testing. However this might not be the best way to determine was the performance test successfull or not. Let's implement a solution, where you can define `failure_percentage` , which is the highest percentage of failed request that is allowed in order that the test still passes.
+
+Let's define define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
+
+```
+locust.locusthandler:
+  handler: LocustHandler
+  keyword: run_locust
+  tags: oxygen-locusthandler
+  failure_percentage: 10
+```
+
+
+Let's implement function, which returns the failure_percentage to `locust/locusthandler.py`:
+
+```
+    def _get_treshold_failure_percentage(self):
+        failure_percentage = self._config.get('failure_percentage', None)
+
+        if failure_percentage is None:
+            print('No failure percentage configured, defaulting to 10')
+            return 10
+
+        failure_percentage = int(failure_percentage)
+
+        if failure_percentage > 100:
+            print('Failure percentage is configured too high, maximizing at 100')
+            return 100
+
+        return failure_percentage
+```
+and let's use it in `_transform_tests` function:
+
+```
+    def _transform_tests(self, file):
+        with open(file, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            test_cases = []
+            for row in reader:
+                failure_count = row['Failure Count']
+                request_count = row['Request Count']
+                failure_percentage = 100 * int(failure_count) / int(request_count)
+                success = failure_percentage <= self._get_treshold_failure_percentage()
+                keyword = {
+                    'name': " | ".join(row),
+                    'pass': success,
+                    'tags': [],
+                    'messages': [],
+                    'teardown': [],
+                    'keywords': [],
+                }                               
+                test_case = {
+                'name': 'Locust test case',
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'keywords': [keyword]
+                }
+                test_cases.append(test_case)
+            test_suite = {
+            'name': 'Locust Scenario',
+            'tags': self._tags,
+            'setup': [],
+            'teardown': [],
+            'suites': [],
+            'tests': test_cases,
+            }
+            return test_suite
+```
+
+Let's update the tests to match the current functionality. Let's start by defining new data set in `locust/requests.csv`:
+
+```
+"Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
+"GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
+"POST","/",5,5,300,323,288,402,157,0.13,0.13,300,330,330,400,400,400,400,400,400,400,400,400
+"GET","/item",30,3,80,79,67,100,2175,0.63,0.00,81,85,86,86,89,92,100,100,100,100,100,100
+"None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
+```
+
+now we can update the unit tests in `locust/test_locust.py`:
+
+```
+from unittest import TestCase
+
+from pathlib import Path
+from locusthandler import LocustHandler
+
+class TestLocust(TestCase):
+    
+    def setUp(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
+        self.handler = LocustHandler(config)
+        path = Path.cwd() / 'requests.csv'
+        self.test_suite = self.handler.parse_results(path)
+
+    def test_suite_has_four_cases(self):
+        self.assertEqual(len(self.test_suite['tests']),4)
+
+    def test_pass_is_true_when_failure_request_percentage_is_zero(self):
+        self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
+
+    def test_pass_is_true_when_failure_request_percentage_is_ten(self):
+        self.assertEqual(self.test_suite['tests'][2]['keywords'][0]['pass'], True)
+
+    def test_pass_is_false_when_failure_request_percentage_is_above_ten(self):
+        self.assertEqual(self.test_suite['tests'][1]['keywords'][0]['pass'], False)
+
+    def test_failure_percentage_is_ten_by_default(self):
+        failure_percentage = self.handler._get_treshold_failure_percentage()
+        self.assertEqual(failure_percentage, 10)
+
+    def test_failure_percentage_max_amount_is_one_hundred(self):
+        config = config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '101'}
+        self.handler = LocustHandler(config)
+        failure_percentage = self.handler._get_treshold_failure_percentage()
+        self.assertEqual(failure_percentage, 100)
+```
+
+Now the unit tests should pass:
+````
+python -m unittest test_locust
+````
+
+And we can also run the robot tests using the new .yaml configuration: 
+
+
+
+## How to package your project
+
+[How to package python project](https://packaging.python.org/)
+
+
+
+# Teardown
+
+If you wish to delete your virtual environment do following: 
+
+```
+deactivate
+rm -rf locustenv
+```
