@@ -399,7 +399,9 @@ robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust
 
 ## How to package your project
 
-[How to package python project](https://packaging.python.org/)
+Let's package our project in the same virtual environment . Add necessary files to `locustenv/locust` folder and follow the packaging steps defined in this [tutorial](https://packaging.python.org/). 
+
+NOTE: You can use `pip install` instead of `python pip install` because you are already inside active venv.
 
 
 
@@ -411,3 +413,5 @@ If you wish to delete your virtual environment do following:
 deactivate
 rm -rf locustenv
 ```
+
+And shutdown the demo-app which was tested by locust with CTRL+D 
