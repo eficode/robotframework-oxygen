@@ -4,7 +4,7 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 
 # Getting started
 
-## Prerequisisites
+## Prerequisites
 
 Python 3
 
