@@ -100,7 +100,7 @@ class LocustHandler(BaseHandler):
             'tests': test_cases,
             }
             return test_suite
-            
+
 class LocustHandlerException(Exception):
     pass
 ```
@@ -170,7 +170,7 @@ locust.locusthandler:
 
 ### Install demoapp to run tests against
 
-[Install and run demo-app](https://github.com/robotframework/WebDemo)
+[Next we we install and run demo-app that we run the locust tests against.](https://github.com/robotframework/WebDemo)
 
 Open up another terminal and run following commands:
 
@@ -178,6 +178,9 @@ Open up another terminal and run following commands:
 ```
 git clone https://github.com/robotframework/WebDemo.git
 cd WebDemo
+python3 -m venv myenv
+source myenv/bin/activate
+
 pip install -r requirements.txt
 python demoapp/server.py
 ```
