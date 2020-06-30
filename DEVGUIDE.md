@@ -43,7 +43,7 @@ import csv
 from oxygen import BaseHandler
 from robot.api import logger
 
-from oxygen.errors import SubprocessException, LocustHandlerException
+from oxygen.errors import SubprocessException
 from oxygen.utils import run_command_line, validate_path
 
 
@@ -100,14 +100,10 @@ class LocustHandler(BaseHandler):
             'tests': test_cases,
             }
             return test_suite
-```
-
-Next we will add LocustHandlerException to `lib/python3.7/site-packages/oxygen/errors.py`, write this to the end of the file:
-```
+            
 class LocustHandlerException(Exception):
     pass
 ```
-
 
   Let's create a `tests` folder in `locustenv/locust` . Then we write test file `test_locust.py` with following content:
 
@@ -136,7 +132,7 @@ class TestLocust(TestCase):
 ```
 
 
-and create test data file `locustenv/locust/resources/requests.csv` which has the following:
+next we create `resources` folder in `locustenv/locust` and add there test data file `requests.csv` which has the following:
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
 "GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
@@ -176,9 +172,19 @@ locust.locusthandler:
 
 [Install and run demo-app](https://github.com/robotframework/WebDemo)
 
+Open up another terminal and run following commands:
+
+
+```
+git clone https://github.com/robotframework/WebDemo.git
+cd WebDemo
+pip install -r requirements.txt
+python demoapp/server.py
+```
+
 ### Running Locust with LocustHandler in Robot test
 
-First we install locust to our virtualenv:
+First we install locust to our locustenv virtualenv:
 
 ```
 pip install locust
@@ -357,7 +363,7 @@ class TestLocust(TestCase):
     def setUp(self):
         config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
         self.handler = LocustHandler(config)
-        path = Path.cwd() / '/resources/requests.csv'
+        path = Path.cwd() / 'resources/requests.csv'
         self.test_suite = self.handler.parse_results(path)
 
     def test_suite_has_four_cases(self):
