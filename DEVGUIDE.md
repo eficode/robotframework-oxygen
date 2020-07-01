@@ -404,6 +404,166 @@ And we can also try out the robot tests using the new .yaml configuration. Run t
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
 ```
 
+## Adding failure percentage as an robot test parameter
+
+Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we wan't to determine different values for the amount of `failure_percentage`. 
+
+Let's change the functionality of `locust/locusthandler.py`:
+
+```
+import json
+import csv
+
+from oxygen import BaseHandler
+from robot.api import logger
+
+from oxygen.errors import SubprocessException
+from oxygen.utils import run_command_line, validate_path
+
+
+class LocustHandler(BaseHandler):
+
+    def run_locust(self, result_file, command, check_return_code=False, failure_percentage=None, **env):
+        '''Run Locust performance testing tool with command
+        ``command``.
+
+        See documentation for other arguments in \`Run Gatling\`.
+        '''
+        try:
+            output = run_command_line(command, check_return_code, **env)
+        except SubprocessException as e:
+            raise LocustHandlerException(e)
+        logger.info(output)
+        logger.info('Result file: {}'.format(result_file))
+        dictionary = dict()
+        dictionary['result_file'] = result_file
+        dictionary['failure_percentage'] = failure_percentage
+        return dictionary
+
+    def parse_results(self, dictionary):
+        result_file = dictionary['result_file']
+        failure_percentage = dictionary['failure_percentage']
+        if failure_percentage is None:
+            failure_percentage = self._config.get('failure_percentage', None)
+        treshold_failure_percentage = self._get_treshold_failure_percentage(failure_percentage)
+        print('treshold is: {}'.format(treshold_failure_percentage))
+        return self._transform_tests(validate_path(result_file).resolve(), treshold_failure_percentage)
+
+    def _transform_tests(self, file, treshold_failure_percentage):
+        with open(file, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            test_cases = []
+            for row in reader:
+                failure_count = row['Failure Count']
+                request_count = row['Request Count']
+                failure_percentage = 100 * int(failure_count) / int(request_count)
+                success = failure_percentage <= treshold_failure_percentage
+                keyword = {
+                    'name': " | ".join(row),
+                    'pass': success,
+                    'tags': [],
+                    'messages': [],
+                    'teardown': [],
+                    'keywords': [],
+                }                               
+                test_case = {
+                'name': 'Locust test case',
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'keywords': [keyword]
+                }
+                test_cases.append(test_case)
+            test_suite = {
+            'name': 'Locust Scenario',
+            'tags': self._tags,
+            'setup': [],
+            'teardown': [],
+            'suites': [],
+            'tests': test_cases,
+            }
+            return test_suite
+
+    def _get_treshold_failure_percentage(self, failure_percentage):
+        if failure_percentage is None:
+            print('No failure percentage configured, defaulting to 10')
+            return 10
+
+        failure_percentage = int(failure_percentage)
+
+        if failure_percentage > 100:
+            print('Failure percentage is configured too high, maximizing at 100')
+            return 100
+
+        return failure_percentage
+
+class LocustHandlerException(Exception):
+    pass
+```
+
+Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locust/test.robot`, one assigns the value from the parameter and the second test doesn't: 
+
+```
+*** Test Cases ***
+
+Critical test
+  [Tags]                  LOCUST_ROBOT_TAG
+  Remove csv files
+  run_locust
+    ...   ${STATS_FILE}
+    ...   ${LOCUSTCOMMAND}
+    ...   failure_percentage=${1}
+
+
+Normal test
+  [Tags]                  LOCUST_ROBOT_TAG
+  Remove csv files
+  run_locust
+    ...   ${STATS_FILE}
+    ...   ${LOCUSTCOMMAND}
+```
+
+In this case the `Critical test` could be a performance test for a system where the consequences of failure is much larger: Thus we define the failure_percentage to 1%. In the `Normal test` we use the value that is defined in the `/lib/python3.7/site-packages/oxygen/config.yml`.
+
+Run the tests in `locustenv/` folder with 
+
+```
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+```
+
+However now when you run the unit tests from `locust/` folder they fail:
+
+```
+python -m unittest tests/test_locust.py
+```
+
+because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup:
+
+```
+    def setUp(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
+        self.handler = LocustHandler(config)
+        path = Path.cwd() / 'resources/requests.csv'
+        dictionary = dict()
+        dictionary['result_file'] = path
+        dictionary['failure_percentage'] = None
+        self.test_suite = self.handler.parse_results(dictionary)
+```
+
+and run tests again. Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the test cases: 
+
+```
+    def test_failure_percentage_is_ten_by_default(self):
+        failure_percentage = self.handler._get_treshold_failure_percentage(None)
+        self.assertEqual(failure_percentage, 10)
+
+    def test_failure_percentage_max_amount_is_one_hundred(self):
+        failure_percentage = self.handler._get_treshold_failure_percentage(101)
+        self.assertEqual(failure_percentage, 100)
+```
+
+Now all tests should pass.
+
 
 
 ## How to package your project
