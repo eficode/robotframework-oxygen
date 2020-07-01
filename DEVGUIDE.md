@@ -423,4 +423,4 @@ deactivate
 rm -rf locustenv
 ```
 
-And shutdown the demo-app which was tested by locust with CTRL+D 
+And shutdown the demo-app which was tested by locust with CTRL+D. You can also deactivate and delete `myenv` virtual environment if you wish.
