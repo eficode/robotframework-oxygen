@@ -284,7 +284,7 @@ locust.locusthandler:
   handler: LocustHandler
   keyword: run_locust
   tags: oxygen-locusthandler
-  failure_percentage: 10
+  failure_percentage: 20
 ```
 
 
@@ -316,8 +316,8 @@ and let's use it in `_transform_tests` function:
             for row in reader:
                 failure_count = row['Failure Count']
                 request_count = row['Request Count']
-                failure_percentage = 100 * int(failure_count) / int(request_count)
-                success = failure_percentage <= self._get_treshold_failure_percentage()
+                treshold_failure_percentage = self._get_treshold_failure_percentage()
+                success = failure_percentage <= treshold_failure_percentage
                 keyword = {
                     'name': " | ".join(row),
                     'pass': success,
@@ -335,7 +335,7 @@ and let's use it in `_transform_tests` function:
                 }
                 test_cases.append(test_case)
             test_suite = {
-            'name': 'Locust test suite, failure percentage {}'.form(treshold_failure_percentage),
+            'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
             'tags': self._tags,
             'setup': [],
             'teardown': [],
@@ -448,7 +448,6 @@ class LocustHandler(BaseHandler):
         if failure_percentage is None:
             failure_percentage = self._config.get('failure_percentage', None)
         treshold_failure_percentage = self._get_treshold_failure_percentage(failure_percentage)
-        print('treshold is: {}'.format(treshold_failure_percentage))
         return self._transform_tests(validate_path(result_file).resolve(), treshold_failure_percentage)
 
     def _transform_tests(self, file, treshold_failure_percentage):
@@ -477,7 +476,7 @@ class LocustHandler(BaseHandler):
                 }
                 test_cases.append(test_case)
             test_suite = {
-            'name': 'Locust test suite, failure percentage {}'.forma(treshold_failure_percentage),
+            'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
             'tags': self._tags,
             'setup': [],
             'teardown': [],
@@ -556,7 +555,7 @@ because we changed the functionality to use dictionary instead of result file pa
         self.test_suite = self.handler.parse_results(dictionary)
 ```
 
-and run tests again. Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the test cases: 
+and run tests again. Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the failing test cases: 
 
 ```
     def test_failure_percentage_is_ten_by_default(self):
