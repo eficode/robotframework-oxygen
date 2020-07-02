@@ -105,6 +105,8 @@ class LocustHandlerException(Exception):
     pass
 ```
 
+  Method `run_locust` can be used from robot tests, and it executes the command which runs the locust tests. It returns a path to the locust test results, which is processed by method `parse_results`, which calls `_transform_tests` function which purpose is to transfer the locust result file into a format which can be seen in the Robot Framework result files. 
+
   Let's create a `tests` folder in `locustenv/locust` . Then we write test file `test_locust.py` with following content:
 
 ```
@@ -333,7 +335,7 @@ and let's use it in `_transform_tests` function:
                 }
                 test_cases.append(test_case)
             test_suite = {
-            'name': 'Locust Scenario',
+            'name': 'Locust test suite, failure percentage {}'.form(treshold_failure_percentage),
             'tags': self._tags,
             'setup': [],
             'teardown': [],
@@ -475,7 +477,7 @@ class LocustHandler(BaseHandler):
                 }
                 test_cases.append(test_case)
             test_suite = {
-            'name': 'Locust Scenario',
+            'name': 'Locust test suite, failure percentage {}'.forma(treshold_failure_percentage),
             'tags': self._tags,
             'setup': [],
             'teardown': [],
@@ -537,15 +539,19 @@ However now when you run the unit tests from `locust/` folder they fail:
 python -m unittest tests/test_locust.py
 ```
 
-because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup:
+because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup and write a method `dictionary_with_result_file`:
 
 ```
-    def setUp(self):
-        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
-        self.handler = LocustHandler(config)
+    def dictionary_with_result_file(self):
         path = Path.cwd() / 'resources/requests.csv'
         dictionary = dict()
         dictionary['result_file'] = path
+        return dictionary
+
+    def setUp(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
+        self.handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
         dictionary['failure_percentage'] = None
         self.test_suite = self.handler.parse_results(dictionary)
 ```
@@ -562,7 +568,27 @@ and run tests again. Still two test cases fail. This is because the `_get_tresho
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now all tests should pass.
+Now all tests should pass. Let's add two more test cases to see that the `failure_precentage` is set correctly from the parameter or config file.
+
+```
+    def test_parse_results_takes_failure_percentage_from_parameter_prior_to_config(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '70'}
+        self.handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
+        dictionary['failure_percentage'] = 75
+        test_suite = self.handler.parse_results(dictionary)
+        self.assertEqual(test_suite['name'], 'Locust test suite, failure percentage 75')
+
+    def test_parse_results_takes_failure_percentage_correctly_from_config(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '70'}
+        self.handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
+        dictionary['failure_percentage'] = None
+        test_suite = self.handler.parse_results(dictionary)
+        self.assertEqual(test_suite['name'], 'Locust test suite, failure percentage 70')
+```
+
+All 8 tests should pass. Now we have completed an LocustHandler with unit tests which test the most important functionalities.
 
 
 
