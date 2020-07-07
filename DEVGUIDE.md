@@ -35,7 +35,7 @@ And the output of the tests are .csv files which look like following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Our goal is to write an handler, which is able to execute the locust tests inside robotframework and provide the test results in user-friendly format in the robot framework log files.
+Our goal is to write an handler, which is able to execute the locust tests inside robot framework and provide the test results in user-friendly format in the robot framework log files.
 
 
 ## Start developing
@@ -80,15 +80,10 @@ class LocustHandler(BaseHandler):
 
 
     def run_locust(self, result_file, command, check_return_code=False, **env):
-        '''Run Locust performance testing tool with command
-        ``command``.
-
-        See documentation for other arguments in \`Run Gatling\`.
-        '''
         try:
             output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
-            raise LocustHandlerException(e)
+            raise LocustHandlerException(e) ## It is best practice to raise LocustHandlerException so we know that LocustHandler caused the error.
         logger.info(output)
         logger.info('Result file: {}'.format(result_file))
         return result_file
@@ -455,15 +450,10 @@ from oxygen.utils import run_command_line, validate_path
 class LocustHandler(BaseHandler):
 
     def run_locust(self, result_file, command, check_return_code=False, failure_percentage=None, **env):
-        '''Run Locust performance testing tool with command
-        ``command``.
-
-        See documentation for other arguments in \`Run Gatling\`.
-        '''
         try:
             output = run_command_line(command, check_return_code, **env)
         except SubprocessException as e:
-            raise LocustHandlerException(e)
+            raise LocustHandlerException(e) ## It is best practice to raise LocustHandlerException so we know that LocustHandler caused the error.
         logger.info(output)
         logger.info('Result file: {}'.format(result_file))
         dictionary = dict()
