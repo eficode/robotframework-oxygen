@@ -634,8 +634,9 @@ locust.locusthandler:
 ```
 
 
- Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder , make the change above to the variables in `test.robot`:
- ```
+ Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder , make the following changes to the variables in `test.robot`:
+ 
+```
 *** Variables ***
 ${STATS_FILE}       ${CURDIR}/example_stats.csv
 ${FAILURE_FILE}     ${CURDIR}/example_failures.csv
@@ -644,7 +645,7 @@ ${HISTORY_FILE}     ${CURDIR}/example_stats_history.csv
 
  now we can run the robot tests from `packagenv/` folder with command:
 
- ```
+```
 robot --listener oxygen.listener --pythonpath . test.robot
 ```
 
