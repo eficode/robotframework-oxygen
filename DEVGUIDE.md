@@ -671,6 +671,67 @@ robot --listener oxygen.listener --pythonpath . test.robot
 and the tests should run normally. Now we have verified that the packaging has been done correctly.  
 
 
+## Improving the test result report
+
+Our locusthandler works fine, but we could make the test results more clear. Let's change the `transform_tests` method of `locusthandler.py` to make more clear test suite and keyword names, and show the performance test results as keyword messages:
+
+```
+    def _transform_tests(self, file, treshold_failure_percentage):
+        with open(file, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            test_cases = []
+            for row in reader:
+                messages = []
+                for element in row:
+                    messages.append('{}: {}'.format(element, row[element]))
+                failure_count = row['Failure Count']
+                request_count = row['Request Count']
+                count_table = '| =Failure Count= | =Request Count=|\n| {} | {} |'.format(failure_count, request_count)
+                failure_percentage = 100 * int(failure_count) / int(request_count)
+                success = failure_percentage <= treshold_failure_percentage
+                keyword_name = '{} requests with {} failures '.format(request_count, failure_count)
+                keyword = {
+                    'name': keyword_name,
+                    'pass': success,
+                    'tags': [],
+                    'messages': messages,
+                    'teardown': [],
+                    'keywords': [],
+                }
+                type_of_request = row['Type']
+                path = row['Name']
+                test_case_name = 'Testing {} requests to path {}'.format(type_of_request, path)
+                if path == 'Aggregated':
+                    test_case_name = 'Aggragated results of all Locust test cases:'              
+                test_case = {
+                'name': test_case_name,
+                'tags': [],
+                'setup': [],
+                'teardown': [],
+                'keywords': [keyword]
+                }
+                test_cases.append(test_case)
+            test_suite = {
+            'name': 'Locust test case, failure percentage {}'.format(treshold_failure_percentage),
+            'tags': self._tags,
+            'setup': [],
+            'teardown': [],
+            'suites': [],
+            'tests': test_cases,
+            }
+            return test_suite
+```
+
+now run the robot tests again from `locustenv/` folder with 
+
+```
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+```
+
+and see the new test format in the generated`log.html` file.
+
+
+
 # Teardown
 
 If you wish to delete your virtual environment do following: 
