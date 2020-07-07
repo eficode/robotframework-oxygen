@@ -9,6 +9,35 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 Python 3
 
 
+## What is our goal? 
+
+The performance tests are defined in python files which look like following:
+
+```
+from locust import HttpUser, task, between
+
+class QuickstartUser(HttpUser):
+    wait_time = between(5000, 15000)
+
+    @task
+    def index_page(self):
+        self.client.get("/")
+
+```
+
+And the output of the tests are .csv files which look like following:
+
+```
+"Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
+"GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
+"POST","/",5,5,300,323,288,402,157,0.13,0.13,300,330,330,400,400,400,400,400,400,400,400,400
+"GET","/item",24,0,80,79,67,100,2175,0.63,0.00,81,85,86,86,89,92,100,100,100,100,100,100
+"None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
+```
+
+Our goal is to write an handler, which is able to execute the locust tests inside robotframework and provide the test results in user-friendly format in the robot framework log files.
+
+
 ## Start developing
 
 Let's create a virtual environment and install oxygen.
@@ -634,8 +663,8 @@ locust.locusthandler:
 ```
 
 
- Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder , make the following changes to the variables in `test.robot`:
- 
+ Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder, make the following changes to the variables in `test.robot`:
+
 ```
 *** Variables ***
 ${STATS_FILE}       ${CURDIR}/example_stats.csv
