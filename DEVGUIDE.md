@@ -277,7 +277,7 @@ My Locust test
 
 In our first solution the Locust test case will fail if even one request fails during the performance testing. However this might not be the best way to determine was the performance test successfull or not. Let's implement a solution, where you can define `failure_percentage` , which is the highest percentage of failed request that is allowed in order that the test still passes.
 
-Let's define define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
+Let's define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
 
 ```
 locust.locusthandler:
@@ -593,10 +593,62 @@ All 8 tests should pass. Now we have completed an LocustHandler with unit tests 
 
 ## How to package your project
 
-Let's package our project in the same virtual environment . Add necessary files to `locustenv/locust` folder and follow the packaging steps defined in this [tutorial](https://packaging.python.org/). 
+Let's package our project in the same virtual environment . Add necessary files defined in this [tutorial](https://packaging.python.org/) to `locustenv` folder and install `setuptools` and `wheel` to your virtualenv with `pip install`. Add following line yo your `setup.py` file in the `setuptools.setup() object`:
 
-NOTE: You can use `pip install` instead of `python pip install` because you are already inside active venv.
+```
+    install_requires=[
+           'robotframework-oxygen>=0.1',
+           'locust>=1.1',
+      ],
+```
 
+so that oxygen including it's dependencies and locust will be installed when your handler is installed. Next you can run following command from `locustenv` folder:
+
+```
+python setup.py sdist bdist_wheel
+```
+
+which will create you a `locustenv/dist` folder. Next we will ensure that the installation works by creating another virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
+
+```
+python3 -m venv packagenv
+source packagenv/bin/activate
+pip install locustenv/dist/NAME-OF-YOUR-PACKAGE.whl
+```
+
+you should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening python intepreter:
+
+```
+python
+import locust.locusthandler
+```
+
+which should succeed. Exit intepreter with CTRL+ D. Next we can add following to the `packagenv/lib/python3.7/site-packages/oxygen/config.yml` file:
+
+```
+locust.locusthandler:
+  handler: LocustHandler
+  keyword: run_locust
+  tags: oxygen-locusthandler
+  failure_percentage: 20
+```
+
+
+ Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder , make the change above to the variables in `test.robot`:
+ ```
+*** Variables ***
+${STATS_FILE}       ${CURDIR}/example_stats.csv
+${FAILURE_FILE}     ${CURDIR}/example_failures.csv
+${HISTORY_FILE}     ${CURDIR}/example_stats_history.csv
+```
+
+ now we can run the robot tests from `packagenv/` folder with command:
+
+ ```
+robot --listener oxygen.listener --pythonpath . test.robot
+```
+
+and the tests should run normally. Now we have verified that the packaging has been done correctly.  
 
 
 # Teardown
