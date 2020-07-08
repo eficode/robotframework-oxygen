@@ -579,7 +579,7 @@ All 8 tests should pass. Now we have completed an LocustHandler with unit tests 
 
 ## How to package your project
 
-Let's package our project in the same virtual environment . Add necessary files defined in this [tutorial](https://packaging.python.org/) to `locustenv` folder and install `setuptools` and `wheel` to your virtualenv with `pip install`. Add following line yo your `setup.py` file in the `setuptools.setup() object`:
+Let's package our project in the same virtual environment . Add necessary files defined in this [tutorial](https://packaging.python.org/) to `locustenv` folder and add following line yo your `setup.py` file in the `setuptools.setup() object`:
 
 ```
     install_requires=[
