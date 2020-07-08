@@ -623,7 +623,7 @@ locusthandler.locusthandler:
 ```
 
 
- Next let's run the robot test case to make sure that it works.  Copy `test.robot` and `locustfile.py` files to `packagenv/` folder, make the following changes to the variables in `test.robot`:
+ Next let's run the robot test case to make sure that it works. Next let's copy `test.robot` and `locustfile.py` files to `packagenv/` folder so that we can run them easily from our new environment. Make the following changes to the variables in `test.robot`:
 
 ```
 *** Variables ***
