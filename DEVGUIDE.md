@@ -181,8 +181,10 @@ and all 3 tests should pass.
 Let's open the python interpreter from the `locustenv` directory and check that we can import the locusthandler:
 
 ```
-python
-import locusthandler.locusthandler
+$ python
+Python 3.7.7 
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import locusthandler.locusthandler
 ```
 
 running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
@@ -639,8 +641,10 @@ pip install locustenv/dist/NAME-OF-YOUR-PACKAGE.whl
 you should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening python intepreter:
 
 ```
-python
-import locusthandler.locusthandler
+$ python
+Python 3.7.7 
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import locusthandler.locusthandler
 ```
 
 which should succeed. Exit intepreter with CTRL+ D. Next we can add following to the `packagenv/lib/python3.7/site-packages/oxygen/config.yml` file:
