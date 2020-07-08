@@ -56,14 +56,14 @@ $ pip install robotframework-oxygen
 Let's start developing by creating a working folder
 ````
 cd locustenv
-mkdir locust
-cd locust
+mkdir locusthandler
+cd locusthandler
 ````
 
 
 ### Writing LocustHandler and unit tests
 
-Let's create `__init__.py`  to our `locustenv/locust` folder. Next we can write `locusthandler.py` with following content:
+Let's create `__init__.py`  to our `locustenv/locusthandler` folder. Next we can create `locusthandler.py` to `locustenv/locusthandler` folder with following content:
 
 ```
 import json
@@ -129,9 +129,9 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-  Method `run_locust` can be used from robot tests, and it executes the command which runs the locust tests. It returns a path to the locust test results, which is processed by method `parse_results`, which calls `_transform_tests` function which purpose is to transfer the locust result file into a format which can be seen in the Robot Framework result files. 
+  Method `run_locust` can be used from robot tests, and it executes the command which runs the locust tests. It returns a path to the locust test results, which is processed by method `parse_results`, which calls `_transform_tests` function which purpose is to transfer the locust result file into a format which can be seen in the Robot Framework log files. 
 
-  Let's create a `tests` folder in `locustenv/locust` . Then we write test file `test_locust.py` with following content:
+  Let's create a `locustenv/locusthandler/tests` folder. Then we write there test file `test_locust.py` with following content:
 
 ```
 from unittest import TestCase
@@ -158,7 +158,7 @@ class TestLocust(TestCase):
 ```
 
 
-next we create `resources` folder in `locustenv/locust` and add there test data file `requests.csv` which has the following:
+next we create `locustenv/locusthandler/resources` folder and add there test data file `requests.csv` which has the following:
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
 "GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
@@ -167,7 +167,7 @@ next we create `resources` folder in `locustenv/locust` and add there test data 
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Now we can run unit tests from the `locustenv/locust` folder with command 
+Now we can run unit tests from the `locustenv/locusthandler` folder with command 
 
 ````
 python -m unittest tests/test_locust.py
@@ -182,13 +182,13 @@ Let's open the python interpreter from the `locustenv` directory and check that 
 
 ```
 python
-import locust.locusthandler
+import locusthandler.locusthandler
 ```
 
-running this should not produce any errors, and we can import file `locusthandler.py` from `/locust` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
+running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
 
 ```
-locust.locusthandler:
+locusthandler.locusthandler:
   handler: LocustHandler
   keyword: run_locust
   tags: oxygen-locusthandler
@@ -219,7 +219,7 @@ First we install locust to our locustenv virtualenv:
 pip install locust
 ```
 
-Then we add `locustfile.py` file to `locustenv/locust` folder which contains the commands for the performance test:
+Then we add `locustfile.py` file to `locustenv/locusthandler` folder which contains the commands for the performance test:
 
 ```
 from locust import HttpUser, task, between
@@ -235,7 +235,7 @@ class QuickstartUser(HttpUser):
 
 
 
-Let's write `locustenv/locust/test.robot` file which contains test case that runs locust from command line:
+Let's write `test.robot` file to `locustenv/locusthandler` folder which contains test case that runs locust from command line:
 
 ```
 *** Settings ***
@@ -276,7 +276,7 @@ My Locust test
  We can run the test from `locustenv` folder by using command
 
 ```
-robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
 The test should execute for about 60 seconds. After this you can see the statistics of the performance tests in `log.html` and `report.html`. 
@@ -304,7 +304,7 @@ In our first solution the Locust test case will fail if even one request fails d
 Let's define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
 
 ```
-locust.locusthandler:
+locusthandler.locusthandler:
   handler: LocustHandler
   keyword: run_locust
   tags: oxygen-locusthandler
@@ -312,7 +312,7 @@ locust.locusthandler:
 ```
 
 
-Let's implement function, which returns the failure_percentage to `locustenv/locust/locusthandler.py`:
+Let's implement function, which returns the failure_percentage to `locustenv/locusthandler/locusthandler.py`:
 
 ```
     def _get_treshold_failure_percentage(self):
@@ -340,6 +340,7 @@ and let's use it in `_transform_tests` function:
             for row in reader:
                 failure_count = row['Failure Count']
                 request_count = row['Request Count']
+                failure_percentage = 100 * int(failure_count) / int(request_count)
                 treshold_failure_percentage = self._get_treshold_failure_percentage()
                 success = failure_percentage <= treshold_failure_percentage
                 keyword = {
@@ -369,7 +370,7 @@ and let's use it in `_transform_tests` function:
             return test_suite
 ```
 
-Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locust/resources/requests.csv`:
+Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locusthandler/resources/requests.csv`:
 
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
@@ -379,7 +380,7 @@ Let's update the tests to match the current functionality. Let's start by defini
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-now we can update the unit tests in `locust/tests/test_locust.py`:
+now we can update the unit tests in `locusthandler/tests/test_locust.py`:
 
 ```
 from unittest import TestCase
@@ -418,7 +419,7 @@ class TestLocust(TestCase):
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now the unit tests should pass, run the tests from `locustenv/locust` folder with command:
+Now the unit tests should pass, run the tests from `locustenv/locusthandler` folder with command:
 
 ````
 python -m unittest tests/test_locust.py
@@ -427,14 +428,14 @@ python -m unittest tests/test_locust.py
 And we can also try out the robot tests using the new .yaml configuration. Run the tests from `locustenv` folder by using command
 
 ```
-robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
 ## Adding failure percentage as an robot test parameter
 
-Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we wan't to determine different values for the amount of `failure_percentage`. 
+Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we wan't to determine different values for `failure_percentage`. 
 
-Let's change the functionality of `locust/locusthandler.py`:
+Let's change the functionality of `locusthandler/locusthandler.py`:
 
 ```
 import json
@@ -521,7 +522,7 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locust/test.robot`, one assigns the value from the parameter and the second test doesn't: 
+Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test doesn't: 
 
 ```
 *** Test Cases ***
@@ -548,16 +549,16 @@ In this case the `Critical test` could be a performance test for a system where 
 Run the tests in `locustenv/` folder with 
 
 ```
-robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-However now when you run the unit tests from `locust/` folder they fail:
+However now when you run the unit tests from `locusthandler/` folder they fail:
 
 ```
 python -m unittest tests/test_locust.py
 ```
 
-because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup and write a method `dictionary_with_result_file`:
+because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup in `tests/test_locust.py` and write a method `dictionary_with_result_file`:
 
 ```
     def dictionary_with_result_file(self):
@@ -639,13 +640,13 @@ you should now have a version of locusthandler in your `packagenv` environment. 
 
 ```
 python
-import locust.locusthandler
+import locusthandler.locusthandler
 ```
 
 which should succeed. Exit intepreter with CTRL+ D. Next we can add following to the `packagenv/lib/python3.7/site-packages/oxygen/config.yml` file:
 
 ```
-locust.locusthandler:
+locusthandler.locusthandler:
   handler: LocustHandler
   keyword: run_locust
   tags: oxygen-locusthandler
@@ -725,12 +726,38 @@ Our locusthandler works fine, but we could make the test results more clear. Let
 now run the robot tests again from `locustenv/` folder with 
 
 ```
-robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust/locustfile.py locust/test.robot
+robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-and see the new test format in the generated`log.html` file.
+and see the new test format in the generated `log.html` file.
 
+Now when we see the unit tests from `locustenv/locusthandler` folder:
 
+```
+python -m unittest tests/test_locust.py
+```
+
+ We notice that two fail because we changed the name of test suite. Let's update the assert statements of the failing tests:
+
+```
+    def test_parse_results_takes_failure_percentage_from_parameter_prior_to_config(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '70'}
+        self.handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
+        dictionary['failure_percentage'] = 75
+        test_suite = self.handler.parse_results(dictionary)
+        self.assertEqual(test_suite['name'], 'Locust test case, failure percentage 75')
+
+    def test_parse_results_takes_failure_percentage_correctly_from_config(self):
+        config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '70'}
+        self.handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
+        dictionary['failure_percentage'] = None
+        test_suite = self.handler.parse_results(dictionary)
+        self.assertEqual(test_suite['name'], 'Locust test case, failure percentage 70')
+```
+ 
+And we are done! 
 
 # Teardown
 
