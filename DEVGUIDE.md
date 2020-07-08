@@ -262,8 +262,8 @@ Remove csv files
 
 *** Test Cases ***
 
-My Locust test
-  [Tags]                  LOCUST_ROBOT_TAG
+Performance test should pass
+  [Tags]                  performance-tests
   Remove csv files
   run_locust
     ...   ${STATS_FILE}
@@ -525,8 +525,8 @@ Notice that we return an dictionary object instead of result file in the `run_lo
 ```
 *** Test Cases ***
 
-Critical test
-  [Tags]                  LOCUST_ROBOT_TAG
+Critical performance test
+  [Tags]                  performance-tests
   Remove csv files
   run_locust
     ...   ${STATS_FILE}
@@ -534,8 +534,8 @@ Critical test
     ...   failure_percentage=${1}
 
 
-Normal test
-  [Tags]                  LOCUST_ROBOT_TAG
+Normal performance test
+  [Tags]                  performance-tests
   Remove csv files
   run_locust
     ...   ${STATS_FILE}
