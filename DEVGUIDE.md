@@ -102,25 +102,14 @@ class LocustHandler(BaseHandler):
                 keyword = {
                     'name': " | ".join(row),
                     'pass': success,
-                    'tags': [],
-                    'messages': [],
-                    'teardown': [],
-                    'keywords': [],
                 }                               
                 test_case = {
                 'name': 'Locust test case',
-                'tags': [],
-                'setup': [],
-                'teardown': [],
                 'keywords': [keyword]
                 }
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust Scenario',
-            'tags': [],
-            'setup': [],
-            'teardown': [],
-            'suites': [],
             'tests': test_cases,
             }
             return test_suite
@@ -344,25 +333,14 @@ and let's use it in `_transform_tests` function:
                 keyword = {
                     'name': " | ".join(row),
                     'pass': success,
-                    'tags': [],
-                    'messages': [],
-                    'teardown': [],
-                    'keywords': [],
                 }                               
                 test_case = {
                 'name': 'Locust test case',
-                'tags': [],
-                'setup': [],
-                'teardown': [],
                 'keywords': [keyword]
                 }
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': [],
-            'setup': [],
-            'teardown': [],
-            'suites': [],
             'tests': test_cases,
             }
             return test_suite
@@ -480,25 +458,14 @@ class LocustHandler(BaseHandler):
                 keyword = {
                     'name': " | ".join(row),
                     'pass': success,
-                    'tags': [],
-                    'messages': [],
-                    'teardown': [],
-                    'keywords': [],
                 }                               
                 test_case = {
                 'name': 'Locust test case',
-                'tags': [],
-                'setup': [],
-                'teardown': [],
                 'keywords': [keyword]
                 }
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': [],
-            'setup': [],
-            'teardown': [],
-            'suites': [],
             'tests': test_cases,
             }
             return test_suite
@@ -694,10 +661,7 @@ Our locusthandler works fine, but we could make the test results more clear. Let
                 keyword = {
                     'name': keyword_name,
                     'pass': success,
-                    'tags': [],
                     'messages': messages,
-                    'teardown': [],
-                    'keywords': [],
                 }
                 type_of_request = row['Type']
                 path = row['Name']
@@ -706,18 +670,11 @@ Our locusthandler works fine, but we could make the test results more clear. Let
                     test_case_name = 'Aggragated results of all Locust test cases:'              
                 test_case = {
                 'name': test_case_name,
-                'tags': [],
-                'setup': [],
-                'teardown': [],
                 'keywords': [keyword]
                 }
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test case, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': [],
-            'setup': [],
-            'teardown': [],
-            'suites': [],
             'tests': test_cases,
             }
             return test_suite
