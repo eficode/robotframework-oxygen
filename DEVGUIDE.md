@@ -265,7 +265,7 @@ Remove csv files
 Performance test should pass
   [Tags]                  performance-tests
   Remove csv files
-  run_locust
+  Run Locust
     ...   ${STATS_FILE}
     ...   ${LOCUSTCOMMAND}
 ```
@@ -285,10 +285,10 @@ If the test case fails, you can set variable `check_return_code` to "True" in or
 ```
 *** Test Cases ***
 
-My Locust test
-  [Tags]                  LOCUST_ROBOT_TAG
+Performance test should pass
+  [Tags]                  performance-tests
   Remove csv files
-  run_locust
+  Run Locust
     ...   ${STATS_FILE}
     ...   ${LOCUSTCOMMAND}
     ...   check_return_code=${True}
@@ -528,7 +528,7 @@ Notice that we return an dictionary object instead of result file in the `run_lo
 Critical performance test
   [Tags]                  performance-tests
   Remove csv files
-  run_locust
+  Run Locust
     ...   ${STATS_FILE}
     ...   ${LOCUSTCOMMAND}
     ...   failure_percentage=${1}
@@ -537,7 +537,7 @@ Critical performance test
 Normal performance test
   [Tags]                  performance-tests
   Remove csv files
-  run_locust
+  Run Locust
     ...   ${STATS_FILE}
     ...   ${LOCUSTCOMMAND}
 ```
