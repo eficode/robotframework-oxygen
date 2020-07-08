@@ -206,11 +206,7 @@ Open up another terminal and run following commands:
 ```
 git clone https://github.com/robotframework/WebDemo.git
 cd WebDemo
-python3 -m venv myenv
-source myenv/bin/activate
-
-pip install -r requirements.txt
-python demoapp/server.py
+python3 demoapp/server.py
 ```
 
 ### Running Locust with LocustHandler in Robot test
