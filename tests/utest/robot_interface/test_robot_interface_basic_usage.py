@@ -100,6 +100,17 @@ EXAMPLE_SUITES = [{
              'name': 'case3',
              'setup': [],
              'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
+             'teardown': []},
+            {'keywords': [{'elapsed': 0.0,
+                           'keywords': [],
+                           'messages': ['*HTML* <a href="http://robotframework.org">Robot Framework</a>'],
+                           'name': 'case3 (Execution)',
+                           'pass': False,
+                           'tags': [],
+                           'teardown': []}],
+             'name': 'case3',
+             'setup': [],
+             'tags': ['OXYGEN_JUNIT_UNKNOWN_EXECUTION_TIME'],
              'teardown': []}]
 }, {
   'name': 'suite2',
@@ -161,6 +172,8 @@ class  RobotInterfaceBasicTests(TestCase):
 
         for message in converted_suite.tests[1].keywords[0].messages:
             self.assertIsInstance(message, RobotMessage)
+        self.assertEqual(converted[0].tests[3].keywords[0].messages[0].html, True)
+        self.assertEqual(converted[0].tests[2].keywords[0].messages[0].html, False)
 
     def test_result_create_wrapper_keyword_for_setup(self):
         ret = self.iface.result.create_wrapper_keyword('My Wrapper',
