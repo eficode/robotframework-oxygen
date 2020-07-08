@@ -173,6 +173,7 @@ class  RobotInterfaceBasicTests(TestCase):
         for message in converted_suite.tests[1].keywords[0].messages:
             self.assertIsInstance(message, RobotMessage)
         self.assertEqual(converted[0].tests[3].keywords[0].messages[0].html, True)
+        self.assertEqual(converted[0].tests[3].keywords[0].messages[0].message, ' <a href="http://robotframework.org">Robot Framework</a>')
         self.assertEqual(converted[0].tests[2].keywords[0].messages[0].html, False)
 
     def test_result_create_wrapper_keyword_for_setup(self):
