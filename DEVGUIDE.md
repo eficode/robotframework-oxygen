@@ -347,7 +347,7 @@ and let's use it in `_transform_tests` function:
             return test_suite
 ```
 
-Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locusthandler/resources/requests.csv`:
+Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locusthandler/resources/requests.csv`, which has 30 requests and 3 failed requests in the third data row:
 
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
@@ -357,7 +357,7 @@ Let's update the tests to match the current functionality. Let's start by defini
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-now we can update the unit tests in `locusthandler/tests/test_locust.py`:
+now we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_precentage`:
 
 ```
 from unittest import TestCase
