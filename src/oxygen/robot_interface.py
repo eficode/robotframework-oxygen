@@ -257,7 +257,8 @@ class RobotResultInterface(object):
 
         for message in messages:
             if message:
-                robot_keyword.messages.append(RobotResultMessage(message))
+                ishtml = message[:6] == '*HTML*'
+                robot_keyword.messages.append(RobotResultMessage(message,html=ishtml))
 
         return robot_keyword
 
