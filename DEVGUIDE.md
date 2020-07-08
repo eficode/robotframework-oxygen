@@ -376,13 +376,13 @@ class TestLocust(TestCase):
     def test_suite_has_four_cases(self):
         self.assertEqual(len(self.test_suite['tests']),4)
 
-    def test_pass_is_true_when_failure_request_percentage_is_zero(self):
+    def test_pass_is_true_when_failure_request_percentage_is_below_default_value(self):
         self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
 
-    def test_pass_is_true_when_failure_request_percentage_is_ten(self):
+    def test_pass_is_true_when_failure_request_percentage_is_default_value(self):
         self.assertEqual(self.test_suite['tests'][2]['keywords'][0]['pass'], True)
 
-    def test_pass_is_false_when_failure_request_percentage_is_above_ten(self):
+    def test_pass_is_false_when_failure_request_percentage_is_above_default_value(self):
         self.assertEqual(self.test_suite['tests'][1]['keywords'][0]['pass'], False)
 
     def test_failure_percentage_is_ten_by_default(self):
