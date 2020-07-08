@@ -117,7 +117,7 @@ class LocustHandler(BaseHandler):
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust Scenario',
-            'tags': self._tags,
+            'tags': [],
             'setup': [],
             'teardown': [],
             'suites': [],
@@ -359,7 +359,7 @@ and let's use it in `_transform_tests` function:
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': self._tags,
+            'tags': [],
             'setup': [],
             'teardown': [],
             'suites': [],
@@ -495,7 +495,7 @@ class LocustHandler(BaseHandler):
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test suite, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': self._tags,
+            'tags': [],
             'setup': [],
             'teardown': [],
             'suites': [],
@@ -714,7 +714,7 @@ Our locusthandler works fine, but we could make the test results more clear. Let
                 test_cases.append(test_case)
             test_suite = {
             'name': 'Locust test case, failure percentage {}'.format(treshold_failure_percentage),
-            'tags': self._tags,
+            'tags': [],
             'setup': [],
             'teardown': [],
             'suites': [],
