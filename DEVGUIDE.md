@@ -233,7 +233,8 @@ class QuickstartUser(HttpUser):
 
 Let's write `test.robot` file to `locustenv/locusthandler` folder which contains test case that runs locust from command line:
 
-```
+```RobotFramework
+
 *** Settings ***
 Library   oxygen.OxygenLibrary
 Library   OperatingSystem
@@ -280,7 +281,7 @@ The test should execute for about 60 seconds. After this you can see the statist
 
 If the test case fails, check first that Oxygen's `config.yml` is correctly configured from the previous section. You can set variable `check_return_code` to "True" in order to get more specific logging:
 
-```
+```RobotFramework
 *** Test Cases ***
 
 Performance test should pass
@@ -494,7 +495,7 @@ class LocustHandlerException(Exception):
 
 Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test doesn't: 
 
-```
+```RobotFramework
 *** Test Cases ***
 
 Critical performance test
@@ -626,7 +627,7 @@ locusthandler.locusthandler:
 
  Next let's run the robot test case to make sure that it works. Next let's copy `test.robot` and `locustfile.py` files to `packagenv/` folder so that we can run them easily from our new environment. Make the following changes to the variables in `test.robot`:
 
-```
+```RobotFramework
 *** Variables ***
 ${STATS_FILE}       ${CURDIR}/example_stats.csv
 ${FAILURE_FILE}     ${CURDIR}/example_failures.csv
