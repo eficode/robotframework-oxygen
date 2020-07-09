@@ -226,7 +226,6 @@ class QuickstartUser(HttpUser):
     @task
     def index_page(self):
         self.client.get("/")
-
 ```
 
 
@@ -282,6 +281,7 @@ The test should execute for about 60 seconds. After this you can see the statist
 If the test case fails, check first that Oxygen's `config.yml` is correctly configured from the previous section. You can set variable `check_return_code` to "True" in order to get more specific logging:
 
 ```RobotFramework
+
 *** Test Cases ***
 
 Performance test should pass
@@ -316,8 +316,8 @@ Let's implement function, which returns the failure_percentage to `locustenv/loc
         failure_percentage = self._config.get('failure_percentage', None)
 
         if failure_percentage is None:
-            print('No failure percentage configured, defaulting to 10')
-            return 10
+            print('No failure percentage configured, defaulting to 0')
+            return 0
 
         failure_percentage = int(failure_percentage)
 
@@ -356,17 +356,9 @@ and let's use it in `_transform_tests` function:
             return test_suite
 ```
 
-Let's update the tests to match the current functionality. Let's start by defining new data set in `locustenv/locusthandler/resources/requests.csv`, which has 30 requests and 3 failed requests in the third data row:
 
-```
-"Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
-"GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
-"POST","/",5,5,300,323,288,402,157,0.13,0.13,300,330,330,400,400,400,400,400,400,400,400,400
-"GET","/item",30,3,80,79,67,100,2175,0.63,0.00,81,85,86,86,89,92,100,100,100,100,100,100
-"None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
-```
 
-now we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`:
+Next we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`:
 
 ```
 from unittest import TestCase
@@ -386,6 +378,10 @@ class TestLocust(TestCase):
         self.assertEqual(len(self.test_suite['tests']),4)
 
     def test_pass_is_true_when_failure_request_percentage_is_below_default_value(self):
+        config = config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '10'}
+        handler = LocustHandler(config)
+        path = Path.cwd() / 'resources/requests.csv'
+        test_suite = handler.parse_results(path)
         self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
 
     def test_pass_is_true_when_failure_request_percentage_is_default_value(self):
@@ -396,8 +392,8 @@ class TestLocust(TestCase):
 
     def test_failure_percentage_max_amount_is_one_hundred(self):
         config = config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '101'}
-        self.handler = LocustHandler(config)
-        failure_percentage = self.handler._get_treshold_failure_percentage()
+        handler = LocustHandler(config)
+        failure_percentage = handler._get_treshold_failure_percentage()
         self.assertEqual(failure_percentage, 100)
 ```
 
@@ -478,8 +474,8 @@ class LocustHandler(BaseHandler):
 
     def _get_treshold_failure_percentage(self, failure_percentage):
         if failure_percentage is None:
-            print('No failure percentage configured, defaulting to 10')
-            return 10
+            print('No failure percentage configured, defaulting to 0')
+            return 0
 
         failure_percentage = int(failure_percentage)
 
@@ -546,9 +542,17 @@ because we changed the functionality to use dictionary instead of result file pa
         self.test_suite = self.handler.parse_results(dictionary)
 ```
 
-and run tests again. Still one test case fails. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the failing test case: 
+and run tests again. Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the failing test cases: 
 
 ```
+    def test_pass_is_true_when_failure_request_percentage_is_below_default_value(self):
+        config = config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
+        handler = LocustHandler(config)
+        dictionary = self.dictionary_with_result_file()
+        dictionary['failure_percentage'] = 10
+        test_suite = handler.parse_results(dictionary)
+        self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
+        
     def test_failure_percentage_max_amount_is_one_hundred(self):
         failure_percentage = self.handler._get_treshold_failure_percentage(101)
         self.assertEqual(failure_percentage, 100)
