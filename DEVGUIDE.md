@@ -186,6 +186,14 @@ locusthandler.locusthandler:
   tags: oxygen-locusthandler
 ```
 
+Test your edit by running:
+
+```
+$ python -m oxygen --version
+```
+
+You shouldn't get any errors. If you do, check that your edits are valid [YAML](https://yaml.org/) syntax.
+
 ### Install demoapp to run tests against
 
 [Next we we install and run demo-app that we run the locust tests against.](https://github.com/robotframework/WebDemo)
