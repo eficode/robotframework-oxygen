@@ -584,7 +584,7 @@ so that oxygen including it's dependencies and locust will be installed when you
 
 ```
 pip install wheel
-python setup.py sdist bdist_wheel
+python setup.py bdist_wheel
 ```
 
 which will create you a `locustenv/dist` folder. Next we will ensure that the installation works by creating another virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
