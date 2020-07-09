@@ -270,7 +270,7 @@ robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locust
 The test should execute for about 60 seconds. After this you can see the statistics of the performance tests in `log.html` and `report.html`. 
 
 
-If the test case fails, you can set variable `check_return_code` to "True" in order to get more specific logging:
+If the test case fails, check first that Oxygen's `config.yml` is correctly configured from the previous section. You can set variable `check_return_code` to "True" in order to get more specific logging:
 
 ```
 *** Test Cases ***
