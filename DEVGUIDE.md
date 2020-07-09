@@ -35,7 +35,7 @@ And the output of the tests are .csv files which look like following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Our goal is to write an handler, which is able to execute the locust tests inside robot framework and provide the test results in user-friendly format in the robot framework log files.
+Our goal is to write an handler, which is able to execute the locust tests inside Robot Framework and provide the test results in user-friendly format in the Robot Framework log files.
 
 
 ## Start developing
@@ -49,6 +49,7 @@ source locustenv/bin/activate
 ```
 
 Install Oxygen by running the following:
+
 ```
 $ pip install robotframework-oxygen
 ```
@@ -147,7 +148,8 @@ class TestLocust(TestCase):
 ```
 
 
-next we create `locustenv/locusthandler/resources` folder and add there test data file `requests.csv` which has the following:
+Next we create `locustenv/locusthandler/resources` folder and add there test data file `requests.csv` which has the following:
+
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
 "GET","/",10,0,72,75,66,89,2175,0.26,0.00,73,75,86,87,89,89,89,89,89,89,89,89
@@ -177,7 +179,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
+Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
 
 ```
 locusthandler.locusthandler:
@@ -209,7 +211,7 @@ python3 demoapp/server.py
 
 ### Running Locust with LocustHandler in Robot test
 
-First we install locust to our locustenv virtualenv:
+First we install Locust to our locustenv virtualenv:
 
 ```
 pip install locust
@@ -511,7 +513,7 @@ Normal performance test
     ...   ${LOCUSTCOMMAND}
 ```
 
-In this case the `Critical test` could be a performance test for a system where the consequences of failure is much larger: Thus we define the failure_percentage to 1%. In the `Normal test` we use the value that is defined in the `/lib/python3.7/site-packages/oxygen/config.yml`.
+In this case the `Critical performance test` could be a performance test for a system where the consequences of failure is much larger: Thus we define the failure_percentage to 1%. In the `Normal performance test` we use the value that is defined in the `/lib/python3.7/site-packages/oxygen/config.yml`.
 
 Run the tests in `locustenv/` folder with 
 
@@ -525,7 +527,7 @@ However now when you run the unit tests from `locusthandler/` folder they fail:
 python -m unittest tests/test_locust.py
 ```
 
-because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup in `tests/test_locust.py` and write a method `dictionary_with_result_file`:
+Because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup in `tests/test_locust.py` and write a method `dictionary_with_result_file`:
 
 ```
     def dictionary_with_result_file(self):
@@ -552,7 +554,7 @@ and run tests again. Still two test cases fail. This is because the `_get_tresho
         dictionary['failure_percentage'] = 10
         test_suite = handler.parse_results(dictionary)
         self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
-        
+
     def test_failure_percentage_max_amount_is_one_hundred(self):
         failure_percentage = self.handler._get_treshold_failure_percentage(101)
         self.assertEqual(failure_percentage, 100)
@@ -593,14 +595,14 @@ Let's package our project in the same virtual environment . Add necessary files 
       ],
 ```
 
-so that oxygen including it's dependencies and locust will be installed when your handler is installed. Next you can run following command from `locustenv` folder:
+So that Oxygen including it's dependencies and Locust will be installed when your handler is installed. Next you can run following command from `locustenv` folder:
 
 ```
 pip install wheel
 python setup.py bdist_wheel
 ```
 
-which will create you a `locustenv/dist` folder. Next we will ensure that the installation works by creating another virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
+Which will create you a `locustenv/dist` folder. Next we will ensure that the installation works by creating another virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
 
 ```
 python3 -m venv packagenv
@@ -608,7 +610,7 @@ source packagenv/bin/activate
 pip install locustenv/dist/NAME-OF-YOUR-PACKAGE.whl
 ```
 
-you should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening python intepreter:
+You should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening python intepreter:
 
 ```
 $ python
@@ -618,7 +620,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-which should succeed. Exit intepreter with CTRL+ D. Next we can add following to the `packagenv/lib/python3.7/site-packages/oxygen/config.yml` file:
+Which should succeed. Exit intepreter with CTRL+ D. Next we can add following to the `packagenv/lib/python3.7/site-packages/oxygen/config.yml` file:
 
 ```
 locusthandler.locusthandler:
@@ -638,13 +640,13 @@ ${FAILURE_FILE}     ${CURDIR}/example_failures.csv
 ${HISTORY_FILE}     ${CURDIR}/example_stats_history.csv
 ```
 
- now we can run the robot tests from `packagenv/` folder with command:
+Now we can run the robot tests from `packagenv/` folder with command:
 
 ```
 robot --listener oxygen.listener --pythonpath . test.robot
 ```
 
-and the tests should run normally. Now we have verified that the packaging has been done correctly.  
+And the tests should run normally. Now we have verified that the packaging has been done correctly.  
 
 
 ## Improving the test result report
@@ -687,15 +689,15 @@ Our locusthandler works fine, but we could make the test results more clear. Let
             return test_suite
 ```
 
-now run the robot tests again from `locustenv/` folder with 
+Now run the robot tests again from `locustenv/` folder with 
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-and see the new test format in the generated `log.html` file.
+And see the new test format in the generated `log.html` file.
 
-Now when we see the unit tests from `locustenv/locusthandler` folder:
+Let's run the unit tests from `locustenv/locusthandler` folder:
 
 ```
 python -m unittest tests/test_locust.py
@@ -732,4 +734,4 @@ deactivate
 rm -rf locustenv
 ```
 
-And shutdown the demo-app which was tested by locust with CTRL+D. You can also deactivate and delete `myenv` virtual environment if you wish.
+And shutdown the demo-app which was tested by locust with CTRL+D. You can also deactivate and delete `packagenv` virtual environment if you wish.
