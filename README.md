@@ -107,6 +107,8 @@ $ invoke --list
 
 and the task file [`tasks.py`](https://github.com/eficode/robotframework-oxygen/blob/master/tasks.py).
 
+[Read the developer guide on how to write your own handler](DEVGUIDE.md)
+
 # License
 
 Details of project licensing can be found in the [LICENSE](LICENSE) file in the project repository.
