@@ -1,4 +1,4 @@
 # Devguide Refinement Checklist
 
-- [ ] xyz
-- [ ] xyz
+- [] xyz
+- [] xyz
