@@ -1,4 +1,4 @@
-# Devguide Refinement Cheklist
+# Devguide Refinement Checklist
 
 - [ ] xyz
 - [ ] xyz
