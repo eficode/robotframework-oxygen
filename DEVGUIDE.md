@@ -15,7 +15,7 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 ## What is our goal? 
 
 Oxygen library has inbuilt functionality to perform a unit testing for java programing([junit](https://junit.org/junit5/)), a load testing ([gatling](https://gatling.io/)) and a security testing ([ZAP](https://www.zaproxy.org/)) on robotframework. Refer oxygen [documentation](https://github.com/eficode/robotframework-oxygen) if you are trying to use junit, zap or gatling in your project.
-However, if you are aiming to use any other testing tool for your business, Oxygen provides a framework to integrate and run your testing tool on robotframework. Thus empowering you to bring all your testing tools under the same roof with a user-friendly results file.
+However, if you are aiming to use any other testing tool for your business or project, oxygen provides a framework to integrate and run your testing tool on robotframework. Thus empowering you to bring all your testing tools under the same roof with a user-friendly results file.
 
 Oxygen developer guide, will walk through the process of how to use the oxygen framework to integrate and run your preferred testing tool on robot framework.
 The guide will use a load testing tool([locust](https://locust.io/)) as an example of how to use oxygen library to run a testing tool on robot framework. 
@@ -25,7 +25,7 @@ The guide will use a load testing tool([locust](https://locust.io/)) as an examp
 ## Locust Introduction
 
 [Load software testing](https://en.wikipedia.org/wiki/Load_testing) is the process of putting demand on a system and measuring its response.
-The load tests are defined in python files, `locustfile.py` which look like following:
+The load tests in locust are defined in python files, `locustfile.py` which look like following:
 
 ```
 from locust import HttpUser, task, between
@@ -49,13 +49,13 @@ And the output of the tests are .csv files which look like following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-We will look into how to write a `locustfile.py` and run it later in the following sections. 
+We will look into writing a `locustfile.py` and running it in the following sections. 
 In the following sections we will write a handler, which is able to execute the locust tests on Robot Framework and provide the test results in user-friendly format.
 
 
 ## Start developing
 
-Let's create a virtual environment and install oxygen.
+Let's start developing by creating a `python3` virtual environment using [venv](https://docs.python.org/3/library/venv.html) and install then install the  oxygen library in it.
 
 
 ```
@@ -69,7 +69,10 @@ Install Oxygen by running the following:
 $ pip install robotframework-oxygen
 ```
 
-Let's start developing by creating a working folder
+Robotframework will be installed into the virtual environment while doing the pip install for oxygen as robotframework is listed as a dependency for oxygen.
+
+Now we will create a working folder for writing the Locusthandler and the unit tests. <!--- write an explanation for what locusthandler means here --->
+
 ````
 cd locustenv
 mkdir locusthandler
