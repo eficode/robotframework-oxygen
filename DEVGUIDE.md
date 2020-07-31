@@ -14,7 +14,18 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 
 ## What is our goal? 
 
-The performance tests are defined in python files which look like following:
+Oxygen library has inbuilt functionality to perform a unit testing for java programing([junit](https://junit.org/junit5/)), a load testing ([gatling](https://gatling.io/)) and a security testing ([ZAP](https://www.zaproxy.org/)) on robotframework. Refer oxygen [documentation](https://github.com/eficode/robotframework-oxygen) if you are trying to use junit, zap or gatling in your project.
+However, if you are aiming to use any other testing tool for your business, Oxygen provides a framework to integrate and run your testing tool on robotframework. Thus empowering you to bring all your testing tools under the same roof with a user-friendly results file.
+
+Oxygen developer guide, will walk through the process of how to use the oxygen framework to integrate and run your preferred testing tool on robot framework.
+The guide will use a load testing tool([locust](https://locust.io/)) as an example of how to use oxygen library to run a testing tool on robot framework. 
+
+
+
+## Locust Introduction
+
+[Load software testing](https://en.wikipedia.org/wiki/Load_testing) is the process of putting demand on a system and measuring its response.
+The load tests are defined in python files, `locustfile.py` which look like following:
 
 ```
 from locust import HttpUser, task, between
@@ -38,7 +49,8 @@ And the output of the tests are .csv files which look like following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Our goal is to write an handler, which is able to execute the locust tests inside Robot Framework and provide the test results in user-friendly format in the Robot Framework log files.
+We will look into how to write a `locustfile.py` and run it later in the following sections. 
+In the following sections we will write a handler, which is able to execute the locust tests on Robot Framework and provide the test results in user-friendly format.
 
 
 ## Start developing

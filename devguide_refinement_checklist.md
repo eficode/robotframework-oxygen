@@ -1,10 +1,10 @@
 # Devguide Refinement Checklist
 
-- [ ] List out the pre-requisites to understand the devguide.
+- [x] List out the pre-requisites to understand the devguide.
 - [ ] Tutorial Video for the devloper guide 
-- [ ] Emphasis on the goal of the devloper guide. 
-- [ ] One or Two lines on the locust tool and the link to the locust website to be given for further exploration.
-- [ ] Claridfication in locustfile about the code snippet being an example of how locustfile and its output looks like and no coding required by the devloper at this time when following the devguide.
+- [x] Emphasis on the goal of the devloper guide. 
+- [x] One or Two lines on the locust tool and the link to the locust website to be given for further exploration.
+- [x] Claridfication in locustfile about the code snippet being an example of how locustfile and its output looks like and no coding required by the devloper at this time when following the devguide.
 - [ ] Mention a code snippet on how to run a locustfile.(Use the one from the robot file)
 - [ ] Find out and mention why do we need to add `resources.csv` is needed. Mention to copy paste the code to the csv file.
 - [ ] Add link to read more about python virtual environments.
@@ -35,4 +35,5 @@
 
 
 - [ ] Keep and eye on the robot test in the package environment as we the locustfile.py path id different from the locustenv - ${CURDIR}/locustfile.py needs to be replaced with "locustfile.py" only - find an explanation for it
+- [ ] Improve the introduction.
 
