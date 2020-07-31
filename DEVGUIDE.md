@@ -6,7 +6,10 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 
 ## Prerequisites
 
-Python 3
+1. Basics of [Python3](https://docs.python.org/3/).
+2. Python virtual environment - [venv](https://docs.python.org/3/library/venv.html).
+3. Basics of [robotframework](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html).
+4. Basics of [robotframework-oxygen](https://github.com/eficode/robotframework-oxygen).
 
 
 ## What is our goal? 
