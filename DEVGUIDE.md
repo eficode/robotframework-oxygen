@@ -22,7 +22,7 @@ The guide will use a load testing tool([locust](https://locust.io/)) as an examp
 
 
 
-## Locust Introduction
+## What's Locust? 
 
 [Load software testing](https://en.wikipedia.org/wiki/Load_testing) is the process of putting demand on a system and measuring its response.
 The load tests in locust are defined in python files, `locustfile.py` which look like following:
@@ -82,7 +82,30 @@ cd locusthandler
 
 ### Writing LocustHandler and unit tests
 
-Let's create `__init__.py`  to our `locustenv/locusthandler` folder. Next we can create `locusthandler.py` to `locustenv/locusthandler` folder with following content:
+**Create an empty python file in locustenv/locusthandler folder and name it `__init__.py`.** This is done to follow the folder structure of [python packaging](https://packaging.python.org/tutorials/packaging-projects/). Our goal is to write locusthandler code and package it so that it can be installed in any other virtual environment. 
+Next we can create `locusthandler.py` to `locustenv/locusthandler` folder.
+
+```
+touch __init__.py 
+touch locusthandler.py
+```
+To check if we have followed the the user guide correctly, you could verify if the folder structure in the locustenv folder and it looks like the following.  
+
+
+```
+> locustenv
+    > bin
+    > include
+    > lib
+    > locusthandler
+        __init__.py
+        locusthandler.py
+    pyvenv.cfg
+
+```
+
+Write the following python code in the `locusthandler.py` file in the locusthandler folder.
+
 
 ```
 import json
@@ -166,7 +189,8 @@ class TestLocust(TestCase):
 ```
 
 
-Next we create `locustenv/locusthandler/resources` folder and add there test data file `requests.csv` which has the following:
+Next we create `locustenv/locusthandler/resources` folder and add the following .cdv data into the test data file `requests.csv`.
+`requests.csv` file is created for the successful operation of the unit tests.
 
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
@@ -176,18 +200,40 @@ Next we create `locustenv/locusthandler/resources` folder and add there test dat
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Now we can run unit tests from the `locustenv/locusthandler` folder with command 
+Now we can run unit tests from the `locustenv/locusthandler` folder with command.  
+**!! Make sure to be in the right directory before running the `test_locust.py` file.**
 
 ````
 python -m unittest tests/test_locust.py
 ````
 
-and all 3 tests should pass.
+and all 3 tests should pass. 
+
+In case of failure, please check if you have all the files as folders as following. 
+
+```
+> locustenv
+    > bin
+    > include
+    > lib
+    > locusthandler
+        > resources
+            requests.csv
+        > tests
+            test_locust.py
+        __init__.py
+        locusthandler.py
+    pyvenv.cfg
+
+```
 
 
 ### Configuring LocustHandler to Oxygen
 
-Let's open the python interpreter by running `python` from the `locustenv` directory and check that we can import the locusthandler:
+To check if we have coded locusthandler properly,  let's open the python interpreter by running `python` from the `locustenv` directory and check that we can import the locusthandler. 
+
+**!! Make sure to be in the right directory before starting the python interpreter.**
+
 
 ```
 (locustenv) $ python
@@ -197,7 +243,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
+Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/tutorials/packaging-projects/) Next we can exit the python intepreter (CTRL + D).
+
+We will now append the following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml` file. This is how we configure the locusthandler to the oxygen.  
 
 ```
 locusthandler.locusthandler:
@@ -206,7 +254,9 @@ locusthandler.locusthandler:
   tags: oxygen-locusthandler
 ```
 
-Test your edit by running:
+Locusthandler has been configured. Now let's test your edit by running the following command in the **`locustenv` folder**:
+
+**!! Make sure to be in the right directory**
 
 ```
 $ python -m oxygen --version
@@ -214,12 +264,13 @@ $ python -m oxygen --version
 
 You shouldn't get any errors. If you do, check that your edits are valid [YAML](https://yaml.org/) syntax.
 
-### Install demoapp to run tests against
+### Install demoapp to run Locust tests against
 
-[Next we we install and run demo-app that we run the locust tests against.](https://github.com/robotframework/WebDemo)
+We will now fetch, install and run a [demo application](https://github.com/robotframework/WebDemo) on your local machine to perform the locust load tests on. 
 
-Open up another terminal and run following commands:
+You can install the demo application on anywhere in your computer. However, its recommended to install it inside the `locustenv` to have all you project files in same folder. 
 
+**Open up a new terminal** and run following commands:
 
 ```
 git clone https://github.com/robotframework/WebDemo.git
@@ -227,15 +278,20 @@ cd WebDemo
 python3 demoapp/server.py
 ```
 
+Demo server is up and running now. You can check if the demo application is running from your browser in http://localhost:7272/. Note to replace `7272` with the port number in case the demo application is running on a different port number.
+
 ### Running Locust with LocustHandler in Robot test
 
-First we install Locust to our locustenv virtualenv:
+Once we have installed the demo application, let's get back to the `locustenv` python virtual environment. If you have opened a new terminal for the previous step of installing the demo application you just need to go back to the old terminal where we were before installing the demo application. 
+
+
+We will now install Locust load testing tool to our `locustenv` virtualenv:
 
 ```
 pip install locust
 ```
 
-Then we add `locustfile.py` file to `locustenv/locusthandler` folder which contains the commands for the performance test:
+Now we add `locustfile.py` file to `locustenv/locusthandler` folder which contains the commands for the performance test. Write the following code into  `locustfile.py`.
 
 ```
 from locust import HttpUser, task, between
@@ -248,9 +304,17 @@ class QuickstartUser(HttpUser):
         self.client.get("/")
 ```
 
+Let's try and run the locust test on the demo application by running the following code on the command line in the `locustenv` folder. 
 
+```
+locust -f locusthandler/locustfile.py --headless --host http://localhost:7272 -u 5 -r 1 --run-time 1m --csv=example
+```
 
-Let's write `test.robot` file to `locustenv/locusthandler` folder which contains test case that runs locust from command line:
+If the `locsutfile.py` is coded correctly, it will run load test on the demo application for 1 min and the results will be displayed on the terminal. It will also generate 3 .csv results files in the `locustenv` folder namely `example_failures.csv`,`example_stats.csv`,and `example_stats_history.csv`.
+
+Refer locust [documentation](https://docs.locust.io/en/stable/configuration.html#command-line-options) to read more about running locust tests. 
+
+Now let's write the robot test to run the same locust tests on the demo application on robotframework. Write `test.robot` file to `locustenv/locusthandler` folder which contains test case that runs locust from command line:
 
 ```RobotFramework
 
@@ -288,14 +352,20 @@ Performance test should pass
     ...   ${LOCUSTCOMMAND}
 ```
 
+Refer [robotframework user guide](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html) to read more about writing a robot test. 
 
- We can run the test from `locustenv` folder by using command
+Let' run the robot test from `locustenv` folder by using command.
+
+**!! Make sure to be in the right directory**
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-The test should execute for about 60 seconds. After this you can see the statistics of the performance tests in `log.html` and `report.html`. 
+
+The robot test should execute for about 60 seconds. Once the test completes, we wil observe that the locust load test results has been logged in the form of robot results in  `log.html`, `report.html` and `output.xml` files. We encourage you to open these files to see how human-friendly the robot results are are compared to the .csv  results files produced by locust. 
+
+We have successfully reached our goal of configuring and running  the locust on robotframework using the robotframework-oxygen library. You are run any other testing tool on robotframework using robotframework-oxygen library referring to this example.
 
 
 If the test case fails, check first that Oxygen's `config.yml` is correctly configured from the previous section. You can set variable `check_return_code` to "True" in order to get more specific logging:
@@ -313,6 +383,7 @@ Performance test should pass
     ...   check_return_code=${True}
 ```
 
+This action will toggle the debugging mode of the robotframework-oxygen library in case you are hitting some kind of roadblocks, making it easy to debug the errors.
 
 ## Defining your own parameters
 
