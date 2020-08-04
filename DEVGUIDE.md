@@ -356,7 +356,7 @@ Refer [robotframework user guide](http://robotframework.org/robotframework/lates
 
 Let' run the robot test from `locustenv` folder by using command.
 
-**!! Make sure to be in the right directory**
+**Make sure to be in the right directory**
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
