@@ -305,6 +305,7 @@ class QuickstartUser(HttpUser):
 ```
 
 Let's try and run the locust test on the demo application by running the following code on the command line in the `locustenv` folder. 
+**!! Make sure to be in the right directory**
 
 ```
 locust -f locusthandler/locustfile.py --headless --host http://localhost:7272 -u 5 -r 1 --run-time 1m --csv=example
@@ -356,7 +357,7 @@ Refer [robotframework user guide](http://robotframework.org/robotframework/lates
 
 Let' run the robot test from `locustenv` folder by using command.
 
-**Make sure to be in the right directory**
+**!! Make sure to be in the right directory**
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
