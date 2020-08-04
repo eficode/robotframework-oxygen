@@ -387,7 +387,7 @@ This action will toggle the debugging mode of the robotframework-oxygen library 
 
 ## Defining your own parameters
 
-In our first solution the Locust test case will fail if even one request fails during the performance testing. However this might not be the best way to determine was the performance test successfull or not. Let's implement a solution, where you can define `failure_percentage` , which is the highest percentage of failed request that is allowed in order that the test still passes.
+ The Locust test case will give results as fail, if even one request fails during the load testing. However this might not be the best way to determine was the performance test successfully or not. At certain situations, we might want to label test as passed if it passes more than certain percent of the tests. Let's implement a solution, where you can define `failure_percentage` , which is the highest percentage of failed request that is allowed in order that the test still passes.
 
 Let's define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
 
@@ -398,6 +398,9 @@ locusthandler.locusthandler:
   tags: oxygen-locusthandler
   failure_percentage: 20
 ```
+
+----------------------------------------------------------------
+delete this and start 2mrw from here
 
 
 Let's implement function, which returns the failure_percentage to `locustenv/locusthandler/locusthandler.py`:
