@@ -35,6 +35,6 @@
 
 
 - [x] Keep and eye on the robot test in the package environment as we the locustfile.py path id different from the locustenv - ${CURDIR}/locustfile.py needs to be replaced with "locustfile.py" only - find an explanation for it
-- [ ] Improve the introduction.
+- [x] Improve the introduction.
 - [ ] introduce the term locusthandler in #start developing section.
 
