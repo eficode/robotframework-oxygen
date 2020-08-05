@@ -384,7 +384,7 @@ Performance test should pass
     ...   check_return_code=${True}
 ```
 
-This action will toggle the debugging mode of the robotframework-oxygen library in case you are hitting some kind of roadblocks, making it easy to debug the errors.
+This action will toggle the debugging mode of the robotframework-oxygen library in case you are hitting some kind of roadblocks, making it easy to debug the errors. Check Oxygen [Keyword documentation](https://eficode.github.io/robotframework-oxygen/) to read the more about toggling debug mode ON.
 
 ## Defining your own parameters
 
@@ -856,7 +856,7 @@ And the tests should run normally creating the locust results files(`example_fai
 
 ## Improving the test result report
 
-Our locusthandler works fine, but we could make the test results more clear. Let's change the `transform_tests` method of `locusthandler.py` to make more clear test suite and keyword names, and show the performance test results as keyword messages:
+Our locusthandler works fine, but we could make the test results more clear in the robot results. Let's replaced the `transform_tests` function in the `locusthandler.py` file to make more clear test suite and keyword names, and show the performance test results as keyword messages:
 
 ```py
     def _transform_tests(self, file, treshold_failure_percentage):
@@ -894,21 +894,23 @@ Our locusthandler works fine, but we could make the test results more clear. Let
             return test_suite
 ```
 
-Now run the robot tests again from `locustenv/` folder with 
+Now run the robot tests again **from `locustenv/` folder** with the following command.
+**!! Make sure to be in the right directory before running the robot tests**
 
 ```bash
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-And see the new test format in the generated `log.html` file.
+And see the new test format in the generated `log.html` file on your browser.
 
-Let's run the unit tests from `locustenv/locusthandler` folder:
+Let's run the unit tests **from `locustenv/locusthandler` folder**:
+**!! Make sure to be in the right directory**
 
 ```bash
 python -m unittest tests/test_locust.py
 ```
 
- We notice that two fail because we changed the name of test suite. Let's update the assert statements of the failing tests:
+ We notice that two fail because we changed the name of test suite. Let's update the assert statements of the failing tests by replacing the `test_parse_results_takes_failure_percentage_from_parameter_prior_to_config` and `test_parse_results_takes_failure_percentage_correctly_from_config` functions in `locustenv/locusthandler/tests/test_locust.py` file.
 
 ```py
     def test_parse_results_takes_failure_percentage_from_parameter_prior_to_config(self):
@@ -918,7 +920,8 @@ python -m unittest tests/test_locust.py
         dictionary['failure_percentage'] = 75
         test_suite = self.handler.parse_results(dictionary)
         self.assertEqual(test_suite['name'], 'Locust test case, failure percentage 75')
-
+```
+```py
     def test_parse_results_takes_failure_percentage_correctly_from_config(self):
         config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST', 'failure_percentage': '70'}
         self.handler = LocustHandler(config)
@@ -927,8 +930,9 @@ python -m unittest tests/test_locust.py
         test_suite = self.handler.parse_results(dictionary)
         self.assertEqual(test_suite['name'], 'Locust test case, failure percentage 70')
 ```
- 
-And we are done! 
+ Let's re-run the unit tests **from `locustenv/locusthandler` folder** with `python -m unittest tests/test_locust.py`.
+
+We should have all the 7 tests successfully executed. Now we are done! 
 
 # Teardown
 
