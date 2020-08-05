@@ -1,6 +1,7 @@
 ## Oxygen developer guide
 
-This is a developer guide for Oxygen. We will write a handler for [https://locust.io/](https://locust.io/), which is a performance testing tool.
+Oxygen library has inbuilt functionality to perform a unit testing for java programing([junit](https://junit.org/junit5/)), a load testing ([gatling](https://gatling.io/)) and a security testing ([ZAP](https://www.zaproxy.org/)) on robotframework. Refer oxygen [documentation](https://github.com/eficode/robotframework-oxygen) if you are trying to use junit, zap or gatling in your project.
+However, if you are aiming to use any other testing tool for your business or project, oxygen provides a framework to integrate and run your testing tool on robotframework. Thus empowering you to bring all your testing tools under the same roof with a user-friendly results file.
 
 # Getting started
 
@@ -13,9 +14,6 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 
 
 ## What is our goal? 
-
-Oxygen library has inbuilt functionality to perform a unit testing for java programing([junit](https://junit.org/junit5/)), a load testing ([gatling](https://gatling.io/)) and a security testing ([ZAP](https://www.zaproxy.org/)) on robotframework. Refer oxygen [documentation](https://github.com/eficode/robotframework-oxygen) if you are trying to use junit, zap or gatling in your project.
-However, if you are aiming to use any other testing tool for your business or project, oxygen provides a framework to integrate and run your testing tool on robotframework. Thus empowering you to bring all your testing tools under the same roof with a user-friendly results file.
 
 Oxygen developer guide, will walk through the process of how to use the oxygen framework to integrate and run your preferred testing tool on robot framework.
 The guide will use a load testing tool([locust](https://locust.io/)) as an example of how to use oxygen library to run a testing tool on robot framework. 
@@ -71,7 +69,7 @@ $ pip install robotframework-oxygen
 
 Robotframework will be installed into the virtual environment while doing the pip install for oxygen as robotframework is listed as a dependency for oxygen.
 
-Now we will create a working folder for writing the Locusthandler and the unit tests. <!--- write an explanation for what locusthandler means here --->
+Now we will create a working folder for writing the Locusthandler and the unit tests. 
 
 ```bash
 cd locustenv

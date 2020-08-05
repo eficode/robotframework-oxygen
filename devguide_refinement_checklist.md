@@ -5,7 +5,7 @@
 - [x] Emphasis on the goal of the developer guide. 
 - [x] One or Two lines on the locust tool and the link to the locust website to be given for further exploration.
 - [x] Clarification in locustfile about the code snippet being an example of how locustfile and its output looks like and no coding required by the developer at this time when following the devguide.
-- [ ] Mention a code snippet on how to run a locustfile.(Use the one from the robot file)
+- [x] Mention a code snippet on how to run a locustfile.(Use the one from the robot file)
 - [x] Find out and mention why do we need to add `resources.csv` is needed. Mention to copy paste the code to the csv file.
 - [x] Add link to read more about python virtual environments.
 - [x] Mention oxygen also installs robotframework package because, robot is fetched while installing oxygen lib.
@@ -13,7 +13,7 @@
 - [x] Emphasis (by making it bold) on running commmand line from the right directory every time we run a code. It is easy to miss and lose flow from developer guide.
 - [x] Tree directory structure could be a nice way to exlpain where to run the code every time. 
 - [x] Where do I install the demo app - do it where ever you want. It doesn't matter. But it is important explicitly mention a directory so that user don't lose flow of concepts of gets stuck. 
-- [ ] In section - "Running Locust with LocustHandler in Robot test", if this is where we finally decide to introduce locust after re-ordering, provide a link it to the locust environment.
+- [x] In section - "Running Locust with LocustHandler in Robot test", if this is where we finally decide to introduce locust after re-ordering, provide a link it to the locust environment.
 - [x] Provide link to robot-framework user guide while introducing the robot file for the first time in the document. 
 - [x] "If the test case fails, " - create a link to the new issue in the git. On how to toggle the debugging mode on/off. This also needed later in the devguide. 
 - [x] Clarify the edits in the `locusthandler.py file`. 
