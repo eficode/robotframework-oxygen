@@ -400,7 +400,7 @@ locusthandler.locusthandler:
   failure_percentage: 20
 ```
 
-Let's implement function to return the failure_percentage. **Add the following code in the `LocusHandler` class in the python file `locustenv/locusthandler/locusthandler.py`**
+Let's implement function to return the failure_percentage. **Add the following code in the `LocustHandler` class in the python file `locustenv/locusthandler/locusthandler.py`**
 
 ```python
     def _get_treshold_failure_percentage(self):
