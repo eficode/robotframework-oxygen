@@ -243,7 +243,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/tutorials/packaging-projects/) Next we can exit the python intepreter (CTRL + D).
+Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/tutorials/packaging-projects/) Next we can exit the python interpreter (CTRL + D).
 
 We will now append the following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml` file. This is how we configure the locusthandler to the oxygen.  
 
@@ -881,7 +881,7 @@ Our locusthandler works fine, but we could make the test results more clear in t
                 path = row['Name']
                 test_case_name = 'Testing {} requests to path {}'.format(type_of_request, path)
                 if path == 'Aggregated':
-                    test_case_name = 'Aggreagated results of all Locust test cases:'              
+                    test_case_name = 'Aggregated results of all Locust test cases:'              
                 test_case = {
                 'name': test_case_name,
                 'keywords': [keyword]
