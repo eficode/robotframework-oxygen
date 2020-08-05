@@ -12,15 +12,15 @@
 - [ ] Consider re-ordering where to introduce the locustfile. (It could be done later when we write the code for locustfile.)
 - [x] Emphasis (by making it bold) on running commmand line from the right directory every time we run a code. It is easy to miss and lose flow from developer guide.
 - [x] Tree directory structure could be a nice way to exlpain where to run the code every time. 
-- [ ] Where do I install the demo app - do it where ever you want. It doesn't matter. But it is important explicitly mention a directory so that user don't lose flow of concepts of gets stuck. 
+- [x] Where do I install the demo app - do it where ever you want. It doesn't matter. But it is important explicitly mention a directory so that user don't lose flow of concepts of gets stuck. 
 - [ ] In section - "Running Locust with LocustHandler in Robot test", if this is where we finally decide to introduce locust after re-ordering, provide a link it to the locust environment.
-- [ ] Provide link to robot-framework user guide while introducing the robot file for the first time in the document. 
+- [x] Provide link to robot-framework user guide while introducing the robot file for the first time in the document. 
 - [ ] "If the test case fails, " - create a link to the new issue in the git. On how to toggle the debugging mode on/off. This also needed later in the devguide. 
-- [ ] Clarify the edits in the `locusthandler.py file`. 
-- [ ] Emphasis (by making it bold) on running commmand line from the right directory every time we run a code. It is easy to miss and lose flow from developer guide.
-- [ ] encourage/guide users to check the log and report.html files every time a robot code has been executed.
+- [x] Clarify the edits in the `locusthandler.py file`. 
+- [x] Emphasis (by making it bold) on running commmand line from the right directory every time we run a code. It is easy to miss and lose flow from developer guide.
+- [x] encourage/guide users to check the log and report.html files every time a robot code has been executed.
 - [ ] if possible use the UI of the git for the changes to be made in the code so that the user is not confused and "let's update" bold words. 
-- [ ] Link to the python packaging website needs to be updated. 
+- [x] Link to the python packaging website needs to be updated. 
 - [ ] Describe the folders creates in locustenv when python packaging is executed. Also mention to clear it when trying to re-create package in case of error in packaging - build files pile up and fetch older packages if not cleared.
 - [ ] mention the importance of folder structure for packaging. check if the users has all the required files include `__init__.py`. 
 - [ ] Use tree structure for checking the folder structure.

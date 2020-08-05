@@ -400,11 +400,7 @@ locusthandler.locusthandler:
   failure_percentage: 20
 ```
 
-----------------------------------------------------------------
-delete this and start 2mrw from here
-
-
-Let's implement function, which returns the failure_percentage to `locustenv/locusthandler/locusthandler.py`:
+Let's implement function to return the failure_percentage. **Add the following code in the `LocusHandler` class in the python file `locustenv/locusthandler/locusthandler.py`**
 
 ```
     def _get_treshold_failure_percentage(self):
@@ -422,7 +418,7 @@ Let's implement function, which returns the failure_percentage to `locustenv/loc
 
         return failure_percentage
 ```
-and let's use it in `_transform_tests` function:
+and let's use it in `_transform_tests` function in the same python file. **Make necessary changes as per the following code snippet to the `_transform_tests` function or  replace the `_transform_tests` function with the code below.**
 
 ```
     def _transform_tests(self, file):
@@ -452,8 +448,9 @@ and let's use it in `_transform_tests` function:
 ```
 
 
+Now that we have defined the failure percentage function in locusthandler, next we update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`.
 
-Next we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`:
+ **Make the necessary changes to  `locusthandler/tests/test_locust.py` file according to the following code snippet or replace the whole `test_locust.py` with the following code.**  
 
 ```
 from unittest import TestCase
@@ -492,23 +489,31 @@ class TestLocust(TestCase):
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now the unit tests should pass, run the tests from `locustenv/locusthandler` folder with command:
+Let's verify if the changes made to the `test_locust.py` file is correct by running the tests **from `locustenv/locusthandler` folder** with the following command:
+
+**!! Make sure to be in the right directory before running the tests**
 
 ````
 python -m unittest tests/test_locust.py
 ````
 
-And we can also try out the robot tests using the new .yaml configuration. Run the tests from `locustenv` folder by using command
+We should be able to run all the 5 tests if everything is done correctly.
+
+And we can also try out the robot tests using the new .yaml configuration. Run the tests **from `locustenv` folder** by using command.
+
+**!! Make sure to be in the right directory before running the tests**
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
+We should be able to run the robot tests successfully now. It's encouraged to check the robot result files `log.html` and `report.html` to see the difference in the results before and after defining our own parameters. 
+
 ## Adding failure percentage as an robot test parameter
 
-Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we wan't to determine different values for `failure_percentage`. 
+Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we want to determine different values for `failure_percentage`. 
 
-Let's change the functionality of `locusthandler/locusthandler.py`:
+Let's change the functionality of `locusthandler/locusthandler.py`. Replace the code in the `locusthandler.py` file with the following code.
 
 ```
 import json
@@ -584,9 +589,13 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test doesn't: 
+Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. 
 
-```RobotFramework
+Now we can rewrite the robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test doesn't.
+
+Replace the `Test Cases` part of the `test.robot` file with the following code. Remember to follow [robot code syntax](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-test-cases) while editing the robot file. 
+
+```
 *** Test Cases ***
 
 Critical performance test
@@ -608,7 +617,9 @@ Normal performance test
 
 In this case the `Critical performance test` could be a performance test for a system where the consequences of failure is much larger: Thus we define the failure_percentage to 1%. In the `Normal performance test` we use the value that is defined in the `/lib/python3.7/site-packages/oxygen/config.yml`.
 
-Run the tests in `locustenv/` folder with 
+Run the tests in `locustenv/` folder with the command:
+
+**!! Make sure to be in the right directory before running the tests**
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
@@ -620,14 +631,16 @@ However now when you run the unit tests from `locusthandler/` folder they fail:
 python -m unittest tests/test_locust.py
 ```
 
-Because we changed the functionality to use dictionary instead of result file path. Let's update the test case setup in `tests/test_locust.py` and write a method `dictionary_with_result_file`:
-
+Because we changed the functionality to use dictionary instead of result file path. To fix that, let's write a function, `dictionary_with_result_file` in the `TestLocust` class at `tests/test_locust.py` file. We will also update the `setUp` function to match the `dictionary_with_result_file` function. 
+ 
 ```
     def dictionary_with_result_file(self):
         path = Path.cwd() / 'resources/requests.csv'
         dictionary = dict()
         dictionary['result_file'] = path
         return dictionary
+```
+```
 
     def setUp(self):
         config = {'handler': 'LocustHandler', 'keyword': 'run_locust', 'tags': 'LOCUST'}
@@ -637,7 +650,8 @@ Because we changed the functionality to use dictionary instead of result file pa
         self.test_suite = self.handler.parse_results(dictionary)
 ```
 
-and run tests again. Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the failing test cases: 
+and run tests again from the `locusthandler/` folder.
+Still two test cases fail. This is because the `_get_treshold_failure_percentage` has an argument now instead of reading the value from the config. Let's update the failing test cases by replacing `test_pass_is_true_when_failure_request_percentage_is_below_default_value` and `test_failure_percentage_max_amount_is_one_hundred` functions in `tests/test_locust.py` file. 
 
 ```
     def test_pass_is_true_when_failure_request_percentage_is_below_default_value(self):
@@ -647,13 +661,23 @@ and run tests again. Still two test cases fail. This is because the `_get_tresho
         dictionary['failure_percentage'] = 10
         test_suite = handler.parse_results(dictionary)
         self.assertEqual(self.test_suite['tests'][0]['keywords'][0]['pass'], True)
+```
+```
 
     def test_failure_percentage_max_amount_is_one_hundred(self):
         failure_percentage = self.handler._get_treshold_failure_percentage(101)
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now all tests should pass. Let's add two more test cases to see that the `failure_precentage` is set correctly from the parameter or config file.
+Now all tests should pass, when running the following command from the `locusthandler/` directory.
+
+```
+python -m unittest tests/test_locust.py
+```
+
+We will be able to run all the 5 tests without fail now.
+
+Let's add two more test cases to the  `tests/test_locust.py` so that the `failure_precentage` is set correctly from the parameter or config file.
 
 ```
     def test_parse_results_takes_failure_percentage_from_parameter_prior_to_config(self):
@@ -673,7 +697,7 @@ Now all tests should pass. Let's add two more test cases to see that the `failur
         self.assertEqual(test_suite['name'], 'Locust test suite, failure percentage 70')
 ```
 
-All tests should pass. Now we have completed an LocustHandler with unit tests which test the most important functionalities.
+We will have 7 unit tests now. Running the unit tests from the `locusthandler/`  with `python -m unittest tests/test_locust.py` command we can notice that all 7 tests are run successfully.  We have completed an LocustHandler with unit tests which test the most important functionalities.
 
 
 
@@ -769,7 +793,7 @@ Our locusthandler works fine, but we could make the test results more clear. Let
                 path = row['Name']
                 test_case_name = 'Testing {} requests to path {}'.format(type_of_request, path)
                 if path == 'Aggregated':
-                    test_case_name = 'Aggragated results of all Locust test cases:'              
+                    test_case_name = 'Aggreagated results of all Locust test cases:'              
                 test_case = {
                 'name': test_case_name,
                 'keywords': [keyword]
