@@ -2,6 +2,8 @@ TestSuite:
 
 {
   'name': <string>,
+  'start': <int>, // timestamp
+  'finish': <int>, // timestamp
   'tags': [
     <string>,
   ],
@@ -20,6 +22,8 @@ TestCase:
 
 {
   'name': <string>,
+  'start': <int>, // timestamp
+  'finish': <int>, // timestamp
   'tags': [
     <string>,
   ],
@@ -37,6 +41,8 @@ Keyword:
   'name': <string>,
   'pass': <bool>,
   'elapsed': <float>, // milliseconds
+  'start': <int>, // timestamp
+  'finish': <int>, // timestamp
   'tags': [
     <string>,
   ],
