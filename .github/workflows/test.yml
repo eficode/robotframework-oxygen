@@ -13,19 +13,82 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-    
-  # This workflow contains a single job called "tests"
-  tests:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [python39, python310]
+        rfVersion: [3.2.2, 4.0.3]
+    runs-on: windows-latest
+    name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
+    defaults:
+      run:
+        shell: wsl-bash {0}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          additional-packages:
+            dos2unix
+      - name: Install and configure Nix
+        run: |
+            # Nix installer does not support root installation we need a user
+            useradd test -m
 
+            # Create /nix folder with proper permissions
+            # This is required because otherwise installer gets stuck most likely at running sudo
+            install -d -m755 -o test -g test /nix
+
+            # Download Nix installer
+            sudo -iu test curl -o ./install-nix.sh -L https://nixos.org/nix/install
+
+            # Run installer as single user installation and we do not need a channel
+            sudo -iu test sh ./install-nix.sh --no-daemon --no-channel-add
+      - name: Run tests
+        run: |
+            dos2unix default.nix
+            # Run the tests in project directory where default.nix resides
+            # We need login shell for that so that .profile is getting read
+            sudo -iu test sh -c "nix-shell $PWD --argstr cmd 'invoke test --in-nix' --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }} --argstr path $PWD"
+
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [python39, python310]
+        rfVersion: [3.2.2, 4.0.3]
+    runs-on: ubuntu-latest
+    name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: /nix
+          key: ${{ runner.os }}-test
       - uses: cachix/install-nix-action@v13
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+      - name: Run tests
+        run: nix-shell --argstr cmd "invoke test --in-nix" --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}
 
-      - run: nix-shell --argstr cmd "invoke test --in-nix" --argstr python python37 --argstr rfVersion 3.0.4
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [python39, python310]
+        rfVersion: [3.2.2, 4.0.3]
+    runs-on: macos-latest
+    name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: /nix
+          key: ${{ runner.os }}-test
+      - uses: cachix/install-nix-action@v13
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Run tests
+        run: nix-shell --argstr cmd "invoke test --in-nix" --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}

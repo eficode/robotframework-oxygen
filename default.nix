@@ -1,7 +1,11 @@
-{ pkgs ? import <nixpkgs> {}
+{ nixpkgs ? https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
 , python ? "python37"
 , rfVersion ? "3.0.4"
+, path ? toString ./.
 , cmd ? "green" }:
+let
+  pkgs = import (fetchTarball nixpkgs) { };
+in
 with pkgs;
 with lib;
 let
@@ -14,19 +18,25 @@ let
     pypiDataSha256 = "0pfivp1w3pdbsamnmmyy4rsnc4klqnmisjzcq0smc4pp908b6sc3";
   };
 
-  requirements =
+  requirementsWithout = names:
     let
-      lines = splitString "\n" (readFile ./requirements.txt);
-      removeComments = filter (line: line != "" && !(hasPrefix "#" line));
-      removeEntry = prefix: lines: filter (line: !(hasPrefix prefix line)) lines;
+      requirementsFile = names: runCommand "requirements.txt" {
+        buildInputs = [ gnused ];
+      } ''
+        cp "${/. + "${path}/requirements.txt"}" $out
+        for name in ${toString names}
+        do
+          sed -E "/^$name([=<>]|\$)/d" -i $out
+        done
+      '';
     in
-      concatStringsSep "\n" (removeEntry "robotframework" (removeComments lines));
+      readFile (requirementsFile names);
 
   package = mach-nix.buildPythonPackage {
     pname = "robotframework-oxygen";
     version = "dev";
-    src = ./.;
-    inherit requirements;
+    src = /. + path;
+    requirements = requirementsWithout ["robotframework" "twine"];
     requirementsExtra = ''
       robotframework==${rfVersion}
     '';
@@ -35,7 +45,8 @@ in
   runCommand "${package.pname}-${package.version}-result" {
     buildInputs = [ coreutils package ];
     shellHook = ''
-      tmpdir=$(mktemp -d -t src-XXXXXXXXXX)
+      tmpdir="$(mktemp -d -t src-XXXXXXXXXX)"
+      trap "rm -rf $tmpdir" EXIT
       cp -r ${package.src}/* $tmpdir/
       chmod -R u+w $tmpdir
       cd $tmpdir
@@ -47,7 +58,8 @@ in
   } ''
     outpath="$out/${python}/robotframework-${rfVersion}";
     mkdir -p $outpath
-    tmpdir=$(mktemp -d -t src-XXXXXXXXXX)
+    tmpdir="$(mktemp -d -t src-XXXXXXXXXX)"
+    trap "rm -rf $tmpdir" EXIT
     cp -r ${package.src}/* $tmpdir/
     chmod -R u+w $tmpdir
     cd $tmpdir
