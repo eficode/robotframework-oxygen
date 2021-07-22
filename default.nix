@@ -15,21 +15,20 @@ let
 
   package = mach-nix.buildPythonPackage {
     src = ./.;
-    requirements = ''
+    requirements = builtins.readFile ./requirements.txt;
+    requirementsExtra = ''
       robotframework==${rfVersion}
-      junitparser>=1.2.2
-      PyYAML>=3.13
-
-      ### Dev
-      mock>=2.0.0
-      coverage>=5.1
-      testfixtures>=6.14.1 # needed for large dict comparisons to make sense of them
-      green>=3.1.3 # unit test runner
     '';
   };
 in
   runCommand "${package.pname}-${package.version}-result" {
     buildInputs = [ coreutils package ];
+    shellHook = ''
+      ${cmd}
+      exit_code=$?
+      echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exit_code"
+      exit $exit_code
+    '';
   } ''
     outpath="$out/${python}/robotframework-${rfVersion}";
     mkdir -p $outpath
