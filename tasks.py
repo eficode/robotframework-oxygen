@@ -7,6 +7,9 @@ from invoke import run, task
 CURDIR = Path.cwd()
 SRCPATH = CURDIR / 'src'
 UNIT_TESTS = CURDIR / 'tests'
+IN_NIX_HELP = ('Setup environment for use inside Nix. By default PYTHONPATH '
+               'is being overriden with source path. This flag makes sure '
+               'that PYTHONPATH is untouched.')
 
 # If you want colored output for the tasks, use `run()` with `pty=True`
 # Not on Windows, though -- it'll fail if you have `pty=True`
@@ -35,34 +38,46 @@ def install(context, package=None):
       help={
           'test': 'Limit unit test execution to specific tests. Must be given '
                   'multiple times to select several targets. See more: '
-                  'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5'
+                  'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5',
+          'in_nix': IN_NIX_HELP
       })
-def utest(context, test=None):
+def utest(context, test=None, in_nix=False):
+    env = {} if in_nix else {'PYTHONPATH': str(SRCPATH)}
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
-        env={'PYTHONPATH': str(SRCPATH)},
+        env=env,
         pty=(not system() == 'Windows'))
     run('coverage html')
 
-@task
-def coverage(context):
-  run(f'green -r {str(UNIT_TESTS)}',
-      env={'PYTHONPATH': str(SRCPATH)},
-      pty=(not system() == 'Windows'))
+@task(help={
+    'in_nix': IN_NIX_HELP
+})
+def coverage(context, in_nix=False):
+    env = {} if in_nix else {'PYTHONPATH': str(SRCPATH)}
+    run(f'green -r {str(UNIT_TESTS)}',
+        env=env,
+        pty=(not system() == 'Windows'))
 
-@task(help={'rf': 'Additional command-line arguments for Robot Framework as '
-                  'single string. E.g: invoke atest --rf "--name my_suite"'})
-def atest(context, rf=''):
+@task(help={
+    'rf': 'Additional command-line arguments for Robot Framework as '
+          'single string. E.g: invoke atest --rf "--name my_suite"',
+    'in_nix': IN_NIX_HELP
+})
+def atest(context, rf='', in_nix=False):
+    pythonpathArg = '' if in_nix else f'--pythonpath {str(SRCPATH)}'
     run(f'robot '
-        f'--pythonpath {str(SRCPATH)} '
+        f'{pythonpathArg} '
         f'--dotted '
         f'{rf} '
         f'--listener oxygen.listener '
         f'{str(CURDIR / "tests" / "atest")}',
         pty=(not system() == 'Windows'))
 
-@task(pre=[utest, atest])
-def test(context):
-    pass
+@task(help={
+    'in_nix': IN_NIX_HELP
+})
+def test(context, in_nix=False):
+    utest(context, in_nix=in_nix)
+    atest(context, in_nix=in_nix)
 
 @task
 def doc(context):
