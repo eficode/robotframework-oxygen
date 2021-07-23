@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         python: [python39, python310]
-        rfVersion: [3.2.2, 4.0.3]
+        rfVersion: [3.2.2, 4.1]
     runs-on: windows-latest
     name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     defaults:
@@ -58,7 +58,7 @@ jobs:
       fail-fast: false
       matrix:
         python: [python39, python310]
-        rfVersion: [3.2.2, 4.0.3]
+        rfVersion: [3.2.2, 4.1]
     runs-on: ubuntu-latest
     name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
@@ -78,7 +78,7 @@ jobs:
       fail-fast: false
       matrix:
         python: [python39, python310]
-        rfVersion: [3.2.2, 4.0.3]
+        rfVersion: [3.2.2, 4.1]
     runs-on: macos-latest
     name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
