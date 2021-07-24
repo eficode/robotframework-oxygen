@@ -58,7 +58,8 @@ in
     cp -r ${package.src} $tmpdir/src
     chmod -R u+w $tmpdir
     cd $tmpdir/src
-    ln -s ${stdenv.shell} /bin/bash
+    export HOME=$tmpdir
+    echo '{"run":{"shell":"${stdenv.shell}"}}' >$HOME/.invoke.json
     exec &> >(tee $out/log)
     set +e
     ${cmd}
