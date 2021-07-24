@@ -1,5 +1,8 @@
 { nixpkgs ? https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
-, cmd ? "green" }:
+, pythons ? "python39"
+, rfVersions ? "3.2.2 4.1"
+, path ? toString ./.
+, cmd ? "invoke test --in-nix" }:
 let
   pkgs = import (fetchTarball nixpkgs) { };
 in
@@ -7,13 +10,37 @@ with pkgs;
 with lib;
 let
   test = python: rfVersion:
-    import ./default.nix { inherit nixpkgs python rfVersion cmd; };
+    import ./default.nix { inherit nixpkgs python rfVersion path cmd; };
 
-  pythons = [ "python36" "python37" "python38" "python39" /* "python310" */ ];
-  rfVersions = [ "3.0.4" "3.1.2" "3.2.2" "4.0.3" "4.1" ];
+  values = s: splitString " " s;
+
+  pythons' = values pythons;
+  rfVersions' = values rfVersions;
+
+  tests = flatten (map (rfVersion: map (python: test python rfVersion) pythons') rfVersions');
 in
-  buildEnv {
-    name = "results";
-    paths = flatten (map (rfVersion: map (python: test python rfVersion) pythons) rfVersions);
-    pathsToLink = [ "/" ];
-  }
+  runCommand "test-results" {
+    buildInputs = [ coreutils ];
+  } (''
+    mkdir -p $out
+    echo "python,rfVersion,state,log" >>$out/results.csv
+    globalState="ok"
+  '' + (concatMapStringsSep "\n" (test: ''
+    python="$(cat ${test}/python)"
+    rfVersion="$(cat ${test}/rfVersion)"
+    if [ "0" = "$(cat ${test}/exitCode)" ]
+    then
+      state="ok"
+    else
+      state="error"
+      globalState="error"
+    fi
+    testpath="$out/$python/$rfVersion"
+    mkdir -p "$testpath"
+    cp "${test}/exitCode" "$testpath/"
+    cp "${test}/log" "$testpath/"
+    echo "$python,$rfVersion,$state,$testpath/log" >>$out/results.csv
+  '') tests) + ''
+
+    echo "$globalState" >$out/state
+  '')

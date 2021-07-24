@@ -2,7 +2,7 @@
 , python ? "python37"
 , rfVersion ? "3.0.4"
 , path ? toString ./.
-, cmd ? "green" }:
+, cmd ? "invoke test --in-nix" }:
 let
   pkgs = import (fetchTarball nixpkgs) { };
 in
@@ -45,29 +45,27 @@ in
   runCommand "${package.pname}-${package.version}-result" {
     buildInputs = [ coreutils package ];
     shellHook = ''
-      tmpdir="$(mktemp -d -t src-XXXXXXXXXX)"
-      trap "rm -rf $tmpdir" EXIT
-      cp -r ${package.src}/* $tmpdir/
-      chmod -R u+w $tmpdir
-      cd $tmpdir
+      cd ${path}
       ${cmd}
-      exit_code=$?
-      echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exit_code"
-      exit $exit_code
+      exitCode=$?
+      echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exitCode"
+      exit $exitCode
     '';
   } ''
-    outpath="$out/${python}/robotframework-${rfVersion}";
-    mkdir -p $outpath
-    tmpdir="$(mktemp -d -t src-XXXXXXXXXX)"
+    mkdir -p $out
+    tmpdir="$(mktemp -d -t ${package.pname}-XXXXXXXXXX)"
     trap "rm -rf $tmpdir" EXIT
-    cp -r ${package.src}/* $tmpdir/
+    cp -r ${package.src} $tmpdir/src
     chmod -R u+w $tmpdir
-    cd $tmpdir
-    exec &> >(tee $outpath/log)
+    cd $tmpdir/src
+    ln -s ${stdenv.shell} /bin/bash
+    exec &> >(tee $out/log)
     set +e
     ${cmd}
-    exit_code=$?
+    exitCode=$?
     set -e
-    echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exit_code"
-    echo "{\"python\":\"${python}\",\"robotframework\":\"${rfVersion}\",\"exit\":\"$exit_code\"}" > $outpath/result
+    echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exitCode"
+    echo "$exitCode" > $out/exitCode
+    echo "${python}" > $out/python
+    echo "${rfVersion}" > $out/rfVersion
   ''
