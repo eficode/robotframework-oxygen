@@ -46,7 +46,6 @@ def utest(context, test=None, in_nix=False):
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
         env=env,
         pty=(not system() == 'Windows'))
-    run('coverage html')
 
 @task(help={
     'in_nix': IN_NIX_HELP
