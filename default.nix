@@ -1,4 +1,5 @@
-{ nixpkgs ? https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
+{ nixpkgsBranch ? "release-21.05"
+, nixpkgs ? "https://github.com/NixOS/nixpkgs/archive/refs/heads/${nixpkgsBranch}.tar.gz"
 , python ? "python37"
 , rfVersion ? "3.0.4"
 , path ? toString ./.
@@ -13,7 +14,7 @@ let
     url = "https://github.com/DavHau/mach-nix/";
     ref = "refs/tags/3.3.0";
   }) {
-    inherit python;
+    inherit pkgs python;
     pypiDataRev = "c8393888d97e74f2217aaafae70bf5bc5c913535";
     pypiDataSha256 = "0pfivp1w3pdbsamnmmyy4rsnc4klqnmisjzcq0smc4pp908b6sc3";
   };

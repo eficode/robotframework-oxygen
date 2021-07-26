@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: [python39, python310]
+        python: [python38, python39]
         rfVersion: [3.2.2, 4.1]
     runs-on: windows-latest
     name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
@@ -32,7 +32,7 @@ jobs:
           distribution: Ubuntu-20.04
           additional-packages:
             dos2unix
-      - name: Install and configure Nix
+      - name: Install Nix
         run: |
             # Nix installer does not support root installation we need a user
             useradd test -m
@@ -48,6 +48,7 @@ jobs:
             sudo -iu test sh ./install-nix.sh --no-daemon --no-channel-add
       - name: Run tests
         run: |
+            # Change line endings
             dos2unix default.nix
             # Run the tests in project directory where default.nix resides
             # We need login shell for that so that .profile is getting read
@@ -58,17 +59,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: [python39, python310]
+        python: [python38, python39]
         rfVersion: [3.2.2, 4.1]
     runs-on: ubuntu-latest
     name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: /nix
-          key: ${{ runner.os }}-test
-      - uses: cachix/install-nix-action@v13
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Run tests
@@ -80,17 +78,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: [python39, python310]
+        python: [python38, python39]
         rfVersion: [3.2.2, 4.1]
     runs-on: macos-latest
     name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: /nix
-          key: ${{ runner.os }}-test
-      - uses: cachix/install-nix-action@v13
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Run tests
