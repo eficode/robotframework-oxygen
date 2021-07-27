@@ -1,6 +1,7 @@
-{ nixpkgs ? https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
-, pythons ? "python39"
-, rfVersions ? "3.2.2 4.1"
+{ nixpkgsBranch ? "release-21.05"
+, nixpkgs ? "https://github.com/NixOS/nixpkgs/archive/refs/heads/${nixpkgsBranch}.tar.gz"
+, pythons ? "python37 python38 python39"
+, rfVersions ? "3.0.4 3.2.2 4.0.3 4.1"
 , path ? toString ./.
 , cmd ? "invoke test --in-nix" }:
 let
@@ -12,10 +13,8 @@ let
   test = python: rfVersion:
     import ./default.nix { inherit nixpkgs python rfVersion path cmd; };
 
-  values = s: splitString " " s;
-
-  pythons' = values pythons;
-  rfVersions' = values rfVersions;
+  pythons' = splitString " " pythons;
+  rfVersions' = splitString " " rfVersions;
 
   tests = flatten (map (rfVersion: map (python: test python rfVersion) pythons') rfVersions');
 in
