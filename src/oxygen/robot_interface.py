@@ -38,12 +38,20 @@ class RobotResultInterface(object):
             return starting_time, None
 
         updated_time = starting_time
+        expected_finish = None
         name = suite.get('name') or 'Unknown Suite Name'
+        start_time = test.get('start') or None
+        finish_time = test.get('finish') or None
         tags = suite.get('tags') or []
         setup_keyword = suite.get('setup') or None
         teardown_keyword = suite.get('teardown') or None
         child_suites = suite.get('suites') or []
         tests = suite.get('tests') or []
+
+        if start_time:
+            updated_time = max(updated_time, start_time)
+            if finish_time:
+                expected_finish = updated_time + (finish_time - start_time)
 
         updated_time, robot_setup = self.build_keyword(updated_time, setup_keyword, setup=True)
         updated_time, robot_teardown = self.build_keyword(updated_time, teardown_keyword, teardown=True)
@@ -58,6 +66,9 @@ class RobotResultInterface(object):
                                              robot_teardown,
                                              robot_suites,
                                              robot_tests)
+
+        if expected_finish:
+            updated_time = max(updated_time, expected_finish)
 
         return updated_time, robot_suite
 
@@ -112,11 +123,19 @@ class RobotResultInterface(object):
             return starting_time, None
 
         updated_time = starting_time
+        expected_finish = None
         test_name = test.get('name') or 'Unknown Test Name'
+        start_time = test.get('start') or None
+        finish_time = test.get('finish') or None
         tags = test.get('tags') or []
         setup_keyword = test.get('setup') or None
         keywords = test.get('keywords') or []
         teardown_keyword = test.get('teardown') or None
+
+        if start_time:
+            updated_time = max(updated_time, start_time)
+            if finish_time:
+                expected_finish = updated_time + (finish_time - start_time)
 
         updated_time, robot_setup = self.build_keyword(updated_time,
                                                        setup_keyword,
@@ -134,6 +153,9 @@ class RobotResultInterface(object):
                                            robot_setup,
                                            robot_teardown,
                                            robot_keywords)
+
+        if expected_finish:
+            updated_time = max(updated_time, expected_finish)
 
         return updated_time, robot_test
 
@@ -188,15 +210,24 @@ class RobotResultInterface(object):
         name = keyword.get('name') or 'Unknown Keyword Name'
         status = keyword.get('pass') or None
         elapsed = keyword.get('elapsed') or 0.0
+        start_time = keyword.get('start') or None
+        finish_time = keyword.get('finish') or None
         tags = keyword.get('tags') or []
         messages = keyword.get('messages') or []
         teardown = keyword.get('teardown') or None
         keywords = keyword.get('keywords') or []
 
+        if start_time:
+            updated_time = max(updated_time, start_time)
+
         updated_time, robot_teardown = self.build_keyword(updated_time, teardown)
         updated_time, robot_keywords = self.build_keywords(updated_time, keywords)
 
         final_time = updated_time + elapsed
+        if start_time and finish_time:
+            final_time = updated_time + max(elapsed, (finish_time - start_time))
+        if finish_time:
+            final_time = max(final_time, finish_time)
 
         robot_keyword = self.spawn_robot_keyword(name,
                                                  tags,

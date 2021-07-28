@@ -47,51 +47,100 @@ class GatlingHandler(BaseHandler):
 
         result_file: The path to the Gatling results
         '''
+        test_suites = []
         test_cases = []
+        current_suite = None
+        current_test = None
         with open(result_file) as results:
             result_contents = results.readlines()
         for line in result_contents:
+            column_names = [
+                'Action',
+                'Scenario',
+                'User ID',
+                'Group',
+                'Name',
+                'Start time',
+                'End time',
+                'Status',
+                'Response',
+                'Message',
+                'Extra information',
+            ]
             columns = line.strip().split('\t')
-            if len(columns) < 8:
-                continue
-            step_name = columns[4]
-            status = columns[7]
-            if status not in ['OK', 'KO']:
-                continue
-            message = ''
-            if len(columns) > 8:
-                message = columns[8]
+            messages = []
+            for idx, value in enumerate(column_names):
+                action = '<NO ACTION>'
+                scenario = '<NO SCENARIO>'
+                group = '<NO GROUP>'
+                step_name = '<NO STEP NAME>'
+                start_time = -1
+                end_time = -1
+                status = 'KO'
+                if idx >= len(columns):
+                    continue
+                log_value = columns[idx]
+                messages.append(value + ': ' + log_value)
+                if value == 'Action':
+                    action = log_value
+                if value == 'Scenario':
+                    scenario = log_value
+                if value == 'Group':
+                    group = log_value
+                if value == 'Name':
+                    step_name = log_value
+                if value == 'Start time':
+                    start_time = int(log_value)
+                if value == 'End time':
+                    end_time = int(log_value)
+                if value == 'Status':
+                    status = log_value
 
-            keyword = {
-                    'name': ' | '.join(columns),
-                    'pass': True,
-                    'tags': [],
-                    'messages': [],
-                    'teardown': [],
+            if action == 'RUN' or current_suite == None:
+                if current_suite:
+                    test_suites.append(current_suite)
+                current_suite = {
+                    'name': 'Gatling Scenario: ' + scenario,
+                    'start': start_time,
+                    'finish': end_time,
+                    'tests': [],
+                }
+
+            if action == 'USER':
+                current_suite['tests'].append(current_test)
+                current_suite['finish'] = max(current_suite['finish'], current_test['finish'])
+                current_test = {
+                    'name': action + ' ' + scenario + ': ' + group,
+                    'start': start_time,
+                    'finish': end_time,
                     'keywords': [],
                 }
 
-            if status == 'KO':
-                keyword['pass'] = False
-                keyword['messages'].append(message)
+            if action == 'REQUEST':
+                keyword = {
+                    'name': step_name,
+                    'start': start_time,
+                    'finish': end_time,
+                    'pass': (status == 'OK'),
+                    'messages': messages,
+                }
+                current_test['keywords'].append(keyword)
+                current_test['finish'] = max(current_test['finish'], end_time)
 
-            test_case = {
-                'name': step_name,
-                'tags': [],
-                'setup': [],
-                'teardown': [],
-                'keywords': [keyword]
-            }
+        current_suite['tests'].append(current_test)
+        current_suite['finish'] = max(current_suite['finish'], current_test['finish'])
+        test_suites.append(current_suite)
 
-            test_cases.append(test_case)
-
-        test_suite = {
-            'name': 'Gatling Scenario',
-            'tags': self._tags,
-            'setup': [],
-            'teardown': [],
-            'suites': [],
-            'tests': test_cases,
+        parent_suite = {
+            'name': 'Gatling Scenarios',
         }
 
-        return test_suite
+        if test_suites:
+            parent_suite = {
+                'name': 'Gatling Scenarios',
+                'start': test_suites[0]['start'],
+                'finish': test_suites[-1]['finish'],
+                'suites': test_suites,
+            }
+
+        return parent_suite
