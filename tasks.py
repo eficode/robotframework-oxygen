@@ -59,12 +59,10 @@ def coverage(context, in_nix=False):
 @task(help={
     'rf': 'Additional command-line arguments for Robot Framework as '
           'single string. E.g: invoke atest --rf "--name my_suite"',
-    'in_nix': IN_NIX_HELP
 })
-def atest(context, rf='', in_nix=False):
-    pythonpathArg = '' if in_nix else f'--pythonpath {str(SRCPATH)}'
+def atest(context, rf=''):
     run(f'robot '
-        f'{pythonpathArg} '
+        f'--pythonpath {str(SRCPATH)} '
         f'--dotted '
         f'{rf} '
         f'--listener oxygen.listener '
@@ -76,7 +74,7 @@ def atest(context, rf='', in_nix=False):
 })
 def test(context, in_nix=False):
     utest(context, in_nix=in_nix)
-    atest(context, in_nix=in_nix)
+    atest(context)
 
 @task
 def doc(context):
