@@ -8,7 +8,7 @@ from robot.result.model import (Keyword as RobotKeyword,
 
 from robot.running.model import TestSuite as RobotRunningSuite
 
-from oxygen import RobotInterface
+from oxygen.robot_interface import RobotInterface, get_keywords_from
 
 EXAMPLE_SUITES = [{
   'name': 'suite1',
@@ -143,11 +143,12 @@ EXAMPLE_SUITES = [{
 }]
 
 
-class  RobotInterfaceBasicTests(TestCase):
+class RobotInterfaceBasicTests(TestCase):
     '''
     This tests only two methods of RobotInterface, but since they internally use
     all the other functions, pretty much everything is covered.
     '''
+
     def setUp(self):
         self.iface = RobotInterface()
 
@@ -162,21 +163,21 @@ class  RobotInterfaceBasicTests(TestCase):
             self.assertIsInstance(converted_suite, RobotSuite)
 
         for subsuite in converted[0].suites:
-            self.assertIsInstance(converted_suite, RobotSuite)
+            self.assertIsInstance(subsuite, RobotSuite)
 
         for test in converted[1].tests:
             self.assertIsInstance(test, RobotTest)
 
-        for kw in converted_suite.tests[1].keywords:
+        for kw in get_keywords_from(converted[0].tests[1]):
             self.assertIsInstance(kw, RobotKeyword)
 
-        for message in converted_suite.tests[1].keywords[0].messages:
+        for message in get_keywords_from(converted[0].tests[1])[0].messages:
             self.assertIsInstance(message, RobotMessage)
-        self.assertEqual(converted[0].tests[3].keywords[0].messages[0].html, True)
-        self.assertEqual(converted[0].tests[3].keywords[0].messages[0].message, ' <a href="http://robotframework.org">Robot Framework</a>')
-        self.assertEqual(converted[0].tests[2].keywords[0].messages[0].message,'FAIL: Example failure message '
-                                        '(the_failure_type)' )
-        self.assertEqual(converted[0].tests[2].keywords[0].messages[0].html, False)
+        self.assertEqual(get_keywords_from(converted[0].tests[3])[0].messages[0].html, True)
+        self.assertEqual(get_keywords_from(converted[0].tests[3])[0].messages[0].message, ' <a href="http://robotframework.org">Robot Framework</a>')
+        self.assertEqual(get_keywords_from(converted[0].tests[2])[0].messages[0].message,'FAIL: Example failure message '
+                         '(the_failure_type)')
+        self.assertEqual(get_keywords_from(converted[0].tests[2])[0].messages[0].html, False)
 
     def test_result_create_wrapper_keyword_for_setup(self):
         ret = self.iface.result.create_wrapper_keyword('My Wrapper',
@@ -188,17 +189,30 @@ class  RobotInterfaceBasicTests(TestCase):
 
         self.assertIsInstance(ret, RobotKeyword)
         self.assertEqual(ret.name, 'My Wrapper')
-        self.assertEqual(len(ret.keywords), 2)
-        self.assertEqual(ret.type, ret.SETUP_TYPE)
+        self.assertEqual(len(get_keywords_from(ret)), 2)
+        try:
+            # Robot Framework < 4.0
+            from robot.result.model import Keyword
+            self.assertEqual(ret.type, Keyword.SETUP_TYPE)
+        except AttributeError:
+            # Robot Framework >= 4.0
+            from robot.model import BodyItem
+            self.assertEqual(ret.type, BodyItem.SETUP)
 
-    def test_result_create_wrapper_keyword_for_setup(self):
+    def test_result_create_wrapper_keyword_for_teardown(self):
         ret = self.iface.result.create_wrapper_keyword('My Wrapper',
                                                        '20200507 13:42:50.001',
                                                        '20200507 14:59:01.999',
                                                        False,
                                                        RobotKeyword())
-
-        self.assertEqual(ret.type, ret.TEARDOWN_TYPE)
+        try:
+            # Robot Framework < 4.0
+            from robot.result.model import Keyword
+            self.assertEqual(ret.type, Keyword.TEARDOWN_TYPE)
+        except AttributeError:
+            # Robot Framework >= 4.0
+            from robot.model import BodyItem
+            self.assertEqual(ret.type, BodyItem.TEARDOWN)
 
     def test_running_build_suite(self):
         ret = self.iface.running.build_suite(EXAMPLE_SUITES[1])

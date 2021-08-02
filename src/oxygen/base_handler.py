@@ -1,6 +1,8 @@
 import re
 
-from .robot_interface import RobotInterface
+from .robot_interface import (RobotInterface, get_keywords_from,
+                              set_special_keyword)
+
 
 class BaseHandler(object):
     DEFAULT_CLI = {tuple(['resultfile']): {}}
@@ -43,7 +45,9 @@ class BaseHandler(object):
 
         test: A Robot test
         '''
-        for curr, keyword in enumerate(test.keywords):
+        test_keywords = get_keywords_from(test)
+
+        for curr, keyword in enumerate(test_keywords):
             keyword_name = self._normalize_keyword_name(keyword.name)
             if not (keyword_name == self.keyword):
                 continue
@@ -52,8 +56,8 @@ class BaseHandler(object):
             # ALL keywords, setup or not, preceding the trigger will be treated
             # as setup keywords later. Same goes for keywords succeeding the
             # trigger; they will become teardown keywords.
-            setup_keywords = test.keywords[:curr]
-            teardown_keywords = test.keywords[(curr+1):]
+            setup_keywords = test_keywords[:curr]
+            teardown_keywords = test_keywords[(curr+1):]
 
             self._report_oxygen_run(keyword, setup_keywords, teardown_keywords)
 
@@ -107,10 +111,10 @@ class BaseHandler(object):
         self._set_suite_tags(result_suite, *(self._tags + list(test.tags)))
 
         if setup_keyword:
-            result_suite.keywords.append(setup_keyword)
+            set_special_keyword(result_suite, 'setup', setup_keyword)
 
         if teardown_keyword:
-            result_suite.keywords.append(teardown_keyword)
+            set_special_keyword(result_suite, 'teardown', teardown_keyword)
 
         self._inject_suite_report(test, result_suite)
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from oxygen import RobotInterface
+from oxygen.robot_interface import RobotInterface
 
 
 class TestMsToTimestamp(TestCase):
