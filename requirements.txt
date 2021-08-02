@@ -1,5 +1,5 @@
 robotframework>=3.0.4
-junitparser>=1.2.2
+junitparser>=1.2.2,<2.0
 PyYAML>=3.13
 
 ### Dev

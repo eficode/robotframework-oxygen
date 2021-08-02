@@ -33,7 +33,7 @@ setup(name='robotframework-oxygen',
       license='MIT',
       install_requires=[
            'robotframework>=3.0.4',
-           'junitparser>=1.2.2',
+           'junitparser>=1.2.2,<2.0',
            'PyYAML>=3.13'
       ],
       packages=find_packages(SRC),
