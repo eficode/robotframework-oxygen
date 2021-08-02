@@ -33,20 +33,21 @@ let
     in
       readFile (requirementsFile names);
 
-  package = mach-nix.buildPythonPackage {
-    pname = "robotframework-oxygen";
-    version = "dev";
-    src = /. + path;
-    requirements = requirementsWithout ["robotframework" "twine"];
-    requirementsExtra = ''
-      robotframework==${rfVersion}
-    '';
+  pname = "robotframework-oxygen";
+  requirements = ''
+    ${requirementsWithout ["robotframework" "twine"]}
+    robotframework==${rfVersion}
+  '';
+
+  env = mach-nix.mkPython {
+    inherit requirements;
   };
 in
-  runCommand "${package.pname}-${package.version}-result" {
-    buildInputs = [ coreutils package ];
+  runCommand "${pname}-result" {
+    buildInputs = [ which coreutils env ];
     shellHook = ''
       cd ${path}
+      export PYTHONPATH="$PWD/src:${env}/lib/${env.python.libPrefix}/site-packages"
       ${cmd}
       exitCode=$?
       echo -e "\n[${python}][robotframework==${rfVersion}] Exited with $exitCode"
@@ -54,11 +55,12 @@ in
     '';
   } ''
     mkdir -p $out
-    tmpdir="$(mktemp -d -t ${package.pname}-XXXXXXXXXX)"
+    tmpdir="$(mktemp -d -t ${pname}-XXXXXXXXXX)"
     trap "rm -rf $tmpdir" EXIT
-    cp -r ${package.src} $tmpdir/src
+    cp -r ${/. + path} $tmpdir/src
     chmod -R u+w $tmpdir
     cd $tmpdir/src
+    export PYTHONPATH="$PWD/src:${env}/lib/${env.python.libPrefix}/site-packages"
     export HOME=$tmpdir
     echo '{"run":{"shell":"${stdenv.shell}"}}' >$HOME/.invoke.json
     exec &> >(tee $out/log)
