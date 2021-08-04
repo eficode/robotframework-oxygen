@@ -55,6 +55,7 @@ def coverage(context, in_nix=False):
     run(f'green -r {str(UNIT_TESTS)}',
         env=env,
         pty=(not system() == 'Windows'))
+    run('coverage html')
 
 @task(help={
     'rf': 'Additional command-line arguments for Robot Framework as '
