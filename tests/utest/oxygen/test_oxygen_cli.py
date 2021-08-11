@@ -10,6 +10,7 @@ from oxygen.oxygen import OxygenCLI
 
 from ..helpers import RESOURCES_PATH
 
+
 class TestOxygenCLIEntryPoints(TestCase):
     '''Coverage does not measure coverage correctly for these tests.
 
@@ -20,6 +21,7 @@ class TestOxygenCLIEntryPoints(TestCase):
     Setting up Coverage to see subprocesses as well seems a lot of work and
     quite a hack: https://coverage.readthedocs.io/en/latest/subprocess.html
     '''
+
     def test_main_level_entrypoint(self):
         self.verify_cli_help_text('python -m oxygen --help')
         self.verify_cli_help_text('python -m oxygen -h')
@@ -43,16 +45,20 @@ class TestOxygenCLIEntryPoints(TestCase):
 
     def test_junit_works_on_cli(self):
         target = RESOURCES_PATH / 'green-junit-example.xml'
-        expected = target.with_name('green-junit-expected-robot-output.xml')
+        example = target.with_name('green-junit-expected-robot-output.xml')
         actual = target.with_name('green-junit-example_robot_output.xml')
         if actual.exists():
-            actual.unlink() # delete file if exists
+            actual.unlink()  # delete file if exists
 
-        out = check_output(f'python -m oxygen oxygen.junit {target}',
-                           text=True,
-                           shell=True)
+        check_output(f'python -m oxygen oxygen.junit {target}',
+                     text=True,
+                     shell=True)
 
-        self.assertEqual(expected.read_text(), expected.read_text())
+        for expected in ('<stat pass="69" fail="3">Critical Tests</stat>',
+                         '<stat pass="69" fail="3">All Tests</stat>'):
+            self.assertIn(expected, example.read_text())
+            self.assertIn(expected, actual.read_text())
+
 
 class TestOxygenCLI(TestCase):
 
@@ -62,8 +68,9 @@ class TestOxygenCLI(TestCase):
     @patch('oxygen.oxygen.RobotInterface')
     @patch('oxygen.oxygen.OxygenCLI.parse_args')
     def test_run(self, mock_parse_args, mock_robot_iface):
-        mock_parse_args.return_value = Mock(resultfile='path/to/file.xml',
-                                            func=lambda _: {'some': 'results'})
+        mock_parse_args.return_value = {
+            'result_file': 'path/to/file.xml',
+            'func': lambda *_, **__: {'some': 'results'}}
         expected_suite = create_autospec(TestSuite)
         mock = Mock()
         mock.running.build_suite = Mock(return_value=expected_suite)

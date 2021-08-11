@@ -3,7 +3,7 @@ import re
 from .robot_interface import RobotInterface
 
 class BaseHandler(object):
-    DEFAULT_CLI = {tuple(['resultfile']): {}}
+    DEFAULT_CLI = {tuple(['result_file']): {}}
 
     def __init__(self, config):
         '''

@@ -1,10 +1,9 @@
 from pathlib import Path
-from unittest import skip, TestCase
+from unittest import TestCase
 from unittest.mock import ANY, create_autospec, Mock, mock_open, patch
 
 from testfixtures import compare
 
-from oxygen.base_handler import BaseHandler
 from oxygen.zap import ZAProxyHandler
 from oxygen.errors import ZAProxyHandlerException
 from ..helpers import (example_robot_output,
@@ -298,9 +297,6 @@ class ZAPBasicTests(TestCase):
 
     def assertNotNoneOrEmpty(self, str_):
         return str_ is not None and str_ != ''
-
-    def test_cli(self):
-        self.assertEqual(self.handler.cli(), BaseHandler.DEFAULT_CLI)
 
     @patch('oxygen.zap.ZAProxyHandler._report_oxygen_run')
     def test_check_for_keyword(self, mock_report):

@@ -213,10 +213,10 @@ class OxygenCLI(OxygenCore):
             for flags, params in tool_handler.cli().items():
                 subcommand_parser.add_argument(*flags, **params)
                 subcommand_parser.set_defaults(func=tool_handler.parse_results)
-        return parser.parse_args()
+        return vars(parser.parse_args())  # returns a dictionary
 
-    def get_output_filename(self, resultfile):
-        filename = Path(resultfile)
+    def get_output_filename(self, result_file):
+        filename = Path(result_file)
         filename = filename.with_suffix('.xml')
         robot_name = filename.stem + '_robot_output' + filename.suffix
         filename = filename.with_name(robot_name)
@@ -228,10 +228,11 @@ class OxygenCLI(OxygenCore):
                             action='version',
                             version=f'%(prog)s {self.__version__}')
         args = self.parse_args(parser)
-        if not vars(args):
+        if not args:
             parser.error('No arguments given')
-        output_filename = self.get_output_filename(args.resultfile)
-        parsed_results = args.func(args.resultfile)
+        output_filename = self.get_output_filename(args['result_file'])
+        parsed_results = args['func'](
+            **{k: v for (k, v) in args.items() if not callable(v)})
         robot_suite = RobotInterface().running.build_suite(parsed_results)
         robot_suite.run(output=output_filename,
                         log=None,
