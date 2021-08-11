@@ -1,3 +1,4 @@
+import json
 
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
@@ -231,7 +232,9 @@ class OxygenCLI(OxygenCore):
         if not vars(args):
             parser.error('No arguments given')
         output_filename = self.get_output_filename(args.resultfile)
-        parsed_results = args.func(args.resultfile)
+        config_options = {
+            name: json.loads(value) for (name, value) in args.config or []}
+        parsed_results = args.func(args.resultfile, config_options)
         robot_suite = RobotInterface().running.build_suite(parsed_results)
         robot_suite.run(output=output_filename,
                         log=None,

@@ -23,7 +23,10 @@ class JUnitHandler(BaseHandler):
         logger.info('Result file: {}'.format(result_file))
         return result_file
 
-    def parse_results(self, result_file):
+    def parse_results(self, result_file, config_options):
+        # works from python 3.5 onwards
+        self._config = {**self._config, **config_options}
+
         result_file = self._validate_path(result_file)
         try:
             xml = JUnitXml.fromfile(result_file)

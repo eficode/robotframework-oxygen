@@ -2,8 +2,16 @@ import re
 
 from .robot_interface import RobotInterface
 
+
 class BaseHandler(object):
-    DEFAULT_CLI = {tuple(['resultfile']): {}}
+    DEFAULT_CLI = {
+        tuple(['resultfile']): {},
+        ('-c', '--config'): {
+            'action': 'append',
+            'nargs': 2,
+            'metavar': ('name', 'value')
+        }
+    }
 
     def __init__(self, config):
         '''

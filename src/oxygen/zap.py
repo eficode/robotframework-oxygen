@@ -26,7 +26,10 @@ class ZAProxyHandler(BaseHandler):
         return result_file
 
 
-    def parse_results(self, result_file):
+    def parse_results(self, result_file, config_options):
+        # works from python 3.5 onwards
+        self._config = {**self._config, **config_options}
+
         zap_dict = self._read_results(validate_path(result_file).resolve())
         return self._parse_zap_dict(zap_dict)
 

@@ -35,7 +35,10 @@ class GatlingHandler(BaseHandler):
         logger.info('Result file: {}'.format(result_file))
         return result_file
 
-    def parse_results(self, result_file):
+    def parse_results(self, result_file, config_options):
+        # works from python 3.5 onwards
+        self._config = {**self._config, **config_options}
+
         return self._transform_tests(validate_path(result_file).resolve())
 
     def _transform_tests(self, result_file):
