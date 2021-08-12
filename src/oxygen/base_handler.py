@@ -41,7 +41,7 @@ class BaseHandler(object):
         '''
         return self.DEFAULT_CLI
 
-    def parse_results(self, kw_args):
+    def parse_results(self, resultfile, config_options={}):
         raise NotImplementedError('Actual handler implementation should override '
                                   'this with proper implementation!')
 

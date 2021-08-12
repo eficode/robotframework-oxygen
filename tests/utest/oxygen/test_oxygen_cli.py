@@ -63,7 +63,8 @@ class TestOxygenCLI(TestCase):
     @patch('oxygen.oxygen.OxygenCLI.parse_args')
     def test_run(self, mock_parse_args, mock_robot_iface):
         mock_parse_args.return_value = Mock(resultfile='path/to/file.xml',
-                                            func=lambda _: {'some': 'results'})
+                                            config=[],
+                                            func=lambda *_: {'some': 'results'})
         expected_suite = create_autospec(TestSuite)
         mock = Mock()
         mock.running.build_suite = Mock(return_value=expected_suite)

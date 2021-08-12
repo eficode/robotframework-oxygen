@@ -26,7 +26,7 @@ class ZAProxyHandler(BaseHandler):
         return result_file
 
 
-    def parse_results(self, result_file, config_options):
+    def parse_results(self, result_file, config_options={}):
         # works from python 3.5 onwards
         self._config = {**self._config, **config_options}
 

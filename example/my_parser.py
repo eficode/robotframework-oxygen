@@ -17,7 +17,7 @@ class MyParser(BaseHandler):
             json.dump(self.RESULTS, f)
         return resultfile
 
-    def parse_results(self, resultfile):
+    def parse_results(self, resultfile, config_options={}):
         with open(resultfile, 'r') as f:
             results = json.load(f)
         return {
