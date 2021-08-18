@@ -1,5 +1,8 @@
 import re
 
+from inspect import signature, Parameter
+
+from oxygen.errors import MismatchArgumentException
 from .robot_interface import (RobotInterface, get_keywords_from,
                               set_special_keyword)
 
@@ -100,14 +103,42 @@ class BaseHandler(object):
         setup_keyword: The special oxygen setup wrapper
         teardown_keyword: The special oxygen teardown wrapper
         '''
-        test = keyword.parent
-        test_results = self.parse_results(self.run_time_data)
-        end_time, result_suite = self._interface.result.build_suite(100000,
-                                                                   test_results)
+        accepted_params = signature(self.parse_results).parameters
+        accepted_params_max = len(accepted_params)
+        accepted_params_min = len([
+            n for n, v in accepted_params.items()
+            if v.default == Parameter.empty])
+        is_multiple_inputs = isinstance(self.run_time_data, tuple)
+
+        # there are multiple inputs and in the range of accepted min and max
+        if is_multiple_inputs and (accepted_params_min <= len(
+                self.run_time_data) <= accepted_params_max):
+            test_results = self.parse_results(*self.run_time_data)
+
+        # there is single input and one required, also can be more non-required
+        elif not is_multiple_inputs and accepted_params_min == 1:
+            test_results = self.parse_results(self.run_time_data)
+
+        # else if there are multiple inputs and not in the range of accepted
+        elif is_multiple_inputs:
+            raise MismatchArgumentException(
+                f'parse_results expects at least {accepted_params_min} and'
+                f' at most {accepted_params_max} arguments '
+                f'but got {len(self.run_time_data)}')
+
+        # at this point there could be only multiple required and single input
+        else:
+            raise MismatchArgumentException(
+                f'parse_results expects at least {accepted_params_min} '
+                'arguments but got 1')
+
+        _, result_suite = self._interface.result.build_suite(
+            100000, test_results)
 
         if not result_suite:
             return
 
+        test = keyword.parent
         self._set_suite_tags(result_suite, *(self._tags + list(test.tags)))
 
         if setup_keyword:
