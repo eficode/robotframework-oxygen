@@ -1,3 +1,33 @@
+/* Nix script for running tests with different combinations of Python and
+  RobotFramework versions in one go.
+
+  Currently this script is not being used by CI/CD but is an option to run
+  matrix style tests on user's machine.
+
+  Example:
+  $ nix-build test.nix --argstr pythons "python38 python39" \
+      --argstr rfVersions "3.1.2 3.2 3.2.1 3.2.2"
+
+  Example command will run following tests in parallel:
+  - latest Python 3.8 with RobotFramework 3.1.2
+  - latest Python 3.9 with RobotFramework 3.1.2
+  - latest Python 3.8 with RobotFramework 3.2
+  - latest Python 3.9 with RobotFramework 3.2
+  - latest Python 3.8 with RobotFramework 3.2.1
+  - latest Python 3.9 with RobotFramework 3.2.1
+  - latest Python 3.8 with RobotFramework 3.2.2
+  - latest Python 3.9 with RobotFramework 3.2.2
+
+  Results:
+  Command will always exit with exit code 0 (unless there is an issue with
+  the script itself or passing unsupported versions of Python, RobotFramework
+  or dependencies inside `requirements.txt`).
+
+  The results are in `./result` directory.
+
+    - `./result/state` file will contain value of `ok` or `fail` and is representing the overall state of tests
+    - `./result/<python>/<rfVersion>/` directory contains files `exitCode` and `log` for each test run
+*/
 { nixpkgsBranch ? "release-21.05"
 , nixpkgs ? "https://github.com/NixOS/nixpkgs/archive/refs/heads/${nixpkgsBranch}.tar.gz"
 , pythons ? "python38 python39"
@@ -31,8 +61,8 @@ in
     then
       state="ok"
     else
-      state="error"
-      globalState="error"
+      state="fail"
+      globalState="fail"
     fi
     testpath="$out/$python/$rfVersion"
     mkdir -p "$testpath"

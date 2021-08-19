@@ -12,6 +12,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
+  # Running tests on Windows under Windows Subsystem for Linux (WSL)
   windows:
     strategy:
       fail-fast: false
@@ -24,9 +25,12 @@ jobs:
       run:
         shell: wsl-bash {0}
     steps:
-      - uses: actions/checkout@v2
-      - uses: Vampire/setup-wsl@v1
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Setup Windows Subsystem for Linux
+        uses: Vampire/setup-wsl@v1
         with:
+          # Using Ubuntu to setup WSL
           distribution: Ubuntu-20.04
           additional-packages:
             dos2unix
@@ -62,11 +66,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout the repository
+        uses: actions/checkout@v2
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
       - name: Run tests
         run: |
           nix-build --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}
@@ -81,11 +84,10 @@ jobs:
     runs-on: macos-latest
     name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout the repository
+        uses: actions/checkout@v2
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
       - name: Run tests
         run: |
           nix-build --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}
