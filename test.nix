@@ -1,5 +1,5 @@
 /* Nix script for running tests with different combinations of Python and
-  RobotFramework versions in one go.
+  Robot Framework versions in one go.
 
   Currently this script is not being used by CI/CD but is an option to run
   matrix style tests on user's machine.
@@ -9,18 +9,18 @@
       --argstr rfVersions "3.1.2 3.2 3.2.1 3.2.2"
 
   Example command will run following tests in parallel:
-  - latest Python 3.8 with RobotFramework 3.1.2
-  - latest Python 3.9 with RobotFramework 3.1.2
-  - latest Python 3.8 with RobotFramework 3.2
-  - latest Python 3.9 with RobotFramework 3.2
-  - latest Python 3.8 with RobotFramework 3.2.1
-  - latest Python 3.9 with RobotFramework 3.2.1
-  - latest Python 3.8 with RobotFramework 3.2.2
-  - latest Python 3.9 with RobotFramework 3.2.2
+  - latest Python 3.8 with Robot Framework 3.1.2
+  - latest Python 3.9 with Robot Framework 3.1.2
+  - latest Python 3.8 with Robot Framework 3.2
+  - latest Python 3.9 with Robot Framework 3.2
+  - latest Python 3.8 with Robot Framework 3.2.1
+  - latest Python 3.9 with Robot Framework 3.2.1
+  - latest Python 3.8 with Robot Framework 3.2.2
+  - latest Python 3.9 with Robot Framework 3.2.2
 
   Results:
   Command will always exit with exit code 0 (unless there is an issue with
-  the script itself or passing unsupported versions of Python, RobotFramework
+  the script itself or passing unsupported versions of Python, Robot Framework
   or dependencies inside `requirements.txt`).
 
   The results are in `./result` directory.
