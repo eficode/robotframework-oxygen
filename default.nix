@@ -1,14 +1,14 @@
 /* Nix script used primarily for running tests per one specific Python version
-  and one specific RobotFramework version.
+  and one specific Robot Framework version.
 
   For running this script Nix has to be installed on system, the rest of the
   dependencies (Python and other dependencies) will be taken care of by Nix itself.
 
-  Python packages are supplied by Nix while RobotFramework is fetched from PyPi
+  Python packages are supplied by Nix while Robot Framework is fetched from PyPi
 
   Running tests:
     All arguments are optional, by default latest Python 3.9,
-    RobotFramework 3.2.2 is used and tests are being run with command `invoke test --in-nix`
+    Robot Framework 3.2.2 is used and tests are being run with command `invoke test --in-nix`
 
     Example:
     $ nix-build --argstr python python39 --argstr rfVersion 3.2.2 --argstr cmd "invoke test --in-nix"
@@ -18,7 +18,7 @@
     without the need to separately install all supported Python versions and/or other dependencies on your own.
 
     Example:
-    This will drop the user into subshell with latest Python 3.8 and RobotFramework version 3.0.4,
+    This will drop the user into subshell with latest Python 3.8 and Robot Framework version 3.0.4,
     ready to run tests or your favorite editor out of it (so it is running in correct environment)
     $ nix-shell --argstr python python38 --argstr rfVersion 3.0.4 --argstr cmd "$SHELL"
 */
