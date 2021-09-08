@@ -31,7 +31,7 @@
 { nixpkgsBranch ? "release-21.05"
 , nixpkgs ? "https://github.com/NixOS/nixpkgs/archive/refs/heads/${nixpkgsBranch}.tar.gz"
 , pythons ? "python38 python39"
-, rfVersions ? "3.1.2 3.2 3.2.1 3.2.2"
+, rfVersions ? "3.1.2 3.2 3.2.1 3.2.2 4.0 4.0.1 4.0.2 4.0.3 4.1"
 , path ? toString ./.
 , cmd ? "invoke test --in-nix" }:
 let

@@ -19,7 +19,7 @@ Oxygen's unit tests should pass
     ${green}=   Get command    green
     Run JUnit     ${JUNIT XML FILE}
     ...           ${green} -j ${JUNIT XML FILE} ${EXECDIR}
-    ...           PYTHONPATH=${EXECDIR}/src
+    File should exist    ${JUNIT XML FILE}
 
 *** Keywords ***
 Get command
