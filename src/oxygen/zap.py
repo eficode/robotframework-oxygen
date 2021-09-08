@@ -25,8 +25,25 @@ class ZAProxyHandler(BaseHandler):
         logger.info('Result file: {}'.format(result_file))
         return result_file
 
+    def cli(self):
+        cli_interface = self.DEFAULT_CLI.copy()
+        cli_interface[('--accepted-risk-level',)] = {
+            'help': 'Set accepted risk level',
+            'type': int
+        }
+        cli_interface[('--required-confidence-level',)] = {
+            'help': 'Set required confidence level',
+            'type': int
+        }
+        return cli_interface
 
-    def parse_results(self, result_file):
+    def parse_results(self, result_file, accepted_risk_level=None,
+                      required_confidence_level=None):
+        if accepted_risk_level is not None:
+            self._config['accepted_risk_level'] = accepted_risk_level
+        if required_confidence_level is not None:
+            self._config['required_confidence_level'] = \
+                required_confidence_level
         zap_dict = self._read_results(validate_path(result_file).resolve())
         return self._parse_zap_dict(zap_dict)
 

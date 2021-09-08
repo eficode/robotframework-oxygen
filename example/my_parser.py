@@ -12,16 +12,16 @@ class MyParser(BaseHandler):
         {'name': 'My Test 2', 'passed': False, 'msg': 'Error text D:'}]
     }
 
-    def run_my_tests(self, resultfile):
-        with open(resultfile, 'w') as f:
+    def run_my_tests(self, result_file):
+        with open(result_file, 'w') as f:
             json.dump(self.RESULTS, f)
-        return resultfile
+        return result_file
 
-    def parse_results(self, resultfile):
-        with open(resultfile, 'r') as f:
+    def parse_results(self, result_file):
+        with open(result_file, 'r') as f:
             results = json.load(f)
         return {
-            'name': resultfile,
+            'name': result_file,
             'tags': [],
             'setup': None,
             'teardown': None,
