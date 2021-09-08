@@ -8,6 +8,7 @@ from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter
 from robot.libraries.BuiltIn import BuiltIn
+from robot.errors import DataError
 from yaml import load, FullLoader
 
 from .config import CONFIG_FILE
@@ -85,9 +86,13 @@ class listener(object):
         self.run_time_data = {}
 
     def end_test(self, name, attributes):
-        lib = BuiltIn().get_library_instance('oxygen.OxygenLibrary')
-        if lib:
-            self.run_time_data[attributes['longname']] = lib.data
+        try:
+            lib = BuiltIn()._get_context().namespace.get_library_instance(
+                'oxygen.OxygenLibrary')
+            if lib:
+                self.run_time_data[attributes['longname']] = lib.data
+        except DataError as _:
+            pass
 
     def output_file(self, path):
         result = ExecutionResult(path)
