@@ -3,6 +3,7 @@ from pathlib import Path
 from subprocess import check_output, run
 from unittest import TestCase
 from unittest.mock import ANY, create_autospec, patch, Mock
+from xml.etree import ElementTree
 
 from robot.running.model import TestSuite
 
@@ -54,10 +55,18 @@ class TestOxygenCLIEntryPoints(TestCase):
                      text=True,
                      shell=True)
 
-        for expected in ('<stat pass="69" fail="3">Critical Tests</stat>',
-                         '<stat pass="69" fail="3">All Tests</stat>'):
-            self.assertIn(expected, example.read_text())
-            self.assertIn(expected, actual.read_text())
+        example_xml = ElementTree.parse(example).getroot()
+        actual_xml = ElementTree.parse(actual).getroot()
+
+        # RF<4 has multiple `stat` elements therefore we use the double slash
+        # and a filter to single out the `stat` element with text "All Tests"
+        all_tests_stat_block = './statistics/total//stat[.="All Tests"]'
+
+        example_stat = example_xml.find(all_tests_stat_block)
+        actual_stat = actual_xml.find(all_tests_stat_block)
+
+        self.assertEqual(example_stat.get('pass'), actual_stat.get('pass'))
+        self.assertEqual(example_stat.get('fail'), actual_stat.get('fail'))
 
 
 class TestOxygenCLI(TestCase):
