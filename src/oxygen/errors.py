@@ -24,3 +24,7 @@ class ResultFileNotFoundException(Exception):
 
 class ResultFileIsNotAFileException(Exception):
     pass
+
+
+class MismatchArgumentException(Exception):
+    pass

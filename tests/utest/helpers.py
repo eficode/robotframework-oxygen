@@ -25,6 +25,10 @@ oxygen.zap:
   tags: ZAP
   accepted_risk_level: 2
   required_confidence_level: 1
+oxygen.my_dummy_handler:
+  handler: MyDummyHandler
+  keyword: run_my_dummy_handler
+  tags: MY_DUMMY_HANDLER
 '''
 
 RESOURCES_PATH = Path.cwd() / 'tests' / 'resources'

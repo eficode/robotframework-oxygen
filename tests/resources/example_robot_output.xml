@@ -258,6 +258,56 @@
 </tags>
 <status status="PASS" starttime="20200506 17:39:30.140" endtime="20200506 17:39:30.142" critical="yes"></status>
 </test>
+<test id="s1-s1-t7" name="My Fifth Test">
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>My Dummy Handler Setup Here 1</arg>
+</arguments>
+<msg timestamp="20200506 17:39:28.028" level="INFO">My Dummy Handler Setup Here 1</msg>
+<status status="PASS" starttime="20200506 17:39:28.028" endtime="20200506 17:39:28.029"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>My Dummy Handler Setup Here 2</arg>
+</arguments>
+<msg timestamp="20200506 17:39:28.029" level="INFO">My Dummy Handler Setup Here 2</msg>
+<status status="PASS" starttime="20200506 17:39:28.029" endtime="20200506 17:39:28.029"></status>
+</kw>
+<kw name="Run My Dummy Handler" library="oxygen.OxygenLibrary">
+<doc>Run My Dummy Handler tool specified with ``command``.</doc>
+<arguments>
+<arg>${RESOURCES}/my_dummy_handler.xml</arg>
+<arg>echo</arg>
+<arg>MY_DUMMY_HANDLER_TEST_STRING</arg>
+</arguments>
+<msg timestamp="20200506 17:39:28.041" level="INFO">MY_DUMMY_HANDLER_TEST_STRING
+</msg>
+<msg timestamp="20200506 17:39:28.041" level="INFO">Result file: /Users/tkairi/Coding/oxygen/tests/atest/../resources/my_dummy_handler.xml</msg>
+<status status="PASS" starttime="20200506 17:39:28.029" endtime="20200506 17:39:28.041"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>My Dummy Handler Teardown Here 1</arg>
+</arguments>
+<msg timestamp="20200506 17:39:28.042" level="INFO">My Dummy Handler Teardown Here 1</msg>
+<status status="PASS" starttime="20200506 17:39:28.042" endtime="20200506 17:39:28.042"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>My Dummy Handler Teardown Here 2</arg>
+</arguments>
+<msg timestamp="20200506 17:39:28.043" level="INFO">My Dummy Handler Teardown Here 2</msg>
+<status status="PASS" starttime="20200506 17:39:28.043" endtime="20200506 17:39:28.043"></status>
+</kw>
+<tags>
+<tag>MY_DUMMY_HANDLER_ROBOT_TAG</tag>
+</tags>
+<status status="PASS" starttime="20200506 17:39:28.028" endtime="20200506 17:39:28.043" critical="yes"></status>
+</test>
 <status status="PASS" starttime="20200506 17:39:27.974" endtime="20200506 17:39:30.143"></status>
 </suite>
 <status status="PASS" starttime="20200506 17:39:27.937" endtime="20200506 17:39:30.146"></status>
@@ -272,6 +322,7 @@
 <stat pass="2" fail="0">JUNIT_ROBOT_TAG</stat>
 <stat pass="1" fail="0">NO_OXYGEN_HERE</stat>
 <stat pass="2" fail="0">ZAP_ROBOT_TAG</stat>
+<stat pass="2" fail="0">MY_DUMMY_HANDLER_ROBOT_TAG</stat>
 </tag>
 <suite>
 <stat pass="6" fail="0" id="s1" name="Atest">Atest</stat>
