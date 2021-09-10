@@ -92,4 +92,4 @@ def doc(context):
 
 @task(pre=[clean])
 def build(context):
-    run(f'python {CURDIR / "setup.py"} bdist_wheel')
+    run(f'python -m build --wheel')
