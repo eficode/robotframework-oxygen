@@ -39,8 +39,10 @@ let
     ref = "refs/tags/3.3.0";
   }) {
     inherit pkgs python;
-    pypiDataRev = "5c6e5ecbc5a60fb9c43dc77be8e0eb8ac89f4fee";
-    pypiDataSha256 = "0gnq6r92bmnhqjykx3jff7lvg7wbpayd0wvb0drra8r8dvmr5b2d";
+    pypiData = builtins.fetchTarball {
+      name = "pypi-deps-db-src";
+      url = "https://github.com/DavHau/pypi-deps-db/tarball/master";
+    };
   };
 
   /* Returns new line delimited dependencies in format of `requirements.txt`
