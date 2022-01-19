@@ -108,7 +108,7 @@ class ZAProxyHandler(BaseHandler):
         site_name = self._get_parameter(zap_site_dict, 'name', 'Unknown Site Name')
 
         return_dict = {}
-        return_dict['name'] = 'Site: {}'.format(site_name)
+        return_dict['name'] = 'Site:{}'.format(site_name)
         return_dict['tests'] = []
 
         zap_alerts = zap_site_dict.get('alerts', [])
