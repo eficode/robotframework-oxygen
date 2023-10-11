@@ -24,18 +24,9 @@ class JUnitHandler(BaseHandler):
         return result_file
 
     def parse_results(self, result_file):
-        result_file = self._validate_path(result_file)
-        try:
-            xml = JUnitXml.fromfile(result_file)
-        except TypeError as e:
-            raise JUnitHandlerException(e)
+        result_file = validate_path(result_file)
+        xml = JUnitXml.fromfile(result_file)
         return self._transform_tests(xml)
-
-    def _validate_path(self, result_file):
-        try:
-            return str(validate_path(result_file).resolve())
-        except TypeError as e:
-            raise JUnitHandlerException(f'Invalid result file path: {e}')
 
     def _transform_tests(self, node):
         '''Convert the given xml object into a test suite dict
