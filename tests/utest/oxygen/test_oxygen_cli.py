@@ -96,12 +96,22 @@ class TestOxygenCLI(TestCase):
         )
 
     def test_parse_args(self):
+        p = ArgumentParser()
+
+        retval = self.cli.parse_args(p)
+
+        self.assertIsInstance(retval, dict)
+
+    def test_add_arguments(self):
         mock_parser = create_autospec(ArgumentParser)
         m = Mock()
         mock_parser.add_subparsers.return_value = m
 
-        self.cli.parse_args(mock_parser)
+        self.cli.add_arguments(mock_parser)
 
+        # verify all main-level cli arguments were added
+        self.assertEqual(len(mock_parser.add_argument.call_args_list), 4)
+        # verify all built-in handlers were added
         self.assertEqual(len(m.add_parser.call_args_list), 3)
 
     def test_get_output_filename(self):

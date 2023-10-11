@@ -28,3 +28,7 @@ class ResultFileIsNotAFileException(Exception):
 
 class MismatchArgumentException(Exception):
     pass
+
+
+class InvalidConfigurationException(Exception):
+    pass
