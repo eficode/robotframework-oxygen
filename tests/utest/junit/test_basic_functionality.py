@@ -7,7 +7,7 @@ from testfixtures import compare
 
 from oxygen.base_handler import BaseHandler
 from oxygen.junit import JUnitHandler
-from oxygen.errors import JUnitHandlerException
+from oxygen.errors import JUnitHandlerException, ResultFileIsNotAFileException
 from ..helpers import example_robot_output, get_config, RESOURCES_PATH
 
 class JUnitBasicTests(TestCase):
@@ -30,26 +30,15 @@ class JUnitBasicTests(TestCase):
         self.handler.parse_results('some/file/path.ext')
 
         mock_validate_path.assert_called_once_with('some/file/path.ext')
-        mock_junitxml.fromfile.assert_called_once_with(str(m.resolve()))
+        mock_junitxml.fromfile.assert_called_once_with(m)
         mock_transform.assert_called_once_with('some junit')
 
-    @patch('oxygen.junit.JUnitHandler._validate_path')
-    def test_JUnitXml_requires_path_to_be_string(self, mock_validate_path):
-        mock_validate_path.return_value = create_autospec(Path)
-
-        with self.assertRaises(JUnitHandlerException):
-            self.handler.parse_results('some/file/path.ext')
-
-        mock_validate_path.assert_called_once_with('some/file/path.ext')
-
-
     def test_result_file_is_not_a_string(self):
-        with self.assertRaises(JUnitHandlerException) as ex:
+        with self.assertRaises(ResultFileIsNotAFileException) as ex:
             self.handler.parse_results(None)
 
         ex = str(ex.exception)
-        self.assertIn('Invalid result file path', ex)
-        self.assertIn('not NoneType', ex)
+        self.assertIn('File "None" is not a file', ex)
 
     @patch('oxygen.utils.subprocess')
     def test_running(self, mock_subprocess):
@@ -227,6 +216,6 @@ class JUnitBasicTests(TestCase):
             }],
             'tests': []
         }
-        xml = JUnitXml.fromfile(str(RESOURCES_PATH / 'junit.xml'))
+        xml = JUnitXml.fromfile(RESOURCES_PATH / 'junit.xml')
         retval = self.handler._transform_tests(xml)
         compare(retval, expected_output)

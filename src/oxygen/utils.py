@@ -29,7 +29,10 @@ def run_command_line(command, check_return_code=True, **env):
 
 
 def validate_path(filepath):
-    path = Path(filepath)
+    try:
+        path = Path(filepath)
+    except TypeError as e:
+        raise ResultFileIsNotAFileException(f'File "{filepath}" is not a file')
     if not path.exists():
         raise ResultFileNotFoundException(f'File "{path}" does not exits')
     if path.is_dir():
