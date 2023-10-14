@@ -1,9 +1,11 @@
+import sys
 
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from inspect import getdoc, signature
 from io import StringIO
 from pathlib import Path
+from shutil import copy as copy_file
 from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter
@@ -11,7 +13,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.errors import DataError
 from yaml import load, FullLoader, dump as dump_yaml
 
-from .config import CONFIG_FILE
+from .config import CONFIG_FILE, ORIGINAL_CONFIG_FILE
 from .errors import (OxygenException,
                      InvalidConfigurationException,
                      ResultFileNotFoundException)
@@ -27,13 +29,28 @@ class OxygenCore(object):
 
 
     def __init__(self):
-        with open(CONFIG_FILE, 'r') as infile:
+        self._config = None
+        self._handlers = None
+
+    @property
+    def config(self):
+        if self._config is None:
+            self.load_config(CONFIG_FILE)
+        return self._config
+
+    @property
+    def handlers(self):
+        if self._handlers is None:
+            self._handlers = {}
+            self._register_handlers()
+        return self._handlers
+
+    def load_config(self, config_file):
+        with open(config_file, 'r') as infile:
             self._config = load(infile, Loader=FullLoader)
-        self._handlers = {}
-        self._register_handlers()
 
     def _register_handlers(self):
-        for tool_name, config in self._config.items():
+        for tool_name, config in self.config.items():
             try:
                 handler_class = getattr(__import__(tool_name,
                                                    fromlist=[config['handler']]),
@@ -58,7 +75,7 @@ class OxygenVisitor(OxygenCore, ResultVisitor):
 
     def visit_test(self, test):
         failures = []
-        for handler_type, handler in self._handlers.items():
+        for handler_type, handler in self.handlers.items():
             try:
                 handler.check_for_keyword(test, self.data)
             except Exception as e:
@@ -188,12 +205,12 @@ class OxygenLibrary(OxygenCore):
     def _fetch_handler(self, name):
         try:
             return next(filter(lambda h: h.keyword == name,
-                               self._handlers.values()))
+                               self.handlers.values()))
         except StopIteration:
             raise OxygenException('No handler for keyword "{}"'.format(name))
 
     def get_keyword_names(self):
-        return list(handler.keyword for handler in self._handlers.values())
+        return list(handler.keyword for handler in self.handlers.values())
 
     def run_keyword(self, name, args, kwargs):
         handler = self._fetch_handler(name)
@@ -245,7 +262,7 @@ class OxygenCLI(OxygenCore):
             parser.add_argument(flag, **params)
 
         subcommands = parser.add_subparsers()
-        for tool_name, tool_handler in self._handlers.items():
+        for tool_name, tool_handler in self.handlers.items():
             subcommand_parser = subcommands.add_parser(tool_name)
             for flags, params in tool_handler.cli().items():
                 subcommand_parser.add_argument(*flags, **params)
@@ -264,8 +281,21 @@ class OxygenCLI(OxygenCore):
         filename = filename.with_name(robot_name)
         return str(filename)
 
+    def append_config(self, new_config_path):
+        with open(new_config_path, 'r') as new_config:
+            with open(CONFIG_FILE, 'a') as old_config:
+                old_config.write(new_config.read())
+        self.load_config(CONFIG_FILE)
+
+    @staticmethod
+    def reset_config():
+        copy_file(ORIGINAL_CONFIG_FILE, CONFIG_FILE)
+        OxygenCLI().load_config(CONFIG_FILE)
+        print('Oxygen handler configuration reset!')
+
     def print_config(self):
-        print(dump_yaml(self._config))
+        print(f'Using config file: {CONFIG_FILE}')
+        print(dump_yaml(self.config))
 
     def convert_to_robot_result(self, args):
         output_filename = self.get_output_filename(args.get('result_file'))
@@ -283,9 +313,7 @@ class OxygenCLI(OxygenCore):
         args = self.parse_args(parser)
         match args:
             case {'add_config': new_config_path} if new_config_path is not None:
-                pass #return self.append_config(new_config_path)
-            case {'reset_config': should_reset} if should_reset:
-                print(f'tiritrii {args}') #return self.reset_config()
+                return self.append_config(new_config_path)
             case {'print_config': should_print} if should_print:
                 return self.print_config()
             case {'add_config': _,
@@ -303,4 +331,7 @@ class OxygenCLI(OxygenCore):
                 return self.convert_to_robot_result(filtered_args)
 
 if __name__ == '__main__':
+    if '--reset-config' in sys.argv:
+        OxygenCLI.reset_config()
+        sys.exit(0)
     OxygenCLI().run()

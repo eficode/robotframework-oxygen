@@ -1,13 +1,15 @@
 from argparse import ArgumentParser
 from pathlib import Path
-from subprocess import check_output, run
+from subprocess import check_output, run, STDOUT, CalledProcessError
+from tempfile import mkstemp
 from unittest import TestCase
 from unittest.mock import ANY, create_autospec, patch, Mock
 from xml.etree import ElementTree
 
 from robot.running.model import TestSuite
 
-from oxygen.oxygen import OxygenCLI
+from oxygen.oxygen import OxygenCLI, OxygenCore
+from oxygen.config import CONFIG_FILE, ORIGINAL_CONFIG_FILE
 
 from ..helpers import RESOURCES_PATH
 
@@ -22,6 +24,11 @@ class TestOxygenCLIEntryPoints(TestCase):
     Setting up Coverage to see subprocesses as well seems a lot of work and
     quite a hack: https://coverage.readthedocs.io/en/latest/subprocess.html
     '''
+
+    def tearDown(self):
+        with open(ORIGINAL_CONFIG_FILE, 'r') as og:
+            with open(CONFIG_FILE, 'w') as config:
+                config.write(og.read())
 
     def test_main_level_entrypoint(self):
         self.verify_cli_help_text('python -m oxygen --help')
@@ -39,8 +46,15 @@ class TestOxygenCLIEntryPoints(TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn('usage: oxygen', proc.stderr)
 
+    def _run(self, cmd):
+        try:
+            return check_output(cmd, text=True, shell=True, stderr=STDOUT)
+        except CalledProcessError as e:
+            print(e.output)  # with this, you can actually see the command
+            raise            # output, ie. why it failed
+
     def verify_cli_help_text(self, cmd):
-        out = check_output(cmd, text=True, shell=True)
+        out = self._run(cmd)
         self.assertIn('usage: oxygen', out)
         self.assertIn('-h, --help', out)
 
@@ -51,9 +65,7 @@ class TestOxygenCLIEntryPoints(TestCase):
         if actual.exists():
             actual.unlink()  # delete file if exists
 
-        check_output(f'python -m oxygen oxygen.junit {target}',
-                     text=True,
-                     shell=True)
+        self._run(f'python -m oxygen oxygen.junit {target}')
 
         example_xml = ElementTree.parse(example).getroot()
         actual_xml = ElementTree.parse(actual).getroot()
@@ -67,6 +79,66 @@ class TestOxygenCLIEntryPoints(TestCase):
 
         self.assertEqual(example_stat.get('pass'), actual_stat.get('pass'))
         self.assertEqual(example_stat.get('fail'), actual_stat.get('fail'))
+
+    def _validate_handler_names(self, text):
+        for handler in ('JUnitHandler', 'GatlingHandler', 'ZAProxyHandler'):
+            self.assertIn(handler, text)
+
+    def test_reset_config(self):
+        with open(CONFIG_FILE, 'w') as f:
+            f.write('complete: gibberish')
+
+        self._run(f'python -m oxygen --reset-config')
+
+        with open(CONFIG_FILE, 'r') as f:
+            config_content = f.read()
+        self.assertNotIn('complete: gibberish', config_content)
+        self._validate_handler_names(config_content)
+
+    def test_print_config(self):
+        out = self._run('python -m oxygen --print-config')
+
+        self.assertIn('Using config file', out)
+        self._validate_handler_names(out)
+
+    def _make_test_config(self):
+        _, filepath = mkstemp()
+        with open(filepath, 'w') as f:
+            f.write('complete: gibberish')
+        return filepath
+
+    def test_add_config(self):
+        filepath = self._make_test_config()
+
+        self._run(f'python -m oxygen --add-config {filepath}')
+
+
+        with open(CONFIG_FILE, 'r') as f:
+            config_content = f.read()
+        self._validate_handler_names(config_content)
+        self.assertIn('complete: gibberish', config_content)
+
+    def _is_file_content(self, filepath, text):
+        with open(filepath, 'r') as f:
+            return bool(text in f.read())
+
+    def test_main_level_args_override_handler_args(self):
+        filepath = self._make_test_config()
+
+        cmd = ('python -m oxygen {main_level_arg} '
+               f'oxygen.junit {RESOURCES_PATH / "green-junit-example.xml"}')
+
+        self._run(cmd.format(main_level_arg=f'--add-config {filepath}'))
+        self.assertTrue(self._is_file_content(CONFIG_FILE, 'complete: gibberish'))
+
+        self._run(cmd.format(main_level_arg='--reset-config'))
+        self.assertFalse(self._is_file_content(CONFIG_FILE,
+                                               'complete: gibberish'))
+
+
+        out = self._run(cmd.format(main_level_arg='--print-config'))
+        self._validate_handler_names(out)
+        self.assertNotIn('gibberish', out)
 
 
 class TestOxygenCLI(TestCase):
@@ -96,6 +168,7 @@ class TestOxygenCLI(TestCase):
         )
 
     def test_parse_args(self):
+        '''verifies that `parse_args()` returns a dictionary'''
         p = ArgumentParser()
 
         retval = self.cli.parse_args(p)
@@ -114,11 +187,22 @@ class TestOxygenCLI(TestCase):
         # verify all built-in handlers were added
         self.assertEqual(len(m.add_parser.call_args_list), 3)
 
+    def _actual(self, path):
+        return self.cli.get_output_filename(path)
+
+    def _expected(self, path):
+        return str(Path(path))
+
     def test_get_output_filename(self):
-        self.assertEqual(self.cli.get_output_filename('absolute/path/to.file'),
-                         str(Path('absolute/path/to_robot_output.xml')))
-        self.assertEqual(self.cli.get_output_filename('path/to/file.xml'),
-                         str(Path('path/to/file_robot_output.xml')))
-        self.assertEqual(self.cli.get_output_filename('file.extension'),
-                         str(Path('file_robot_output.xml')))
+        for act, exp in ((self._actual('/absolute/path/to.file'),
+                          self._expected('/absolute/path/to_robot_output.xml')),
+
+                         (self._actual('path/to/file.xml'),
+                          self._expected('path/to/file_robot_output.xml')),
+
+                         (self._actual('file.extension'),
+                          self._expected('file_robot_output.xml'))):
+            self.assertEqual(act, exp)
+
+
 

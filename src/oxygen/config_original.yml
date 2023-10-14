@@ -1,0 +1,16 @@
+oxygen.junit:
+  handler: JUnitHandler
+  keyword: run_junit
+  tags:
+    - oxygen-junit
+oxygen.gatling:
+  handler: GatlingHandler
+  keyword: run_gatling
+  tags: oxygen-gatling
+oxygen.zap:
+  handler: ZAProxyHandler
+  keyword: run_zap
+  tags: oxygen-zap
+  accepted_risk_level: 2
+  required_confidence_level: 1
+

@@ -11,7 +11,7 @@ class TestOxygenZapCLI(TestCase):
 
     def setUp(self):
         self.cli = OxygenCLI()
-        self.handler = self.cli._handlers["oxygen.zap"]
+        self.handler = self.cli.handlers["oxygen.zap"]
         self.expected_suite = create_autospec(TestSuite)
         self.mock = Mock()
         self.mock.running.build_suite = Mock(return_value=self.expected_suite)

@@ -21,8 +21,8 @@ class TestOxygenLibrary(TestCase):
     def test_config_is_correct(self, mock_config):
         mock_config.return_value = get_config_as_file()
 
-        self.assertGreater(len(self.lib._handlers), 1)
-        for handler in self.lib._handlers.values():
+        self.assertGreater(len(self.lib.handlers), 1)
+        for handler in self.lib.handlers.values():
             self.assertTrue(isinstance(handler, BaseHandler))
             self.assertTrue(any(hasattr(handler, kw)
                                 for kw in self.EXPECTED_KEYWORDS),
