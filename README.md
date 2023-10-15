@@ -89,6 +89,75 @@ $ python -m oxygen oxygen.gatling path/to/results.log
 
 Then `results_robot_output.xml` will be created under `path/to/`.
 
+## Extending Oxygen: writing your own handler
+
+### [Read the developer guide on how to write your own handler](DEVGUIDE.md)
+
+### Configuring your handler to Oxygen
+
+Oxygen knows about different handlers based on the [`config.yml`](https://github.com/eficode/robotframework-oxygen/blob/master/config.yml) file. This configuration file can be interacted with through Oxygen's command line.
+
+The configuration has the following parts:
+```yml
+oxygen.junit:           # Python module. Oxygen will use this key to try to import the handler
+  handler: JUnitHandler # Class that Oxygen will initiate after the handler is imported
+  keyword: run_junit    # Keyword that should be used to run the other test tool
+  tags:                 # List of tags that by default should be added to the test cases converted with this handler
+    - oxygen-junit
+oxygen.zap:
+  handler: ZAProxyHandler
+  keyword: run_zap
+  tags: oxygen-zap
+  accepted_risk_level: 2         # Handlers can have their own command line arguments
+  required_confidence_level: 1   # See [the development guide](DEVGUIDE.md) for more information
+```
+
+#### `--add-config`
+
+This argument is used to add new handler configuration to Oxygen:
+
+```bash
+$ python -m oxygen --add-config path/to/your_handler_config.yml
+```
+
+This file is read and appended to the Oxygen's `config.yml`. Based on the key, Oxygen will try to import you handler.
+
+### `--reset-config`
+
+This argument is used to return Oxygen's `config.yml` back to the state it was when the tool was installed:
+
+```bash
+$ python -m oxygen --reset-config
+```
+
+The command **does not** verify the operation from the user, so be careful.
+
+### `--print-config`
+
+This argument prints the current configuration of Oxygen:
+```bash
+$ python -m oxygen --print-config
+Using config file: /path/to/oxygen/src/oxygen/config.yml
+oxygen.gatling:
+  handler: GatlingHandler
+  keyword: run_gatling
+  tags: oxygen-gatling
+oxygen.junit:
+  handler: JUnitHandler
+  keyword: run_junit
+  tags:
+  - oxygen-junit
+oxygen.zap:
+  accepted_risk_level: 2
+  handler: ZAProxyHandler
+  keyword: run_zap
+  required_confidence_level: 1
+  tags: oxygen-zap
+
+$
+```
+Because you can add the configuration to the same handler multiple times, note that only the last entry is in effect.
+
 # Developing Oxygen
 
 Clone the Oxygen repository to the environment where you want to the run the tool.
@@ -107,7 +176,6 @@ $ invoke --list
 
 and the task file [`tasks.py`](https://github.com/eficode/robotframework-oxygen/blob/master/tasks.py).
 
-[Read the developer guide on how to write your own handler](DEVGUIDE.md)
 
 # License
 
