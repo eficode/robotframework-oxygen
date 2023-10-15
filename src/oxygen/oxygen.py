@@ -330,8 +330,15 @@ class OxygenCLI(OxygenCore):
                                     if k not in filter_list}
                 return self.convert_to_robot_result(filtered_args)
 
-if __name__ == '__main__':
+def main():
+    '''Main CLI entrypoint
+
+    Also used in __main__.py
+    '''
     if '--reset-config' in sys.argv:
         OxygenCLI.reset_config()
         sys.exit(0)
     OxygenCLI().run()
+
+if __name__ == '__main__':
+    main()
