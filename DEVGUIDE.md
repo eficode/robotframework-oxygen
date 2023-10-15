@@ -6,12 +6,12 @@ This is a developer guide for Oxygen. We will write a handler for [https://locus
 
 ## Prerequisites
 
-Python 3
+Python 3.10+
 
 
 ## What is our goal? 
 
-The performance tests are defined in python files which look like following:
+The performance tests are defined in python files which look like this:
 
 ```
 from locust import HttpUser, task, between
@@ -25,7 +25,7 @@ class QuickstartUser(HttpUser):
 
 ```
 
-And the output of the tests are .csv files which look like following:
+And the output of the tests are .csv files which look like this:
 
 ```
 "Type","Name","Request Count","Failure Count","Median Response Time","Average Response Time","Min Response Time","Max Response Time","Average Content Size","Requests/s","Failures/s","50%","66%","75%","80%","90%","95%","98%","99%","99.9%","99.99%","99.999%","100%"
@@ -35,12 +35,12 @@ And the output of the tests are .csv files which look like following:
 "None","Aggregated",39,5,81,109,66,402,1916,1.03,0.13,81,86,87,89,300,330,400,400,400,400,400,400
 ```
 
-Our goal is to write an handler, which is able to execute the locust tests inside Robot Framework and provide the test results in user-friendly format in the Robot Framework log files.
+Our goal is to write an handler which is able to execute the locust tests inside Robot Framework and provide the test results in user-friendly format in the Robot Framework log files.
 
 
 ## Start developing
 
-Let's create a virtual environment and install oxygen.
+Let's create a virtual environment and install Oxygen.
 
 
 ```
@@ -119,7 +119,7 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-  Method `run_locust` can be used from robot tests, and it executes the command which runs the locust tests. It returns a path to the locust test results, which is processed by method `parse_results`, which calls `_transform_tests` function which purpose is to transfer the locust result file into a format which can be seen in the Robot Framework log files. 
+  Method `run_locust` can be used from Robot tests, and it executes the command which runs the locust tests. It returns a path to the locust test results, which is processed by method `parse_results`, which in turn calls `_transform_tests` function. This transfers the locust result file into a format which can be seen in the Robot Framework log files.
 
   Let's create a `locustenv/locusthandler/tests` folder. Then we write there test file `test_locust.py` with following content:
 
@@ -169,17 +169,17 @@ and all 3 tests should pass.
 
 ### Configuring LocustHandler to Oxygen
 
-Let's open the python interpreter by running `python` from the `locustenv` directory and check that we can import the locusthandler:
+Let's open the Python interpreter by running `python` from the `locustenv` directory and check that we can import the locusthandler:
 
 ```
 (locustenv) $ python
-Python 3.7.7 
+Python 3.10
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import locusthandler.locusthandler
 >>>
 ```
 
-Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.7/site-packages/oxygen/config.yml`:
+Running this should not produce any errors, and we can import file `locusthandler.py` from `/locusthandler` folder we created. [Read more about packaging python projects from here.](https://packaging.python.org/glossary/#term-import-package) Next we can exit the python intepreter (CTRL + D) and write following lines to the end of `lib/python3.10/site-packages/oxygen/config.yml`:
 
 ```
 locusthandler.locusthandler:
@@ -217,7 +217,7 @@ First we install Locust to our locustenv virtualenv:
 pip install locust
 ```
 
-Then we add `locustfile.py` file to `locustenv/locusthandler` folder which contains the commands for the performance test:
+Then, we add `locustfile.py` file to `locustenv/locusthandler` folder which contains the commands for the performance test:
 
 ```
 from locust import HttpUser, task, between
@@ -271,7 +271,7 @@ Performance test should pass
 ```
 
 
- We can run the test from `locustenv` folder by using command
+We can run the test from `locustenv` folder by using command
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
@@ -298,9 +298,9 @@ Performance test should pass
 
 ## Defining your own parameters
 
-In our first solution the Locust test case will fail if even one request fails during the performance testing. However this might not be the best way to determine was the performance test successfull or not. Let's implement a solution, where you can define `failure_percentage` , which is the highest percentage of failed request that is allowed in order that the test still passes.
+In our first solution the Locust test case will fail if even one request fails during the performance testing. However, this might not be the best way to determine was the performance test successful or not. Let's implement a solution, where you can define `failure_percentage` , which is the percentage of failed request that is allowed in order that the test still passes.
 
-Let's define the value of `failure_percentage` in `/lib/python3.7/site-packages/oxygen/config.yml`:
+Let's define the value of `failure_percentage` in `/lib/python3.10/site-packages/oxygen/config.yml`:
 
 ```
 locusthandler.locusthandler:
@@ -358,9 +358,7 @@ and let's use it in `_transform_tests` function:
             return test_suite
 ```
 
-
-
-Next we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`:
+Next, we can update the unit tests in `locusthandler/tests/test_locust.py` to test that the pass value is calculated correctly depending on the value of `failure_percentage`:
 
 ```
 from unittest import TestCase
@@ -405,15 +403,15 @@ Now the unit tests should pass, run the tests from `locustenv/locusthandler` fol
 python -m unittest tests/test_locust.py
 ````
 
-And we can also try out the robot tests using the new .yaml configuration. Run the tests from `locustenv` folder by using command
+And we can also try out the Robot tests using the new .yaml configuration. Run the tests from `locustenv` folder by using command
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-## Adding failure percentage as an robot test parameter
+## Adding failure percentage as a Robot test parameter
 
-Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we wan't to determine different values for `failure_percentage`. 
+Our current solution works quite nicely, but let's imagine a situation where we run the performance tests on different parts of the software, where we want to determine different values for `failure_percentage`.
 
 Let's change the functionality of `locusthandler/locusthandler.py`:
 
@@ -491,7 +489,7 @@ class LocustHandlerException(Exception):
     pass
 ```
 
-Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined. If it's not defined we will use the value what is defined in `/lib/python3.7/site-packages/oxygen/config.yml`. Now we can rewrite the robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test doesn't: 
+Notice that we return an dictionary object instead of result file in the `run_locust` method. This way we can use the `failure_percentage` value if it is defined in the test. If it's not defined, we will use the value what is defined in `/lib/python3.10/site-packages/oxygen/config.yml`. Now we can rewrite the Robot tests in `locusthandler/test.robot`, one assigns the value from the parameter and the second test does not:
 
 ```RobotFramework
 *** Test Cases ***
@@ -513,7 +511,7 @@ Normal performance test
     ...   ${LOCUSTCOMMAND}
 ```
 
-In this case the `Critical performance test` could be a performance test for a system where the consequences of failure is much larger: Thus we define the failure_percentage to 1%. In the `Normal performance test` we use the value that is defined in the `/lib/python3.7/site-packages/oxygen/config.yml`.
+In this case, the `Critical performance test` could be a performance test for a system where the allowed failures are much smaller: thus, we define the failure_percentage to 1%. In the `Normal performance test` we use the value that is defined in the `/lib/python3.10/site-packages/oxygen/config.yml`.
 
 Run the tests in `locustenv/` folder with 
 
@@ -521,7 +519,7 @@ Run the tests in `locustenv/` folder with
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot
 ```
 
-However now when you run the unit tests from `locusthandler/` folder they fail:
+However, now when you run the unit tests from `locusthandler/` folder they fail:
 
 ```
 python -m unittest tests/test_locust.py
@@ -560,7 +558,7 @@ and run tests again. Still two test cases fail. This is because the `_get_tresho
         self.assertEqual(failure_percentage, 100)
 ```
 
-Now all tests should pass. Let's add two more test cases to see that the `failure_precentage` is set correctly from the parameter or config file.
+Now all tests should pass. Let's add two more test cases to see that the `failure_precentage` is set correctly from its parameter or from the config file.
 
 ```
     def test_parse_results_takes_failure_percentage_from_parameter_prior_to_config(self):
@@ -602,7 +600,7 @@ pip install wheel
 python setup.py bdist_wheel
 ```
 
-Which will create you a `locustenv/dist` folder. Next we will ensure that the installation works by creating another virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
+Which will create you a `locustenv/dist` folder. Next, we will ensure that the installation works by creating another, separate virtualenv. Open up another terminal, go backwards with `cd ..` same path where `locustenv` is and run following commands:
 
 ```
 python3 -m venv packagenv
@@ -610,11 +608,11 @@ source packagenv/bin/activate
 pip install locustenv/dist/NAME-OF-YOUR-PACKAGE.whl
 ```
 
-You should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening python intepreter:
+You should now have a version of locusthandler in your `packagenv` environment. Let's verify this by opening the Python intepreter:
 
 ```
 $ python
-Python 3.7.7 
+Python 3.10
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import locusthandler.locusthandler
 >>>
@@ -631,7 +629,7 @@ locusthandler.locusthandler:
 ```
 
 
- Next let's run the robot test case to make sure that it works. Next let's copy `test.robot` and `locustfile.py` files to `packagenv/` folder so that we can run them easily from our new environment. Make the following changes to the variables in `test.robot`:
+ Next let's run the Robot test case to make sure that it works. Next let's copy `test.robot` and `locustfile.py` files to `packagenv/` folder so that we can run them easily from our new environment. Make the following changes to the variables in `test.robot`:
 
 ```RobotFramework
 *** Variables ***
@@ -640,7 +638,7 @@ ${FAILURE_FILE}     ${CURDIR}/example_failures.csv
 ${HISTORY_FILE}     ${CURDIR}/example_stats_history.csv
 ```
 
-Now we can run the robot tests from `packagenv/` folder with command:
+Now we can run the Robot tests from `packagenv/` folder with command:
 
 ```
 robot --listener oxygen.listener --pythonpath . test.robot
@@ -689,7 +687,7 @@ Our locusthandler works fine, but we could make the test results more clear. Let
             return test_suite
 ```
 
-Now run the robot tests again from `locustenv/` folder with 
+Now run the Robot tests again from `locustenv/` folder with
 
 ```
 robot --listener oxygen.listener --pythonpath . --variable LOCUSTFILEPATH:locusthandler/locustfile.py locusthandler/test.robot

@@ -24,10 +24,10 @@ $ pip install robotframework-oxygen
 ## Pre-requisites
 
 - Oxygen is supported on Windows, Linux and MacOS
-- [Python 3.7](http://python.org) or above
+- [Python 3.10](http://python.org) or above
 - [pip](https://pypi.python.org/pypi/pip) for easy installation
 - [Robot Framework](http://robotframework.org)
-- [additional dependencies](requirements.txt)
+- [additional dependencies](requirements.txt) if you are developing Oxygen itself.
 
 To check the Python version on the command line, run:
 ```
