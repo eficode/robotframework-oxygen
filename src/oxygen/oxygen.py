@@ -38,16 +38,16 @@ class OxygenCore(object):
             self.load_config(CONFIG_FILE)
         return self._config
 
+    def load_config(self, config_file):
+        with open(config_file, 'r') as infile:
+            self._config = load(infile, Loader=FullLoader)
+
     @property
     def handlers(self):
         if self._handlers is None:
             self._handlers = {}
             self._register_handlers()
         return self._handlers
-
-    def load_config(self, config_file):
-        with open(config_file, 'r') as infile:
-            self._config = load(infile, Loader=FullLoader)
 
     def _register_handlers(self):
         for tool_name, config in self.config.items():
