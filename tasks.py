@@ -7,9 +7,6 @@ from invoke import run, task
 CURDIR = Path.cwd()
 SRCPATH = CURDIR / 'src'
 UNIT_TESTS = CURDIR / 'tests'
-IN_NIX_HELP = ('Setup environment for use inside Nix. By default PYTHONPATH '
-               'is being overriden with source path. This flag makes sure '
-               'that PYTHONPATH is untouched.')
 
 # If you want colored output for the tasks, use `run()` with `pty=True`
 # Not on Windows, though -- it'll fail if you have `pty=True`
@@ -39,21 +36,16 @@ def install(context, package=None):
           'test': 'Limit unit test execution to specific tests. Must be given '
                   'multiple times to select several targets. See more: '
                   'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5',
-          'in_nix': IN_NIX_HELP
       })
-def utest(context, test=None, in_nix=False):
-    env = {} if in_nix else {'PYTHONPATH': str(SRCPATH)}
+def utest(context, test=None):
     run(f'green {" ".join(test) if test else UNIT_TESTS}',
-        env=env,
+        env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
 
-@task(help={
-    'in_nix': IN_NIX_HELP
-})
-def coverage(context, in_nix=False):
-    env = {} if in_nix else {'PYTHONPATH': str(SRCPATH)}
+@task
+def coverage(context):
     run(f'green -r {str(UNIT_TESTS)}',
-        env=env,
+        env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
     run('coverage html')
 
@@ -63,18 +55,16 @@ def coverage(context, in_nix=False):
 })
 def atest(context, rf=''):
     run(f'robot '
-        f'--pythonpath {str(SRCPATH)}'
+        f'--pythonpath {str(SRCPATH)} '
         f'--dotted '
         f'{rf} '
         f'--listener oxygen.listener '
         f'{str(CURDIR / "tests" / "atest")}',
         pty=(not system() == 'Windows'))
 
-@task(help={
-    'in_nix': IN_NIX_HELP
-})
-def test(context, in_nix=False):
-    utest(context, in_nix=in_nix)
+@task
+def test(context):
+    utest(context)
     atest(context)
 
 @task
