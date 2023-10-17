@@ -290,6 +290,11 @@ class RobotResultInterface(object):
         time_object = datetime.fromtimestamp(int(milliseconds / 1000)) - tz_delta
         milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
         time_object = (time_object + milliseconds_delta)
+        if time_object.year < 1970:
+            time_object = datetime.fromtimestamp(0)
+        # fromtimestamp() loses milliseconds, add them back
+        milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
+        time_object = (time_object + milliseconds_delta)
 
         time_format = self.get_time_format()
 

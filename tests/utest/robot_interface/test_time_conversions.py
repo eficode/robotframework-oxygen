@@ -29,6 +29,17 @@ class TestMsToTimestamp(TestCase):
         timestamp = self.interface.result.ms_to_timestamp(milliseconds)
         assert timestamp == '20180807 07:01:24.300000'
 
+    def _validate_timestamp(self, result):
+        timestamp = result.ms_to_timestamp(-10)
+        self.assertEqual(timestamp, '19700101 02:00:00.990000')
+
+    def test_ms_before_epoch_are_reset_to_epoch(self):
+        from oxygen.robot4_interface import RobotResultInterface as RF4ResultIface
+        self._validate_timestamp(RF4ResultIface())
+
+        from oxygen.robot3_interface import RobotResultInterface as RF3ResultIface
+        self._validate_timestamp(RF3ResultIface())
+
 
 class TestTimestampToMs(TestCase):
     def setUp(self):

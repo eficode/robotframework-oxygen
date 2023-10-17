@@ -99,7 +99,6 @@ class listener(object):
         result.visit(OxygenVisitor(self.run_time_data))
         result.save()
 
-
 class OxygenLibrary(OxygenCore):
     '''Oxygen is a tool to consolidate different test tools' reports together
     as a single Robot Framework log and report. ``oxygen.OxygenLibrary``
