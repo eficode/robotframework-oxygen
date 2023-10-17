@@ -62,14 +62,13 @@ def coverage(context, in_nix=False):
           'single string. E.g: invoke atest --rf "--name my_suite"'
 })
 def atest(context, rf=''):
-    cmd = (f'robot '
+    run(f'robot '
         f'--pythonpath {str(SRCPATH)} '
         f'--dotted '
         f'{rf} '
         f'--listener oxygen.listener '
-        f'{str(CURDIR / "tests" / "atest")}')
-    print(cmd)
-    run(cmd, pty=(not system() == 'Windows'))
+        f'{str(CURDIR / "tests" / "atest")}',
+        pty=(not system() == 'Windows'))
 
 @task(help={
     'in_nix': IN_NIX_HELP
