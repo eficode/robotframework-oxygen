@@ -109,43 +109,6 @@ and the task file [`tasks.py`](https://github.com/eficode/robotframework-oxygen/
 
 [Read the developer guide on how to write your own handler](DEVGUIDE.md)
 
-# Developing Oxygen with Nix
-
-Nix is being used in this project for building development environments with capability of running bulk tests across multiple python versions and multiple Robot Framework versions.
-
-## Requirements
-
-- Nix (https://nixos.org/download.html#nix-quick-install)
-
-## Development environment
-
-This opens bash shell in current terminal window, with latest python 3.9 and Robot Framework 3.2.2.
-```
-$ nix-shell --argstr python python39 --argstr rfVersion 3.2.2
-```
-Now you can run the tests, for example:
-```
-$ invoke test --in-nix
-$ invoke utest --in-nix
-$ invoke atest
-```
-
-To exit the environment/shell type `<Ctrl+d>` or:
-```
-$ exit
-```
-
-## Bulk tests
-
-This command tests all currently supported combinations of Python and Robot Framework.
-```
-$ nix-build test.nix
-```
-It should run for few minutes, and if all tests pass, the output will be:
-```
-Overall tests state: ok
-```
-
 # License
 
 Details of project licensing can be found in the [LICENSE](LICENSE) file in the project repository.

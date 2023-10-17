@@ -1,109 +1,99 @@
-#name: Tests
-#
-#on:
-#  push:
-#  pull_request:
-#
-#  # Allows you to run this workflow manually from the Actions tab
-#  workflow_dispatch:
-#
-#jobs:
-#
-#  generate-matrix:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      python-versions: ${{ steps.generate-matrix.outputs.PYTHONS }}
-#      rf-versions: ${{ steps.generate-matrix.outputs.RF_VERSIONS }}
-#    steps:
-#      - name: "Generate Matrix"
-#        id: generate-matrix
-#        run: |
-#          echo 'PYTHONS=["python310", "python311", "python312"]' >> $GITHUB_OUTPUT
-#          echo 'RF_VERSIONS=["3.2.2", "4.1.3", "5.0.1", "6.1.1"]' >> $GITHUB_OUTPUT
-#
-#  # Running tests on Windows under Windows Subsystem for Linux (WSL)
-#  windows:
-#    needs:
-#      - generate-matrix
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
-#        rfVersion: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-#    runs-on: windows-latest
-#    name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
-#    defaults:
-#      run:
-#        shell: wsl-bash {0}
-#    steps:
-#      - name: Checkout the repository
-#        uses: actions/checkout@v2
-#      - name: Setup Windows Subsystem for Linux
-#        uses: Vampire/setup-wsl@v1
-#        with:
-#          # Using Ubuntu to setup WSL
-#          distribution: Ubuntu-20.04
-#          additional-packages:
-#            dos2unix
-#      - name: Install Nix
-#        run: |
-#            # Nix installer does not support root installation we need a user
-#            useradd test -m
-#
-#            # Create /nix folder with proper permissions
-#            # This is required because otherwise installer gets stuck most likely at running sudo
-#            install -d -m755 -o test -g test /nix
-#
-#            # Download Nix installer
-#            sudo -iu test curl -o ./install-nix.sh -L https://nixos.org/nix/install
-#
-#            # Run installer as single user installation and we do not need a channel
-#            sudo -iu test sh ./install-nix.sh --no-daemon --no-channel-add
-#      - name: Run tests
-#        run: |
-#            # Change line endings
-#            dos2unix default.nix
-#            # Run the tests in project directory where default.nix resides
-#            # We need login shell for that so that .profile is getting read
-#            sudo -iu test sh -c "nix-build $PWD --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}"
-#            exit $(cat /home/test/result/exitCode)
-#
-#  linux:
-#    needs:
-#      - generate-matrix
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
-#        rfVersion: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-#    runs-on: ubuntu-latest
-#    name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
-#    steps:
-#      - name: Checkout the repository
-#        uses: actions/checkout@v2
-#      - name: Install Nix
-#        uses: cachix/install-nix-action@v13
-#      - name: Run tests
-#        run: |
-#          nix-build --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}
-#          exit $(cat ./result/exitCode)
-#
-#  macos:
-#    needs:
-#      - generate-matrix
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
-#        rfVersion: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-#    runs-on: macos-latest
-#    name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rfVersion }})
-#    steps:
-#      - name: Checkout the repository
-#        uses: actions/checkout@v2
-#      - name: Install Nix
-#        uses: cachix/install-nix-action@v13
-#      - name: Run tests
-#        run: |
-#          nix-build --argstr python ${{ matrix.python }} --argstr rfVersion ${{ matrix.rfVersion }}
-#          exit $(cat ./result/exitCode)
+name: Tests simple
+
+on:
+  push:
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      python-versions: ${{ steps.generate-matrix.outputs.PYTHONS }}
+      rf-versions: ${{ steps.generate-matrix.outputs.RF_VERSIONS }}
+    steps:
+      - name: "Generate Matrix"
+        id: generate-matrix
+        run: |
+          echo 'PYTHONS=["3.10.11", "3.11.6", "3.12.0"]' >> $GITHUB_OUTPUT
+          echo 'RF_VERSIONS=["3.2.2", "4.1.3", "5.0.1", "6.1.1"]' >> $GITHUB_OUTPUT
+  windows:
+    runs-on: windows-latest
+    needs:
+      - generate-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
+        rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
+    name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+            pip install -r requirements.txt
+            pip install robotframework==${{ matrix.rf-version }}
+      - name: Run tests
+        run: |
+            invoke test
+
+  macos:
+    runs-on: macos-latest
+    needs:
+      - generate-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
+        rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
+    name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+            pip install -r requirements.txt
+            pip install robotframework==${{ matrix.rf-version }}
+      - name: Run tests
+        run: |
+            invoke test
+
+  linux:
+    runs-on: ubuntu-latest
+    needs:
+      - generate-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
+        rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
+    name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+            pip install -r requirements.txt
+            pip install robotframework==${{ matrix.rf-version }}
+      - name: Run tests
+        run: |
+            invoke test
