@@ -2,7 +2,6 @@ name: Tests
 
 on:
   push:
-  pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,7 +30,7 @@ jobs:
       matrix:
         python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
         rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-    name: Windows (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    name: Windows (python-${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -51,7 +50,7 @@ jobs:
       matrix:
         python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
         rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-    name: Linux (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    name: Linux (python-${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -70,7 +69,7 @@ jobs:
       matrix:
         python: ${{ fromJSON(needs.generate-matrix.outputs.python-versions) }}
         rf-version: ${{ fromJSON(needs.generate-matrix.outputs.rf-versions) }}
-    name: MacOS (${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
+    name: MacOS (python-${{ matrix.python }}, robotframework-${{ matrix.rf-version }})
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
