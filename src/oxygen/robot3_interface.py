@@ -288,8 +288,6 @@ class RobotResultInterface(object):
         tz_delta = self.get_timezone_delta()
 
         time_object = datetime.fromtimestamp(int(milliseconds / 1000)) - tz_delta
-        milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
-        time_object = (time_object + milliseconds_delta)
         if time_object.year < 1970:
             time_object = datetime.fromtimestamp(0)
         # fromtimestamp() loses milliseconds, add them back
