@@ -5,8 +5,6 @@ from robot.result.model import (Keyword as RobotResultKeyword,
                                 TestCase as RobotResultTest,
                                 TestSuite as RobotResultSuite)
 
-from robot.model import BodyItem
-
 from robot.running.model import TestSuite as RobotRunningSuite
 
 
@@ -227,6 +225,8 @@ class RobotResultInterface(object):
         start_timestamp = self.ms_to_timestamp(start_time)
         end_timestamp = self.ms_to_timestamp(end_time)
 
+        # import this here so RF4 interface stays in parity with RF3
+        from robot.model import BodyItem
         if setup:
             keyword_type = BodyItem.SETUP
         elif teardown:
@@ -284,11 +284,13 @@ class RobotResultInterface(object):
 
         return milliseconds
 
-
     def ms_to_timestamp(self, milliseconds):
         tz_delta = self.get_timezone_delta()
 
         time_object = datetime.fromtimestamp(int(milliseconds / 1000)) - tz_delta
+        if time_object.year < 1970:
+            time_object = datetime.fromtimestamp(0)
+        # fromtimestamp() loses milliseconds, add them back
         milliseconds_delta = timedelta(milliseconds=(milliseconds % 1000))
         time_object = (time_object + milliseconds_delta)
 
