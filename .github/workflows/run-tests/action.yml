@@ -1,0 +1,25 @@
+name: 'Run tests'
+inputs:
+  python-version:
+    required: true
+  rf-version:
+    required: true
+  terminal:
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+    - name: Install dependencies
+      shell: ${{ inputs.terminal }}
+      run: |
+          pip install -r requirements.txt
+          pip install robotframework==${{ inputs.rf-version }}
+    - name: Run tests
+      shell: ${{ inputs.terminal }}
+      run: |
+          invoke test
