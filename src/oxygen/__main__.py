@@ -1,5 +1,3 @@
-import sys
-
 from .oxygen import OxygenCLI, main
 
 if __name__ == '__main__':
