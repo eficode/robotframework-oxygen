@@ -50,14 +50,14 @@ class OxygenCore(object):
         return self._handlers
 
     def _register_handlers(self):
-        for tool_name, config in self.config.items():
+        for tool_name, handler_config in self.config.items():
             try:
-                handler_class = getattr(__import__(tool_name,
-                                                   fromlist=[config['handler']]),
-                                        config['handler'])
+                handler_class = getattr(
+                    __import__(tool_name, fromlist=[handler_config['handler']]),
+                    handler_config['handler'])
             except ModuleNotFoundError as e:
                 raise InvalidConfigurationException(e)
-            handler = handler_class(config)
+            handler = handler_class(handler_config)
             self._handlers[tool_name] = handler
 
 

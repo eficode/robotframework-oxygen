@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from subprocess import check_output, run, STDOUT, CalledProcessError
 from tempfile import mkstemp
@@ -25,10 +25,14 @@ class TestOxygenCLIEntryPoints(TestCase):
     quite a hack: https://coverage.readthedocs.io/en/latest/subprocess.html
     '''
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         with open(ORIGINAL_CONFIG_FILE, 'r') as og:
             with open(CONFIG_FILE, 'w') as config:
                 config.write(og.read())
+
+    def tearDown(self):
+        self.tearDownClass()
 
     def test_main_level_entrypoint(self):
         self.verify_cli_help_text('python -m oxygen --help')
@@ -112,7 +116,6 @@ class TestOxygenCLIEntryPoints(TestCase):
 
         self._run(f'python -m oxygen --add-config {filepath}')
 
-
         with open(CONFIG_FILE, 'r') as f:
             config_content = f.read()
         self._validate_handler_names(config_content)
@@ -169,7 +172,8 @@ class TestOxygenCLI(TestCase):
 
     def test_parse_args(self):
         '''verifies that `parse_args()` returns a dictionary'''
-        p = ArgumentParser()
+        p = create_autospec(ArgumentParser)
+        p.parse_args.return_value = create_autospec(Namespace)
 
         retval = self.cli.parse_args(p)
 

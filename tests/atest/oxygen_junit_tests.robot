@@ -16,9 +16,9 @@ Oxygen's unit tests should pass
     [Tags]    oxygen-own-junit
     Remove file     ${JUNIT XML FILE}
     File should not exist    ${JUNIT XML FILE}
-    ${green}=   Get command    green
+    ${pytest}=   Get command    pytest
     Run JUnit     ${JUNIT XML FILE}
-    ...           ${green} -j ${JUNIT XML FILE} ${EXECDIR}
+    ...           ${pytest} --junit-xml\=${JUNIT XML FILE} ${EXECDIR}
     File should exist    ${JUNIT XML FILE}
 
 *** Keywords ***

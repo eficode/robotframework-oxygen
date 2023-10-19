@@ -1,7 +1,10 @@
 import sys
+
 from unittest import TestCase
 from unittest.mock import ANY, Mock, create_autospec, patch
+
 from robot.running.model import TestSuite
+
 from oxygen.oxygen import OxygenCLI
 from ..helpers import RESOURCES_PATH
 
@@ -15,6 +18,12 @@ class TestOxygenZapCLI(TestCase):
         self.expected_suite = create_autospec(TestSuite)
         self.mock = Mock()
         self.mock.running.build_suite = Mock(return_value=self.expected_suite)
+
+    def tearDown(self):
+        self.cli = None
+        self.handler = None
+        self.expected_suite = None
+        self.mock = None
 
     def test_cli(self):
         self.assertEqual(
@@ -81,7 +90,7 @@ class TestOxygenZapCLI(TestCase):
     def test_cli_run_with_required_confidence_level(self, mock_robot_iface):
         mock_robot_iface.return_value = self.mock
 
-        cmd_args = f"oxygen oxygen.zap {self.ZAP_XML} " "--required-confidence-level 3"
+        cmd_args = f"oxygen oxygen.zap {self.ZAP_XML} --required-confidence-level 3"
         with patch.object(sys, "argv", cmd_args.split()):
             self.cli.run()
 
