@@ -1,3 +1,4 @@
-from os.path import abspath, dirname, join
+from pathlib import Path
 
-CONFIG_FILE = join(abspath(dirname(__file__)), 'config.yml')
+CONFIG_FILE = Path(__file__).resolve().parent / 'config.yml'
+ORIGINAL_CONFIG_FILE = Path(__file__).resolve().parent / 'config_original.yml'

@@ -1,4 +1,7 @@
+from datetime import timedelta
 from unittest import TestCase
+
+from mock import patch
 
 from oxygen.robot_interface import RobotInterface
 
@@ -29,22 +32,22 @@ class TestMsToTimestamp(TestCase):
         timestamp = self.interface.result.ms_to_timestamp(milliseconds)
         self.assertEqual(timestamp, '20180807 07:01:24.300000')
 
-    def _validate_timestamp(self, result):
-        timestamp = result.ms_to_timestamp(-10)
+    def _validate_timestamp(self, interface):
+        timestamp = interface.ms_to_timestamp(-10)
         expected = '19700101 00:00:00.990000'
-        import platform
-        # Particular Windows 10 calculates epoch differently ( T ʖ̯ T)
-        if platform.system() == 'Windows' and platform.version() == '10.0.19044':
-            expected = '19700101 02:00:00.990000'
 
         self.assertEqual(timestamp, expected)
 
     def test_ms_before_epoch_are_reset_to_epoch(self):
         from oxygen.robot4_interface import RobotResultInterface as RF4ResultIface
-        self._validate_timestamp(RF4ResultIface())
+        with patch.object(RF4ResultIface, 'get_timezone_delta') as m:
+            m.return_value = timedelta(seconds=7200)
+            self._validate_timestamp(RF4ResultIface())
 
         from oxygen.robot3_interface import RobotResultInterface as RF3ResultIface
-        self._validate_timestamp(RF3ResultIface())
+        with patch.object(RF3ResultIface, 'get_timezone_delta') as m:
+            m.return_value = timedelta(seconds=7200)
+            self._validate_timestamp(RF3ResultIface())
 
 
 class TestTimestampToMs(TestCase):

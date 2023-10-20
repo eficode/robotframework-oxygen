@@ -1,4 +1,4 @@
-from .oxygen import OxygenCLI
+from .oxygen import OxygenCLI, main
 
 if __name__ == '__main__':
-    OxygenCLI().run()
+    main()

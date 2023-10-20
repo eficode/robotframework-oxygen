@@ -34,17 +34,16 @@ def install(context, package=None):
 @task(iterable=['test'],
       help={
           'test': 'Limit unit test execution to specific tests. Must be given '
-                  'multiple times to select several targets. See more: '
-                  'https://github.com/CleanCut/green/blob/master/cli-options.txt#L5',
+                  'multiple times to select several targets.'
       })
 def utest(context, test=None):
-    run(f'green {" ".join(test) if test else UNIT_TESTS}',
+    run(f'pytest {" ".join(test) if test else UNIT_TESTS} -q --disable-warnings',
         env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
 
 @task
 def coverage(context):
-    run(f'green -r {str(UNIT_TESTS)}',
+    run(f'pytest --cov {UNIT_TESTS}',
         env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
     run('coverage html')

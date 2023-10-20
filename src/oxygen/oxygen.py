@@ -1,18 +1,22 @@
+import sys
 
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from inspect import getdoc, signature
 from io import StringIO
 from pathlib import Path
+from shutil import copy as copy_file
 from traceback import format_exception
 
 from robot.api import ExecutionResult, ResultVisitor, ResultWriter
 from robot.libraries.BuiltIn import BuiltIn
 from robot.errors import DataError
-from yaml import load, FullLoader
+from yaml import load, FullLoader, dump as dump_yaml
 
-from .config import CONFIG_FILE
-from .errors import OxygenException
+from .config import CONFIG_FILE, ORIGINAL_CONFIG_FILE
+from .errors import (OxygenException,
+                     InvalidConfigurationException,
+                     ResultFileNotFoundException)
 from .robot_interface import RobotInterface
 from .version import VERSION
 
@@ -25,17 +29,35 @@ class OxygenCore(object):
 
 
     def __init__(self):
-        with open(CONFIG_FILE, 'r') as infile:
+        self._config = None
+        self._handlers = None
+
+    @property
+    def config(self):
+        if self._config is None:
+            self.load_config(CONFIG_FILE)
+        return self._config
+
+    def load_config(self, config_file):
+        with open(config_file, 'r') as infile:
             self._config = load(infile, Loader=FullLoader)
-        self._handlers = {}
-        self._register_handlers()
+
+    @property
+    def handlers(self):
+        if self._handlers is None:
+            self._handlers = {}
+            self._register_handlers()
+        return self._handlers
 
     def _register_handlers(self):
-        for tool_name, config in self._config.items():
-            handler_class = getattr(__import__(tool_name,
-                                               fromlist=[config['handler']]),
-                                    config['handler'])
-            handler = handler_class(config)
+        for tool_name, handler_config in self.config.items():
+            try:
+                handler_class = getattr(
+                    __import__(tool_name, fromlist=[handler_config['handler']]),
+                    handler_config['handler'])
+            except ModuleNotFoundError as e:
+                raise InvalidConfigurationException(e)
+            handler = handler_class(handler_config)
             self._handlers[tool_name] = handler
 
 
@@ -53,7 +75,7 @@ class OxygenVisitor(OxygenCore, ResultVisitor):
 
     def visit_test(self, test):
         failures = []
-        for handler_type, handler in self._handlers.items():
+        for handler_type, handler in self.handlers.items():
             try:
                 handler.check_for_keyword(test, self.data)
             except Exception as e:
@@ -182,12 +204,12 @@ class OxygenLibrary(OxygenCore):
     def _fetch_handler(self, name):
         try:
             return next(filter(lambda h: h.keyword == name,
-                               self._handlers.values()))
+                               self.handlers.values()))
         except StopIteration:
             raise OxygenException('No handler for keyword "{}"'.format(name))
 
     def get_keyword_names(self):
-        return list(handler.keyword for handler in self._handlers.values())
+        return list(handler.keyword for handler in self.handlers.values())
 
     def run_keyword(self, name, args, kwargs):
         handler = self._fetch_handler(name)
@@ -210,31 +232,72 @@ class OxygenCLI(OxygenCore):
     OxygenCLI is a command line interface to transform one test result file to
     corresponding Robot Framework output.xml
     '''
-    def parse_args(self, parser):
+    MAIN_LEVEL_CLI_ARGS = {
+        # we intentionally define `dest` here so we can filter arguments later
+        '--version': {'action': 'version',
+                      'dest': 'version'},
+        '--add-config': {'type': Path,
+                         'metavar': 'FILE',
+                         'dest': 'add_config',
+                         'help': ('path to YAML file whose content is '
+                                  'appended to existing Oxygen handler '
+                                  'configuration')},
+        '--reset-config': {'action': 'store_true',
+                           'dest': 'reset_config',
+                           'help': ('resets the Oxygen handler '
+                                    'configuration to a pristine, '
+                                    'as-freshly-installed version')},
+        '--print-config': {'action': 'store_true',
+                           'dest': 'print_config',
+                           'help': ('prints current Oxygen handler '
+                                    'configuration')}
+    }
+    def add_arguments(self, parser):
+        # Add version number here to the arguments as it depends on OxygenCLI
+        # being initiated already
+        self.MAIN_LEVEL_CLI_ARGS['--version']['version'] = \
+            f'%(prog)s {self.__version__}'
+        for flag, params in self.MAIN_LEVEL_CLI_ARGS.items():
+            parser.add_argument(flag, **params)
+
         subcommands = parser.add_subparsers()
-        for tool_name, tool_handler in self._handlers.items():
+        for tool_name, tool_handler in self.handlers.items():
             subcommand_parser = subcommands.add_parser(tool_name)
             for flags, params in tool_handler.cli().items():
                 subcommand_parser.add_argument(*flags, **params)
                 subcommand_parser.set_defaults(func=tool_handler.parse_results)
+
+    def parse_args(self, parser):
         return vars(parser.parse_args())  # returns a dictionary
 
     def get_output_filename(self, result_file):
+        if result_file is None:
+            raise ResultFileNotFoundException('You did not give any result '
+                                              'file to convert')
         filename = Path(result_file)
         filename = filename.with_suffix('.xml')
         robot_name = filename.stem + '_robot_output' + filename.suffix
         filename = filename.with_name(robot_name)
         return str(filename)
 
-    def run(self):
-        parser = ArgumentParser(prog='oxygen')
-        parser.add_argument('--version',
-                            action='version',
-                            version=f'%(prog)s {self.__version__}')
-        args = self.parse_args(parser)
-        if not args:
-            parser.error('No arguments given')
-        output_filename = self.get_output_filename(args['result_file'])
+    def append_config(self, new_config_path):
+        with open(new_config_path, 'r') as new_config:
+            with open(CONFIG_FILE, 'a') as old_config:
+                old_config.write(new_config.read())
+        self.load_config(CONFIG_FILE)
+
+    @staticmethod
+    def reset_config():
+        copy_file(ORIGINAL_CONFIG_FILE, CONFIG_FILE)
+        OxygenCLI().load_config(CONFIG_FILE)
+        print('Oxygen handler configuration reset!')
+
+    def print_config(self):
+        print(f'Using config file: {CONFIG_FILE}')
+        print(dump_yaml(self.config))
+
+    def convert_to_robot_result(self, args):
+        output_filename = self.get_output_filename(args.get('result_file'))
         parsed_results = args['func'](
             **{k: v for (k, v) in args.items() if not callable(v)})
         robot_suite = RobotInterface().running.build_suite(parsed_results)
@@ -243,6 +306,38 @@ class OxygenCLI(OxygenCore):
                         report=None,
                         stdout=StringIO())
 
+    def run(self):
+        parser = ArgumentParser(prog='oxygen')
+        self.add_arguments(parser)
+        args = self.parse_args(parser)
+        match args:
+            case {'add_config': new_config_path} if new_config_path is not None:
+                return self.append_config(new_config_path)
+            case {'print_config': should_print} if should_print:
+                return self.print_config()
+            case {'add_config': _,
+                  'reset_config': _,
+                  'print_config': _,
+                  **rest} if not rest:  # user is not trying to invoke main-level arguments, but do not provide other arguments either
+                parser.error('No arguments given')
+            case _:
+                # filter out arguments meant for other cases so that downstream
+                # handler does not need to know about them
+                filter_list = [v['dest'] for v in
+                                self.MAIN_LEVEL_CLI_ARGS.values()]
+                filtered_args = {k: v for k, v in args.items()
+                                    if k not in filter_list}
+                return self.convert_to_robot_result(filtered_args)
+
+def main():
+    '''Main CLI entrypoint
+
+    Also used in __main__.py
+    '''
+    if '--reset-config' in sys.argv:
+        OxygenCLI.reset_config()
+        sys.exit(0)
+    OxygenCLI().run()
 
 if __name__ == '__main__':
-    OxygenCLI().run()
+    main()
