@@ -8,6 +8,8 @@ from tempfile import mkstemp
 from robot.api import ExecutionResult
 from yaml import FullLoader, load
 
+from oxygen.oxygen_handler_result import OxygenKeywordDict, OxygenTestCaseDict
+
 TEST_CONFIG = '''
 oxygen.junit:
   handler: JUnitHandler
@@ -54,6 +56,24 @@ def suppress_stdout():
 def example_robot_output():
     output = RESOURCES_PATH / 'example_robot_output.xml'
     return ExecutionResult(output)
+
+MINIMAL_KEYWORD_DICT = { 'name': 'someKeyword', 'pass': True }
+MINIMAL_TC_DICT = { 'name': 'Minimal TC', 'keywords': [MINIMAL_KEYWORD_DICT] }
+
+class _ListSubclass(list):
+    '''Used in test cases'''
+    pass
+
+
+class _KwSubclass(OxygenKeywordDict):
+    '''Used in test cases'''
+    pass
+
+
+class _TCSubclass(OxygenTestCaseDict):
+    '''Used in test cases'''
+    pass
+
 
 GATLING_EXPECTED_OUTPUT = {'name': 'Gatling Scenario',
  'setup': [],

@@ -32,3 +32,7 @@ class MismatchArgumentException(Exception):
 
 class InvalidConfigurationException(Exception):
     pass
+
+
+class InvalidOxygenResultException(Exception):
+    pass

@@ -37,7 +37,7 @@ def install(context, package=None):
                   'multiple times to select several targets.'
       })
 def utest(context, test=None):
-    run(f'pytest {" ".join(test) if test else UNIT_TESTS} -q --disable-warnings',
+    run(f'pytest {" -k".join(test) if test else UNIT_TESTS} -q --disable-warnings',
         env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
 
