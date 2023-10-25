@@ -93,6 +93,8 @@ Then `results_robot_output.xml` will be created under `path/to/`.
 
 ### [Read the developer guide on how to write your own handler](DEVGUIDE.md)
 
+You might also want to look at [specification for handler results](handler_result_specification.md)
+
 ### Configuring your handler to Oxygen
 
 Oxygen knows about different handlers based on the [`config.yml`](https://github.com/eficode/robotframework-oxygen/blob/master/config.yml) file. This configuration file can be interacted with through Oxygen's command line.

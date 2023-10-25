@@ -77,7 +77,7 @@ def update_oxygen_schema(context):
 
     schema = TypeAdapter(OxygenSuiteDict).json_schema()
     out = json.dumps(schema, indent=2)
-    with open(CURDIR / 'parser_specification.md', 'r+') as f:
+    with open(CURDIR / 'handler_result_specification.md', 'r+') as f:
         header = f.readline()
         f.seek(0)
         f.write(header)
