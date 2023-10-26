@@ -343,7 +343,7 @@ class RobotResultInterface(object):
 class RobotRunningInterface(object):
     def build_suite(self, parsed_results):
         robot_root_suite = RobotRunningSuite(parsed_results['name'])
-        for parsed_suite in parsed_results['suites']:
+        for parsed_suite in parsed_results.get('suites', []):
             robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
             for subsuite in parsed_suite.get('suites', []):
                 robot_subsuite = self.build_suite(subsuite)
@@ -355,9 +355,9 @@ class RobotRunningInterface(object):
     def build_tests(self, oxygen_suite, robot_suite):
         for parsed_test in oxygen_suite.get('tests', []):
             name = parsed_test['name']
-            tags = parsed_test['tags']
+            tags = parsed_test.get('tags', [])
             kw = parsed_test['keywords'][0]
-            msg = '\n'.join(kw['messages'])
+            msg = '\n'.join(kw.get('messages', []))
             test_robot_counterpart = robot_suite.tests.create(name, tags=tags)
             if kw['pass']:
                 args = [msg if msg else 'Test passed :D']
