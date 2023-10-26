@@ -181,7 +181,7 @@ class OxygenLibrary(OxygenCore):
     Robot Framework libraries`_. The documentation syntax is expected to be
     reStructuredText_.
 
-    After editing Oxygen's ``config.yml`` to add your own handler, you can
+    After editing Oxygen's ``config.yml`` to `add your own handler`_, you can
     regenerate this library documentation to show your keyword with command:
 
     .. code:: bash
@@ -193,6 +193,7 @@ class OxygenLibrary(OxygenCore):
     .. _dynamic library: http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#dynamic-library-api
     .. _normal way one does with Robot Framework libraries: http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#documenting-libraries
     .. _reStructuredText: https://docutils.sourceforge.io/docs/user/rst/quickref.html
+    .. _add your own handler: https://github.com/eficode/robotframework-oxygen#extending-oxygen-writing-your-own-handler
     '''
 
     ROBOT_LIBRARY_DOC_FORMAT = 'reST'

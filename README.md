@@ -109,7 +109,7 @@ oxygen.zap:
   keyword: run_zap
   tags: oxygen-zap
   accepted_risk_level: 2         # Handlers can have their own command line arguments
-  required_confidence_level: 1   # See [the development guide](DEVGUIDE.md) for more information
+  required_confidence_level: 1   # See https://github.com/eficode/robotframework-oxygen/blob/master/DEVGUIDE.md for more information
 ```
 
 #### `--add-config`
