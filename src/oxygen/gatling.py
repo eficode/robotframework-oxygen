@@ -65,10 +65,7 @@ class GatlingHandler(BaseHandler):
             keyword = {
                     'name': ' | '.join(columns),
                     'pass': True,
-                    'tags': [],
                     'messages': [],
-                    'teardown': [],
-                    'keywords': [],
                 }
 
             if status == 'KO':
@@ -77,9 +74,6 @@ class GatlingHandler(BaseHandler):
 
             test_case = {
                 'name': step_name,
-                'tags': [],
-                'setup': [],
-                'teardown': [],
                 'keywords': [keyword]
             }
 
@@ -88,9 +82,6 @@ class GatlingHandler(BaseHandler):
         test_suite = {
             'name': 'Gatling Scenario',
             'tags': self._tags,
-            'setup': [],
-            'teardown': [],
-            'suites': [],
             'tests': test_cases,
         }
 

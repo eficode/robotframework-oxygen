@@ -7,6 +7,7 @@ from testfixtures import compare
 from oxygen.base_handler import BaseHandler
 from oxygen.gatling import GatlingHandler
 from oxygen.errors import GatlingHandlerException
+from oxygen.oxygen_handler_result import validate_oxygen_suite
 from ..helpers import (example_robot_output,
                        GATLING_EXPECTED_OUTPUT,
                        get_config,
@@ -88,3 +89,4 @@ class GatlingBasicTests(TestCase):
         example_file = RESOURCES_PATH / 'gatling-example-simulation.log'
         retval = self.handler._transform_tests(example_file)
         compare(retval, GATLING_EXPECTED_OUTPUT)
+        self.assertTrue(validate_oxygen_suite(retval))
