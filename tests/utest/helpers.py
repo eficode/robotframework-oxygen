@@ -59,6 +59,11 @@ def example_robot_output():
 
 MINIMAL_KEYWORD_DICT = { 'name': 'someKeyword', 'pass': True }
 MINIMAL_TC_DICT = { 'name': 'Minimal TC', 'keywords': [MINIMAL_KEYWORD_DICT] }
+MINIMAL_SUITE_DICT = {'name': 'Minimal Suite',
+                      'suites': [{
+                          'name': 'Minimal Subsuite',
+                          'tests': [ MINIMAL_TC_DICT ]}]}
+
 
 class _ListSubclass(list):
     '''Used in test cases'''

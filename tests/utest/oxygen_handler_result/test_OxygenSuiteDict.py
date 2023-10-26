@@ -3,7 +3,10 @@ from unittest import TestCase
 from oxygen.errors import InvalidOxygenResultException
 from oxygen.oxygen_handler_result import OxygenSuiteDict, validate_oxygen_suite
 
-from ..helpers import MINIMAL_TC_DICT, _ListSubclass, _TCSubclass
+from ..helpers import (MINIMAL_TC_DICT,
+                       MINIMAL_SUITE_DICT,
+                       _ListSubclass,
+                       _TCSubclass)
 from .shared_tests import (SharedTestsForName,
                            SharedTestsForKeywordField,
                            SharedTestsForTags)
@@ -13,13 +16,7 @@ class TestOxygenSuiteDict(TestCase,
                           SharedTestsForKeywordField,
                           SharedTestsForTags):
     def setUp(self):
-        self.minimal = {
-            'name': 'Minimal Suite',
-            'suites': [{
-                'name': 'Minimal Subsuite',
-                'tests': [ MINIMAL_TC_DICT ]
-            }]
-        }
+        self.minimal = MINIMAL_SUITE_DICT
 
     def test_validate_oxygen_suite_validates_correctly(self):
         with self.assertRaises(InvalidOxygenResultException):

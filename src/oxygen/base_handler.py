@@ -2,10 +2,10 @@ import re
 
 from inspect import signature, Parameter
 
-from oxygen.errors import MismatchArgumentException
+from .errors import MismatchArgumentException
 from .robot_interface import (RobotInterface, get_keywords_from,
                               set_special_keyword)
-
+from .utils import validate_with_deprecation_warning
 
 class BaseHandler(object):
     DEFAULT_CLI = {tuple(['result_file']): {}}
@@ -132,6 +132,8 @@ class BaseHandler(object):
                 f'parse_results expects at least {accepted_params_min} '
                 'arguments but got 1')
 
+        self._validate(test_results)
+
         _, result_suite = self._interface.result.build_suite(
             100000, test_results)
 
@@ -148,6 +150,9 @@ class BaseHandler(object):
             set_special_keyword(result_suite, 'teardown', teardown_keyword)
 
         self._inject_suite_report(test, result_suite)
+
+    def _validate(self, oxygen_result_dict):
+        validate_with_deprecation_warning(oxygen_result_dict, self)
 
     def _inject_suite_report(self, test, result_suite):
         '''Add the given suite to the parent suite of the test case.
