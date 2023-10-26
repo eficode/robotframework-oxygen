@@ -4,8 +4,10 @@ from unittest.mock import ANY, create_autospec, Mock, mock_open, patch
 
 from testfixtures import compare
 
-from oxygen.zap import ZAProxyHandler
 from oxygen.errors import ZAProxyHandlerException
+from oxygen.oxygen_handler_result import validate_oxygen_suite
+from oxygen.zap import ZAProxyHandler
+
 from ..helpers import (example_robot_output,
                        get_config,
                        RESOURCES_PATH,
@@ -312,3 +314,4 @@ class ZAPBasicTests(TestCase):
     def test_zap_parsing(self):
         retval = self.handler.parse_results(RESOURCES_PATH / 'zap' / 'zap.xml')
         compare(retval, ZAP_EXPECTED_OUTPUT)
+        self.assertTrue(validate_oxygen_suite(retval))
