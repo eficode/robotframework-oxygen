@@ -6,8 +6,9 @@ from junitparser import JUnitXml
 from testfixtures import compare
 
 from oxygen.base_handler import BaseHandler
-from oxygen.junit import JUnitHandler
 from oxygen.errors import JUnitHandlerException, ResultFileIsNotAFileException
+from oxygen.junit import JUnitHandler
+from oxygen.oxygen_handler_result import validate_oxygen_suite
 from ..helpers import example_robot_output, get_config, RESOURCES_PATH
 
 class JUnitBasicTests(TestCase):
@@ -96,26 +97,17 @@ class JUnitBasicTests(TestCase):
     def test_transform_tests_with_single_test_suite(self):
         expected_output = {
             'name': 'JUnit Execution',
-            'setup': [],
             'suites': [{'name': 'com.example.demo.DemoApplicationTests',
-            'setup': [],
-            'suites': [],
-            'tags': [],
-            'teardown': [],
-            'tests': [{'keywords': [{'elapsed': 454.0,
-                                    'keywords': [],
-                                    'messages': [],
-                                    'name': 'contextLoads() (Execution)',
-                                    'pass': True,
-                                    'tags': [],
-                                    'teardown': []}],
-                        'name': 'contextLoads()',
-                        'setup': [],
-                        'tags': [],
-                        'teardown': []}]}],
+                'suites': [],
+                'tags': [],
+                'tests': [{'keywords': [{'elapsed': 454.0,
+                                         'keywords': [],
+                                         'messages': [],
+                                         'name': 'contextLoads() (Execution)',
+                                         'pass': True}],
+                            'name': 'contextLoads()',
+                            'tags': []}]}],
             'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],
-            'teardown': [],
-            'tests': []
         }
         xml = JUnitXml.fromfile(str(RESOURCES_PATH / 'junit-single-testsuite.xml'))
         retval = self.handler._transform_tests(xml)
@@ -125,97 +117,71 @@ class JUnitBasicTests(TestCase):
         expected_output = {
             'name': 'JUnit Execution',
             'tags': ['JUNIT', 'EXTRA_JUNIT_CASE'],
-            'setup': [],
-            'teardown': [],
             'suites': [{
                 'name': 'suite1',
                 'tags': [],
-                'setup': [],
-                'teardown': [],
                 'suites': [{
                     'name': 'suite2',
                      'tags': [],
-                     'setup': [],
-                     'teardown': [],
                      'suites': [],
                      'tests': [{
                         'name': 'casea',
                         'tags': ['oxygen-junit-unknown-execution-time'],
-                        'setup': [],
-                        'teardown': [],
                         'keywords': [{'name': 'casea (Execution)',
                                       'pass': True,
-                                      'tags': [],
                                       'messages': [],
-                                      'teardown': [],
                                       'keywords': [],
                                       'elapsed': 0.0}]
                         }, {
                         'name': 'caseb',
                         'tags': ['oxygen-junit-unknown-execution-time'],
-                        'setup': [],
-                        'teardown': [],
                         'keywords': [{
                             'name': 'caseb (Execution)',
                             'pass': True,
-                            'tags': [],
                             'messages': [],
-                            'teardown': [],
-                            'keywords': [],
-                            'elapsed': 0.0
+                            'elapsed': 0.0,
+                            'keywords': []
                         }]
                     }]
                 }],
                 'tests': [{
                     'name': 'case1',
                     'tags': ['oxygen-junit-unknown-execution-time'],
-                    'setup': [],
-                    'teardown': [],
                     'keywords': [{
                         'name': 'case1 (Execution)',
                         'pass': True,
-                        'tags': [],
                         'messages': [],
-                        'teardown': [],
                         'keywords': [],
                         'elapsed': 0.0
                     }]
                 }, {
                     'name': 'case2',
                     'tags': ['oxygen-junit-unknown-execution-time'],
-                    'setup': [],
-                    'teardown': [],
                     'keywords': [{
                         'name': 'case2 (Execution)',
                         'pass': False,
-                        'tags': [],
                         'messages': [
                             'ERROR: Example error message (the_error_type)'
                         ],
-                        'teardown': [],
                         'keywords': [],
                         'elapsed': 0.0
                     }]
                 }, {
                     'name': 'case3',
                     'tags': ['oxygen-junit-unknown-execution-time'],
-                    'setup': [],
-                    'teardown': [],
                     'keywords': [{
                         'name': 'case3 (Execution)',
                         'pass': False,
-                        'tags': [],
                         'messages': [
                             'FAIL: Example failure message (the_failure_type)'
                         ],
-                        'teardown': [],
                         'keywords': [],
                         'elapsed': 0.0
                     }]
                 }]
             }],
-            'tests': []
         }
         xml = JUnitXml.fromfile(RESOURCES_PATH / 'junit.xml')
         retval = self.handler._transform_tests(xml)
         compare(retval, expected_output)
+        self.assertTrue(validate_oxygen_suite(retval))

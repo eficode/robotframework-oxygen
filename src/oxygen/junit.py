@@ -38,10 +38,7 @@ class JUnitHandler(BaseHandler):
         suite_dict = {
             'name': 'JUnit Execution',
             'tags': self._tags,
-            'setup': [],
-            'teardown': [],
             'suites': [],
-            'tests': [],
         }
 
         if isinstance(node, JUnitXmlTestSuite):
@@ -63,8 +60,6 @@ class JUnitHandler(BaseHandler):
         suite_dict = {
             'name': test_suite.name,
             'tags': [],
-            'setup': [],
-            'teardown': [],
             'suites': [],
             'tests': [],
         }
@@ -91,9 +86,7 @@ class JUnitHandler(BaseHandler):
         test_dict = {
             'name': '{} (Execution)'.format(test_case.name),
             'pass': True,
-            'tags': [],
             'messages': [],
-            'teardown': [],
             'keywords': [],
         }
 
@@ -126,8 +119,6 @@ class JUnitHandler(BaseHandler):
         test_case_dict = {
             'name': test_case.name,
             'tags': [],
-            'setup': [],
-            'teardown': [],
             'keywords': [
                 test_dict,
             ],

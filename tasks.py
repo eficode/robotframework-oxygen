@@ -37,7 +37,7 @@ def install(context, package=None):
                   'multiple times to select several targets.'
       })
 def utest(context, test=None):
-    run(f'pytest {" ".join(test) if test else UNIT_TESTS} -q --disable-warnings',
+    run(f'pytest {" -k".join(test) if test else UNIT_TESTS} -q --disable-warnings',
         env={'PYTHONPATH': str(SRCPATH)},
         pty=(not system() == 'Windows'))
 
@@ -67,6 +67,25 @@ def test(context):
     atest(context)
 
 @task
+def update_oxygen_schema(context):
+    import sys
+    import json
+    from pydantic import TypeAdapter
+
+    sys.path.insert(0, str(SRCPATH))
+    from oxygen.oxygen_handler_result import OxygenSuiteDict
+
+    schema = TypeAdapter(OxygenSuiteDict).json_schema()
+    out = json.dumps(schema, indent=2)
+    with open(CURDIR / 'handler_result_specification.md', 'r+') as f:
+        header = f.readline()
+        f.seek(0)
+        f.write(header)
+        f.write(f'```\n{out}\n```')
+        f.truncate()
+    print('Updated schema')
+
+@task(pre=[update_oxygen_schema])
 def doc(context):
     doc_path = CURDIR / 'docs'
     if not doc_path.exists():
@@ -82,3 +101,4 @@ def doc(context):
 @task(pre=[clean])
 def build(context):
     run(f'python -m build --wheel')
+

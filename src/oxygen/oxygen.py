@@ -18,6 +18,7 @@ from .errors import (OxygenException,
                      InvalidConfigurationException,
                      ResultFileNotFoundException)
 from .robot_interface import RobotInterface
+from .utils import validate_with_deprecation_warning
 from .version import VERSION
 
 
@@ -301,6 +302,7 @@ class OxygenCLI(OxygenCore):
         output_filename = self.get_output_filename(args.get('result_file'))
         parsed_results = args['func'](
             **{k: v for (k, v) in args.items() if not callable(v)})
+        validate_with_deprecation_warning(parsed_results, args['func'])
         robot_suite = RobotInterface().running.build_suite(parsed_results)
         robot_suite.run(output=output_filename,
                         log=None,

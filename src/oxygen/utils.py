@@ -4,10 +4,11 @@ import sys
 
 from pathlib import Path
 
-from .errors import (SubprocessException,
+from .errors import (InvalidOxygenResultException,
                      ResultFileIsNotAFileException,
-                     ResultFileNotFoundException)
-
+                     ResultFileNotFoundException,
+                     SubprocessException)
+from .oxygen_handler_result import validate_oxygen_suite
 
 def run_command_line(command, check_return_code=True, **env):
     new_env = os.environ.copy()
@@ -27,7 +28,6 @@ def run_command_line(command, check_return_code=True, **env):
                                   f'code {proc.returncode}:\n"{proc.stdout.decode("utf-8")}"')
     return proc.stdout
 
-
 def validate_path(filepath):
     try:
         path = Path(filepath)
@@ -39,3 +39,17 @@ def validate_path(filepath):
         raise ResultFileIsNotAFileException(f'File "{path}" is not a file, '
                                             'but a directory')
     return path
+
+def validate_with_deprecation_warning(oxygen_result_dict, handler):
+    try:
+        validate_oxygen_suite(oxygen_result_dict)
+    except InvalidOxygenResultException as e:
+        import warnings
+        # this is not done with triple quotes intentionally
+        # to get sensible formatting to output
+        msg = (f'\n{handler.__module__} is producing invalid results:\n'
+               f'{e}\n\n'
+               'In Oxygen 1.0, handlers will need to produce valid '
+               'results.\nSee: '
+               'https://github.com/eficode/robotframework-oxygen/blob/master/parser_specification.md')
+        warnings.warn(msg)

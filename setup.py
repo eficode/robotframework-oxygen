@@ -34,7 +34,8 @@ setup(name='robotframework-oxygen',
       install_requires=[
            'robotframework>=3.0.4',
            'junitparser==2.0',
-           'PyYAML>=3.13'
+           'PyYAML>=3.13',
+           'pydantic>=2.4.2'
       ],
       packages=find_packages(SRC),
       package_dir={'': 'src'},
