@@ -13,6 +13,7 @@ from oxygen.robot_interface import RobotInterface, get_keywords_from
 EXAMPLE_SUITES = [{
   'name': 'suite1',
   'setup': [],
+  'metadata': {'metadata-key': 'metadata-value'},
   'suites': [{'name': 'suite2',
               'setup': {'elapsed': 0.0,
                         'keywords': [],
@@ -152,9 +153,12 @@ class RobotInterfaceBasicTests(TestCase):
     def setUp(self):
         self.iface = RobotInterface()
 
+    def now(self):
+        return int(round(time() * 1000))
+
     def test_result_build_suites(self):
-        now = int(round(time() * 1000))
-        _, converted = self.iface.result.build_suites(now, *EXAMPLE_SUITES)
+        _, converted = self.iface.result.build_suites(self.now(),
+                                                      *EXAMPLE_SUITES)
 
         self.assertIsInstance(converted, list)
         self.assertEqual(len(converted), 2)
@@ -199,6 +203,14 @@ class RobotInterfaceBasicTests(TestCase):
             from robot.model import BodyItem
             self.assertEqual(ret.type, BodyItem.SETUP)
 
+    def validate_metadata(self, actual):
+        self.assertEqual(actual.name, EXAMPLE_SUITES[0]['name'])
+        self.assertEqual(dict(actual.metadata), EXAMPLE_SUITES[0]['metadata'])
+
+    def test_result_build_suite_with_metadata(self):
+        _, ret = self.iface.result.build_suite(self.now(), EXAMPLE_SUITES[0])
+        self.validate_metadata(ret)
+
     def test_result_create_wrapper_keyword_for_teardown(self):
         ret = self.iface.result.create_wrapper_keyword('My Wrapper',
                                                        '20200507 13:42:50.001',
@@ -219,3 +231,7 @@ class RobotInterfaceBasicTests(TestCase):
 
         self.assertIsInstance(ret, RobotRunningSuite)
         self.assertEqual(ret.name, EXAMPLE_SUITES[1]['name'])
+
+    def test_running_build_suite_with_metadata(self):
+        ret = self.iface.running.build_suite(EXAMPLE_SUITES[0])
+        self.validate_metadata(ret)

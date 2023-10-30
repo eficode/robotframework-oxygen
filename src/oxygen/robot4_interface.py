@@ -43,6 +43,7 @@ class RobotResultInterface(object):
         teardown_keyword = suite.get('teardown') or None
         child_suites = suite.get('suites') or []
         tests = suite.get('tests') or []
+        metadata = suite.get('metadata') or {}
 
         updated_time, robot_setup = self.build_keyword(updated_time, setup_keyword, setup=True)
         updated_time, robot_teardown = self.build_keyword(updated_time, teardown_keyword, teardown=True)
@@ -56,7 +57,8 @@ class RobotResultInterface(object):
                                              robot_setup,
                                              robot_teardown,
                                              robot_suites,
-                                             robot_tests)
+                                             robot_tests,
+                                             metadata)
 
         return updated_time, robot_suite
 
@@ -69,13 +71,15 @@ class RobotResultInterface(object):
                           setup_keyword,
                           teardown_keyword,
                           suites,
-                          tests):
+                          tests,
+                          metadata):
         start_timestamp = self.ms_to_timestamp(start_time)
         end_timestamp = self.ms_to_timestamp(end_time)
 
         robot_suite = RobotResultSuite(name,
                                        starttime=start_timestamp,
-                                       endtime=end_timestamp)
+                                       endtime=end_timestamp,
+                                       metadata=metadata)
         robot_suite.set_tags(add=tags, persist=True)
 
         if setup_keyword:
@@ -342,9 +346,15 @@ class RobotResultInterface(object):
 
 class RobotRunningInterface(object):
     def build_suite(self, parsed_results):
-        robot_root_suite = RobotRunningSuite(parsed_results['name'])
+        robot_root_suite = RobotRunningSuite(
+            parsed_results['name'],
+            metadata=parsed_results.get('metadata', {})
+        )
         for parsed_suite in parsed_results.get('suites', []):
-            robot_suite = robot_root_suite.suites.create(parsed_suite['name'])
+            robot_suite = robot_root_suite.suites.create(
+                parsed_suite['name'],
+                metadata=parsed_suite.get('metadata', {})
+            )
             for subsuite in parsed_suite.get('suites', []):
                 robot_subsuite = self.build_suite(subsuite)
                 robot_suite.suites.append(robot_subsuite)

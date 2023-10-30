@@ -79,6 +79,9 @@ class _TCSubclass(OxygenTestCaseDict):
     '''Used in test cases'''
     pass
 
+class _StrSubclass(str):
+    '''Used in test cases'''
+    pass
 
 GATLING_EXPECTED_OUTPUT = {'name': 'Gatling Scenario',
  'tags': ['GATLING'],

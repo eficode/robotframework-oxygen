@@ -12,7 +12,7 @@ See more:
 
 import functools
 
-from typing import List
+from typing import List, Dict
 # TODO FIXME: Python 3.10 requires these to be imported from here
 # Python 3.10 EOL is in 2026
 from typing_extensions import TypedDict, Required
@@ -45,6 +45,7 @@ class OxygenSuiteDict(TypedDict, total=False):
     tags:     List[str]
     setup:    OxygenKeywordDict
     teardown: OxygenKeywordDict
+    metadata: Dict[str, str]
     suites:   List['OxygenSuiteDict']
     tests:    List[OxygenTestCaseDict]
 
