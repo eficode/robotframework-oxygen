@@ -1,7 +1,7 @@
 from datetime import timedelta
 from unittest import TestCase
 
-from mock import patch
+from mock import patch, MagicMock
 
 from oxygen.robot_interface import RobotInterface
 
@@ -11,6 +11,7 @@ class TestMsToTimestamp(TestCase):
         self.interface = RobotInterface()
 
     def test_should_be_correct(self):
+        self.interface.result.get_timezone_delta = MagicMock(return_value=timedelta(hours=2))
         timestamp = self.interface.result.ms_to_timestamp(1533625284100.0)
         self.assertEqual(timestamp, '20180807 07:01:24.100000')
 
