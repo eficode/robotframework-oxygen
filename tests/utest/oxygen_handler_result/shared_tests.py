@@ -1,13 +1,12 @@
 from ..helpers import (MINIMAL_KEYWORD_DICT,
                        _ListSubclass,
+                       _StrSubclass,
                        _KwSubclass)
 
 class SharedTestsForName(object):
     def shared_test_for_name(self):
-        class StrSubclass(str):
-            pass
-        valid_inherited = StrSubclass('someKeyword')
-        this_is_not_None = StrSubclass(None)
+        valid_inherited = _StrSubclass('someKeyword')
+        this_is_not_None = _StrSubclass(None)
 
         self.valid_inputs_for('name',
                               '',

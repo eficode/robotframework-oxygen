@@ -6,6 +6,7 @@ from oxygen.oxygen_handler_result import OxygenSuiteDict, validate_oxygen_suite
 from ..helpers import (MINIMAL_TC_DICT,
                        MINIMAL_SUITE_DICT,
                        _ListSubclass,
+                       _StrSubclass,
                        _TCSubclass)
 from .shared_tests import (SharedTestsForName,
                            SharedTestsForKeywordField,
@@ -79,3 +80,22 @@ class TestOxygenSuiteDict(TestCase,
 
 
         self.invalid_inputs_for('tests', None, [ {} ])
+
+    def test_validate_oxygen_suite_validates_metadata(self):
+        class DictSubclass(dict):
+            pass
+        inherited_key = _StrSubclass('key')
+
+        this_is_not_None = _StrSubclass(None)
+
+        self.valid_inputs_for('metadata',
+                              {},
+                              {'': ''},
+                              {'key': 'value'},
+                              {_StrSubclass('key'): _StrSubclass('value')},
+                              DictSubclass(inherited_key=_StrSubclass('value')),
+                              {this_is_not_None: 'value'})
+
+        self.invalid_inputs_for('metadata',
+                                {'key': None},
+                                {'key': 1234},)
