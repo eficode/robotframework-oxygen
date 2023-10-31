@@ -1,5 +1,9 @@
+import os
+
 from pathlib import Path
 from platform import system
+from tempfile import mkstemp
+from textwrap import dedent
 
 from invoke import run, task
 
@@ -48,18 +52,35 @@ def coverage(context):
         pty=(not system() == 'Windows'))
     run('coverage html')
 
+def _setup_atest():
+    _, tempconf =  mkstemp()
+    with open(tempconf, 'w') as f:
+        f.write('''dummy_handler_metadata:
+            handler: MyDummyMetadataHandler
+            keyword: run_metadata_dummy_handler
+            tags: oxygen-metadata''')
+    return (tempconf,
+            os.pathsep.join([str(SRCPATH),
+                             str(UNIT_TESTS / 'resources' / 'my_dummy_handlers')]))
+
 @task(help={
     'rf': 'Additional command-line arguments for Robot Framework as '
           'single string. E.g: invoke atest --rf "--name my_suite"'
 })
 def atest(context, rf=''):
-    run(f'robot '
-        f'--pythonpath {str(SRCPATH)} '
-        f'--dotted '
-        f'{rf} '
-        f'--listener oxygen.listener '
-        f'{str(CURDIR / "tests" / "atest")}',
-        pty=(not system() == 'Windows'))
+    tempconf, pythonpath = _setup_atest()
+    run(f'python -m oxygen --add-config {tempconf}',
+        env={'PYTHONPATH': pythonpath})
+    try:
+        run(f'robot '
+            f'--pythonpath {pythonpath} '
+            f'--dotted '
+            f'{rf} '
+            f'--listener oxygen.listener '
+            f'{str(CURDIR / "tests" / "atest")}',
+            pty=(not system() == 'Windows'))
+    finally:
+        run('python -m oxygen --reset-config', env={'PYTHONPATH': pythonpath})
 
 @task
 def test(context):
