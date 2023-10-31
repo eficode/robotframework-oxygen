@@ -160,6 +160,19 @@ $
 ```
 Because you can add the configuration to the same handler multiple times, note that only the last entry is in effect.
 
+## `utils` module
+
+In [utils module](https://github.com/eficode/robotframework-oxygen/blob/master/src/oxygen/utils.py), you will find assortment of functionalities that you might want to leverage when writing your own handler.
+
+### `run_command_line()`
+
+Most of the time, handlers want to run the other test tool through command line. For this, `utils` provides `run_command_line()` that wraps Python's [`subprocess`](https://docs.python.org/3/library/subprocess.html) module for more easier to use when writing your handler.
+
+`run_command_line()` takes following arguments:
+- `cmd`: the command to be executed in a subprocess
+- `check_return_code`: if set to `True`, will raise an exception if the `cmd` fails in the subprocess. **Note** that this fails the keyword and, thus, the execution of the test case is stopped. If you want to enable test case to continue even after `run_command_line()` has failed, you should disable it by setting `False`. It is often a good idea to allow user using your handler's keyword to decide how they want the command line execution to affect the test case
+- `env`: a dictionary of environment variables that should be passed to the subprocess. By default, `run_command_line()` inherits the environment from the current Python process as well as from modifications done by the Robot Framework command line arguments (ie. `--pythonpath`)
+
 # Developing Oxygen
 
 Clone the Oxygen repository to the environment where you want to the run the tool.
