@@ -11,6 +11,7 @@ from invoke import run, task
 CURDIR = Path.cwd()
 SRCPATH = CURDIR / 'src'
 UNIT_TESTS = CURDIR / 'tests'
+DUMMYHANDLERS = UNIT_TESTS / 'resources' / 'my_dummy_handlers'
 
 # If you want colored output for the tasks, use `run()` with `pty=True`
 # Not on Windows, though -- it'll fail if you have `pty=True`
@@ -61,7 +62,7 @@ def _setup_atest():
             tags: oxygen-metadata''')
     return (tempconf,
             os.pathsep.join([str(SRCPATH),
-                             str(UNIT_TESTS / 'resources' / 'my_dummy_handlers')]))
+                             str(DUMMYHANDLERS)]))
 
 @task(help={
     'rf': 'Additional command-line arguments for Robot Framework as '
@@ -73,7 +74,8 @@ def atest(context, rf=''):
         env={'PYTHONPATH': pythonpath})
     try:
         run(f'robot '
-            f'--pythonpath {pythonpath} '
+            f'--pythonpath {str(SRCPATH)} '
+            f'--pythonpath {str(DUMMYHANDLERS)} '
             f'--dotted '
             f'{rf} '
             f'--listener oxygen.listener '
