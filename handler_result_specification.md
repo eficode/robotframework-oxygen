@@ -67,6 +67,13 @@
         "teardown": {
           "$ref": "#/$defs/OxygenKeywordDict"
         },
+        "metadata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Metadata",
+          "type": "object"
+        },
         "suites": {
           "items": {
             "$ref": "#/$defs/OxygenSuiteDict"
